@@ -5,7 +5,7 @@ This is a web/mobile application that can be used by anyone, allowing patients t
 
 ### Members:
 - Darrick Edbert Laidin (s3905278): Scrum Master
-- W Nimesh C De Silva (s3831242) : Tech Lead
+- W Nimesh C De Silva (s3831242): Tech Lead
 - Bryan Hong (s3679989)
 - Mahamed Ali Mohamed (s3839971)
 - Hirday Bajaj (s3901303)
