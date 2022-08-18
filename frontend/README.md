@@ -6,18 +6,20 @@ A new Flutter project.
 
     .
     ├── ...
-    ├── lib
+    ├── src
     │   ├── config
     │   │    ├── routes
     │   │    └── themes
-    │   ├── domain
-    │   │    ├── data               # Dummy data for the app
-    │   │    ├── models             # Data Models of the app
-    │   │    ├── services           # Interactions outside the app
-    │   │    └── utils              # Function used throughout the app
-    │   ├── ui
-    │   │    ├── views              # Screens of the app
-    │   │    └── widgets            # Widgets used throughout the app
+    |   ├── data                    # Dummy data for the app
+    |   ├── localization            # Translations depending on locale
+    |   ├── models                  # Data Models of the app
+    │   ├── modules
+    │   │    ├── feature1
+    │   │    ├── feature2
+    │   ├── shared
+    │   │    ├── auth               # Handle authentication
+    |   |    ├── utils              # Functions used throughout the app
+    │   │    └── widgets            # Common widgets used throughout the app
     │   └── ...
     └── ...
 
