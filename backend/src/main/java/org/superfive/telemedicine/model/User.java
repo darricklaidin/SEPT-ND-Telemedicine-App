@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package org.superfive.telemedicine.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int userID;
 
     @NotBlank // allow mononyms
     @Column(length = 25)
@@ -32,8 +32,8 @@ public class User {
     public User() {
     }
 
-    public User(int id, String firstName, String lastName, String email, String password) {
-        this.id = id;
+    public User(int userID, String firstName, String lastName, String email, String password) {
+        this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

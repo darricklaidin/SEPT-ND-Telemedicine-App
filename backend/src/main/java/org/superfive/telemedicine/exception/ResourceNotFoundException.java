@@ -1,4 +1,4 @@
-package com.example.backend.exception;
+package org.superfive.telemedicine.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

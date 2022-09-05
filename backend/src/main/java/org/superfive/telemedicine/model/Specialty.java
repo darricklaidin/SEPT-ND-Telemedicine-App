@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package org.superfive.telemedicine.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import java.util.Set;
 public class Specialty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int specialtyID;
 
     @Column(length = 50)
     private String name;

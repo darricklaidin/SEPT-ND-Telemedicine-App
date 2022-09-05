@@ -1,7 +1,7 @@
-package com.example.backend.controller;
+package org.superfive.telemedicine.controller;
 
-import com.example.backend.model.Doctor;
-import com.example.backend.service.DoctorService;
+import org.superfive.telemedicine.model.Doctor;
+import org.superfive.telemedicine.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/doctor")
+@RequestMapping("/api/doctors")
 public class DoctorController {
     private final DoctorService doctorService;
 
@@ -21,15 +21,21 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
+    // Get doctors
+    // Create doctors
+    // Update doctors
+    // DEACTIVATE doctors (possibly use POST to modify accountStatus value instead of DELETE)
+
+
     // Get all doctors
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<Doctor>> getAllDoctors() {
         return ResponseEntity.ok(doctorService.getAllDoctors());
     }
 
-    // get admin user
-    @GetMapping("/{id}")
-    public ResponseEntity<Doctor> getDoctorById(@PathVariable(value = "id") int id) {
-        return ResponseEntity.ok(doctorService.getDoctorById(id));
+    // Get a doctor by ID
+    @GetMapping("/{doctorID}")
+    public ResponseEntity<Doctor> getDoctorById(@PathVariable(value = "doctorID") int doctorID) {
+        return ResponseEntity.ok(doctorService.getDoctorById(doctorID));
     }
 }

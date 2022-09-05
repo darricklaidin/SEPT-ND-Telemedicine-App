@@ -1,6 +1,6 @@
-package com.example.backend.repository;
+package org.superfive.telemedicine.repository;
 
-import com.example.backend.model.Doctor;
+import org.superfive.telemedicine.model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,4 +12,5 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
     Optional<Doctor> findById(int doctorId);
 
     List<Doctor> findAllBy();
+
 }

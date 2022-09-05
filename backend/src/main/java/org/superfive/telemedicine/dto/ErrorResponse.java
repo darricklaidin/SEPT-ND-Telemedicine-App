@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package org.superfive.telemedicine.dto;
 
 import lombok.Getter;
 
