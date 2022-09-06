@@ -36,7 +36,25 @@ public class DoctorService {
     }
 
     // Get all doctors by specialty
-    public List<Doctor> getAllDoctorsBySpecialty(int specialtyID) {
+    public List<Doctor> getAllDoctorsBySpecialty(Integer specialtyID) {
         return doctorRepository.findAllBySpecialtySpecialtyID(specialtyID);
+    }
+
+    // Get all doctors by status
+    public List<Doctor> getAllDoctorsByStatus(String accountStatus) {
+        return doctorRepository.findAllByAccountStatus(accountStatus);
+    }
+
+    public List<Doctor> getAllDoctorsByFilter(Integer specialtyID, String accountStatus) {
+        if (specialtyID == null && accountStatus == null) {
+            return doctorRepository.findAllBy();
+        }
+        else if (specialtyID == null) {
+            return doctorRepository.findAllByAccountStatus(accountStatus);
+        }
+        else if (accountStatus == null) {
+            return doctorRepository.findAllBySpecialtySpecialtyID(specialtyID);
+        }
+        return doctorRepository.findAllBySpecialtySpecialtyIDAndAccountStatus(specialtyID, accountStatus);
     }
 }
