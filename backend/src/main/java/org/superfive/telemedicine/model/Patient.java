@@ -1,13 +1,9 @@
 package org.superfive.telemedicine.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.util.List;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @AttributeOverride(name = "userID", column = @Column(name = "patientID"))
@@ -19,16 +15,19 @@ public class Patient extends User {
     private String accountStatus;  // ACTIVE or DEACTIVATED
 
     // Appointments
-    @OneToMany(mappedBy = "patient")
-    @JsonIgnore
-    private List<Appointment> appointments;
+    @OneToMany(
+            mappedBy = "patient",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private Set<Appointment> appointments;
 
     public Patient() {
         super();
     }
 
     public Patient(int patientID, String firstName, String lastName, String email, String password,
-                   String accountStatus, List<Appointment> appointments) {
+                   String accountStatus, Set<Appointment> appointments) {
         super(patientID, firstName, lastName, email, password);
         this.accountStatus = accountStatus;
         this.appointments = appointments;
