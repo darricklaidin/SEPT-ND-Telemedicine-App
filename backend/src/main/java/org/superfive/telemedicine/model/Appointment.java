@@ -1,6 +1,5 @@
 package org.superfive.telemedicine.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -23,17 +22,17 @@ public class Appointment {
     @JoinColumn(name = "doctorID", referencedColumnName = "doctorID", nullable = false)
     private Doctor doctor;
 
-//    @ManyToOne
-//    @JoinColumn(nullable = false)
-//    private Patient patient;
+    @ManyToOne
+    @JoinColumn(name= "patientID", referencedColumnName = "patientID", nullable = false)
+    private Patient patient;
 
     public Appointment() {}
 
-    public Appointment(int appointmentID, Calendar appointmentSchedule, Doctor doctor) {
+    public Appointment(int appointmentID, Calendar appointmentSchedule, Doctor doctor, Patient patient) {
         this.appointmentID = appointmentID;
         this.appointmentSchedule = appointmentSchedule;
         this.doctor = doctor;
-//        this.patient = patient;
+        this.patient = patient;
     }
 
 }

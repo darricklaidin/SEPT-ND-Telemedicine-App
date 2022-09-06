@@ -32,15 +32,15 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointmentByID(appointmentID));
     }
 
-//    // Get appointments by date
+    // Get appointments by date
 //        // Date can be defined as <YYYYMMDD> in the URI (e.g. ../api/appointments/d10062002 - meaning 10 June 2002)
 //    @GetMapping("/{date}")
 //    public ResponseEntity<Appointment> getAppointmentsByDate(@PathVariable(value = "date") String date) {
 //        return ResponseEntity.ok(appointmentService.getAppointmentsByDate(date));
 //    }
 //
-//    // Get an appointment by time
-//        // Time can be defined as <HHMMSS> 24 hour format in the URI (e.g. ../api/appointments/t223015 - meaning 22:30:15)
+    // Get an appointment by time
+        // Time can be defined as <HHMMSS> 24 hour format in the URI (e.g. ../api/appointments/t223015 - meaning 22:30:15)
 //    @GetMapping("/{time}")
 //    public ResponseEntity<Appointment> getAppointmentsByTime(@PathVariable(value = "time") String time) {
 //        return ResponseEntity.ok(appointmentService.getAppointmentsByTime(time));
@@ -48,18 +48,18 @@ public class AppointmentController {
 
     // Get appointments where a specific doctor is a participant
     @GetMapping("/doctor/{doctorID}")
-    public List<Appointment> getAppointmentsByDoctorID(@PathVariable(value = "doctorID") int doctorID) {
-        return appointmentService.getAppointmentsByDoctorID(doctorID);
+    public ResponseEntity<List<Appointment>> getAppointmentsByDoctorID(@PathVariable(value = "doctorID") int doctorID) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctorID(doctorID));
     }
 
-//    // Get appointments where a specific patient is a participant
-//    @GetMapping("/{patientID}")
-//    public ResponseEntity<Appointment> getAppointmentsByPatientID(@PathVariable(value = "patientID") int patientID) {
-//        return ResponseEntity.ok(appointmentService.getAppointmentsByPatientID(patientID));
-//    }
-//
-//    // POST Requests ---------------------------------------------------------------------------------------------------
-//
+    // Get appointments where a specific patient is a participant
+    @GetMapping("/patient/{patientID}")
+    public ResponseEntity<List<Appointment>> getAppointmentsByPatientID(@PathVariable(value = "patientID") int patientID) {
+        return ResponseEntity.ok(appointmentService.getAppointmentsByPatientID(patientID));
+    }
+
+    // POST Requests ---------------------------------------------------------------------------------------------------
+
 //    // Add a new appointment
 //    @PostMapping("")
 //    public Appointment addAppointment(@RequestBody Appointment appointment) {

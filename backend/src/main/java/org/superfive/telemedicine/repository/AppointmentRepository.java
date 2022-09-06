@@ -9,10 +9,13 @@ import java.util.List;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Integer> {
-    public List<Appointment> findAllBy();
+    List<Appointment> findAllBy();
 
 //    public List<Appointment> findAllByDate(Calendar calendar);
 
     @Query("FROM Appointment WHERE doctorid = ?1")
-    public List<Appointment> findByDoctorID(int doctorID);
+    List<Appointment> findByDoctorID(int doctorID);
+
+    @Query("FROM Appointment WHERE patientid = ?1")
+    List<Appointment> findByPatientID(int patientID);
 }

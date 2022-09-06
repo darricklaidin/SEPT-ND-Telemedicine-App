@@ -6,7 +6,6 @@ import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -42,6 +41,9 @@ public class AppointmentService {
     }
 
     // Get appointments where a specific patient is a participant
+    public List<Appointment> getAppointmentsByPatientID(int patientID) {
+        return appointmentRepository.findByPatientID(patientID);
+    }
 
     // Add a new appointment
 
