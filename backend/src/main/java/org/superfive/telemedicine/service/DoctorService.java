@@ -35,4 +35,8 @@ public class DoctorService {
         return this.getDoctorByID(doctorID).getAppointments();
     }
 
+    // Get all doctors by specialty
+    public List<Doctor> getAllDoctorsBySpecialty(int specialtyID) {
+        return doctorRepository.findAllBySpecialtySpecialtyID(specialtyID);
+    }
 }

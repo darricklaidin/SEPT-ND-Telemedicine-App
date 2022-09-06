@@ -13,5 +13,5 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
 
     Optional<Doctor> findByUserID(int doctorId);
 
-
+    List<Doctor> findAllBySpecialtySpecialtyID(int specialtyID);
 }

@@ -45,4 +45,12 @@ public class DoctorController {
     public ResponseEntity<Set<Appointment>> getDoctorAppointments(@PathVariable(value = "doctorID") int doctorID) {
         return ResponseEntity.ok(doctorService.getDoctorAppointments(doctorID));
     }
+
+    // Get all doctor's by specialty
+    @GetMapping("/specialty/{specialtyID}")
+    public ResponseEntity<List<Doctor>> getAllDoctorsBySpecialty(@PathVariable(value = "specialtyID") int specialtyID) {
+        return ResponseEntity.ok(doctorService.getAllDoctorsBySpecialty(specialtyID));
+    }
+
+    // Get a doctor's specialty
 }
