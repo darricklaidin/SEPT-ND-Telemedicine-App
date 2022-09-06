@@ -15,7 +15,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     Optional<Appointment> findByAppointmentID(int appointmentID);
 
-    Set<Appointment> findByAppointmentStatus(String appointmentStatus);
+    Set<Appointment> findAllByAppointmentStatus(String appointmentStatus);
 
 //    List<Appointment> findAllByDate(Calendar calendar);
 
