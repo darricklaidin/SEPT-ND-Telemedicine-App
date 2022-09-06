@@ -24,6 +24,7 @@ public class DoctorController {
     // Update doctors
     // DEACTIVATE doctors (possibly use POST to modify accountStatus value instead of DELETE)
 
+    // Get all doctors by filter
     @GetMapping("")
     public ResponseEntity<List<Doctor>> getAllDoctorsByFilter(
             @RequestParam(value = "specialtyID", required = false) Integer specialtyID,
