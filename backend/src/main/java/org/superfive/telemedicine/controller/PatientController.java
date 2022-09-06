@@ -33,7 +33,7 @@ public class PatientController {
     // Get a patient by ID
     @GetMapping("/{patientID}")
     public ResponseEntity<Patient> getPatientByID(@PathVariable(value = "patientID") int patientID) {
-        return ResponseEntity.ok(patientService.getPatientById(patientID));
+        return ResponseEntity.ok(patientService.getPatientByID(patientID));
     }
 
     // Get a patient's appointments

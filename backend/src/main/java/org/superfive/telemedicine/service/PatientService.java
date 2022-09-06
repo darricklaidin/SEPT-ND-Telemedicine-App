@@ -23,13 +23,13 @@ public class PatientService {
         return patientRepository.findAllBy();
     }
 
-    public Patient getPatientById(int patientID) throws ResourceNotFoundException {
+    public Patient getPatientByID(int patientID) throws ResourceNotFoundException {
         return patientRepository.findByUserID(patientID)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient ID", "patientID", patientID));
     }
 
     public Set<Appointment> getPatientAppointments(int patientID) {
-        return this.getPatientById(patientID).getAppointments();
+        return this.getPatientByID(patientID).getAppointments();
     }
 
 }

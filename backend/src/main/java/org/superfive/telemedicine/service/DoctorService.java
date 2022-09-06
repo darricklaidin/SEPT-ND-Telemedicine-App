@@ -25,14 +25,14 @@ public class DoctorService {
     }
 
     // Get a doctor by ID
-    public Doctor getDoctorById(int doctorID) throws ResourceNotFoundException {
+    public Doctor getDoctorByID(int doctorID) throws ResourceNotFoundException {
         return doctorRepository.findByUserID(doctorID)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor ID", "doctorID", doctorID));
     }
 
     // Get a doctor's appointments
     public Set<Appointment> getDoctorAppointments(int doctorID) {
-        return this.getDoctorById(doctorID).getAppointments();
+        return this.getDoctorByID(doctorID).getAppointments();
     }
 
 }

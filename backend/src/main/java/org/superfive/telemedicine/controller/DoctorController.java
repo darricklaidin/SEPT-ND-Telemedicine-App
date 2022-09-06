@@ -36,8 +36,8 @@ public class DoctorController {
 
     // Get a doctor by ID
     @GetMapping("/{doctorID}")
-    public ResponseEntity<Doctor> getDoctorById(@PathVariable(value = "doctorID") int doctorID) {
-        return ResponseEntity.ok(doctorService.getDoctorById(doctorID));
+    public ResponseEntity<Doctor> getDoctorByID(@PathVariable(value = "doctorID") int doctorID) {
+        return ResponseEntity.ok(doctorService.getDoctorByID(doctorID));
     }
 
     // Get a doctor's appointments
