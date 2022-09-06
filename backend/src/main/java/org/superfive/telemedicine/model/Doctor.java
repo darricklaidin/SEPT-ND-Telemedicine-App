@@ -1,5 +1,6 @@
 package org.superfive.telemedicine.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -22,6 +23,7 @@ public class Doctor extends User {
 
     // Doctor's appointments
     // Mapped bi-directionally to Appointment
+    @JsonIgnore
     @OneToMany(
             mappedBy = "doctor",
             fetch = FetchType.LAZY,
