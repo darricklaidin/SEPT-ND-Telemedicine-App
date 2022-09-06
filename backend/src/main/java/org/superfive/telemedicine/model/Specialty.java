@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -14,6 +15,7 @@ public class Specialty {
     private int specialtyID;
 
     @Column(length = 50)
+    @NotBlank
     private String name;
 
     @JsonIgnore

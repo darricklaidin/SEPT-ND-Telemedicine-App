@@ -3,6 +3,7 @@ package org.superfive.telemedicine.model;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -11,7 +12,7 @@ import java.util.Set;
 public class Patient extends User {
     // TODO: Prescribed medicines
 
-
+    @NotBlank
     private String accountStatus;  // ACTIVE or DEACTIVATED
 
     // Appointments

@@ -3,6 +3,7 @@ package org.superfive.telemedicine.model;
 import lombok.Getter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -10,11 +11,13 @@ import java.util.Set;
 @Getter
 public class Doctor extends User {
     // Doctor's specialty
+    @NotBlank
     @ManyToOne
     @JoinColumn(name = "specialtyID", referencedColumnName = "specialtyID", nullable = false)
     private Specialty specialty;
 
     // Controls whether account is ACTIVE or DEACTIVATED
+    @NotBlank
     private String accountStatus;
 
     // Doctor's appointments
