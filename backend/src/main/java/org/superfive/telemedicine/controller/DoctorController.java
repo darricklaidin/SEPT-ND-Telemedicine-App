@@ -1,5 +1,6 @@
 package org.superfive.telemedicine.controller;
 
+import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Doctor;
 import org.superfive.telemedicine.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -26,7 +28,6 @@ public class DoctorController {
     // Update doctors
     // DEACTIVATE doctors (possibly use POST to modify accountStatus value instead of DELETE)
 
-
     // Get all doctors
     @GetMapping("")
     public ResponseEntity<List<Doctor>> getAllDoctors() {
@@ -37,5 +38,11 @@ public class DoctorController {
     @GetMapping("/{doctorID}")
     public ResponseEntity<Doctor> getDoctorById(@PathVariable(value = "doctorID") int doctorID) {
         return ResponseEntity.ok(doctorService.getDoctorById(doctorID));
+    }
+
+    // Get a doctor's appointments
+    @GetMapping("/{doctorID}/appointments")
+    public ResponseEntity<Set<Appointment>> getDoctorAppointments(@PathVariable(value = "doctorID") int doctorID) {
+        return ResponseEntity.ok(doctorService.getDoctorAppointments(doctorID));
     }
 }
