@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.service.AppointmentService;
 
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -18,11 +19,9 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    // GET Requests ---------------------------------------------------------------------------------------------------
-
     // Get all appointments
     @GetMapping("")
-    public ResponseEntity<List<Appointment>> getAllAppointments() {
+    public ResponseEntity<Set<Appointment>> getAllAppointments() {
         return ResponseEntity.ok(appointmentService.getAllAppointments());
     }
 
@@ -32,6 +31,7 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.getAppointmentByID(appointmentID));
     }
 
+    // TODO: Maybe combine date and time -> schedule; think about how one would access each endpoint
     // Get appointments by date
 //        // Date can be defined as <YYYYMMDD> in the URI (e.g. ../api/appointments/d10062002 - meaning 10 June 2002)
 //    @GetMapping("/{date}")
@@ -46,19 +46,27 @@ public class AppointmentController {
 //        return ResponseEntity.ok(appointmentService.getAppointmentsByTime(time));
 //    }
 
-    // Get appointments where a specific doctor is a participant
-    @GetMapping("/doctor/{doctorID}")
-    public ResponseEntity<List<Appointment>> getAppointmentsByDoctorID(@PathVariable(value = "doctorID") int doctorID) {
-        return ResponseEntity.ok(appointmentService.getAppointmentsByDoctorID(doctorID));
+    // Get all appointments by status (i.e. get all upcoming appointments)
+    @GetMapping("/status/{appointmentStatus}")
+    public ResponseEntity<Set<Appointment>> getAllAppointmentsByStatus(
+            @PathVariable(value = "appointmentStatus") String appointmentStatus
+    ) {
+        return ResponseEntity.ok(appointmentService.getAllAppointmentsByStatus(appointmentStatus));
     }
 
-    // Get appointments where a specific patient is a participant
-    @GetMapping("/patient/{patientID}")
-    public ResponseEntity<List<Appointment>> getAppointmentsByPatientID(@PathVariable(value = "patientID") int patientID) {
-        return ResponseEntity.ok(appointmentService.getAppointmentsByPatientID(patientID));
+    // Get an appointment's status
+    @GetMapping("/{appointmentID}/status")
+    public ResponseEntity<String> getAppointmentStatus(@PathVariable(value = "appointmentID") int appointmentID) {
+        return ResponseEntity.ok(appointmentService.getAppointmentStatus(appointmentID));
     }
 
-    // POST Requests ---------------------------------------------------------------------------------------------------
+    // Get appointment participants
+    @GetMapping("/{appointmentID}/participants")
+    public ResponseEntity<Map<String, Integer>> getAppointmentParticipants(
+            @PathVariable(value = "appointmentID") int appointmentID
+    ) {
+        return ResponseEntity.ok(appointmentService.getAppointmentParticipants(appointmentID));
+    }
 
 //    // Add a new appointment
 //    @PostMapping("")
@@ -66,7 +74,6 @@ public class AppointmentController {
 //        return appointmentService.addAppointment(appointment);
 //    }
 //
-//    // PUT (UPDATE) Requests -------------------------------------------------------------------------------------------
 //
 //    // Update (Reschedule) an existing appointment by ID
 //    @PutMapping("/{appointmentID}")
@@ -75,7 +82,6 @@ public class AppointmentController {
 //        return appointmentService.rescheduleAppointmentByID(appointmentID, appointment);
 //    }
 //
-//    // DELETE Requests -------------------------------------------------------------------------------------------------
 //
 //    // Delete (Cancel) an existing appointment by ID
 //    @DeleteMapping("/{appointmentID}")
