@@ -19,8 +19,11 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
-    public List<Patient> getAllPatients() {
-        return patientRepository.findAllBy();
+    public List<Patient> getAllPatientsByFilter(String accountStatus) {
+        if (accountStatus == null) {
+            return patientRepository.findAllBy();
+        }
+        return patientRepository.findAllByAccountStatus(accountStatus);
     }
 
     public Patient getPatientByID(int patientID) throws ResourceNotFoundException {
@@ -31,5 +34,6 @@ public class PatientService {
     public Set<Appointment> getPatientAppointments(int patientID) {
         return this.getPatientByID(patientID).getAppointments();
     }
+
 
 }

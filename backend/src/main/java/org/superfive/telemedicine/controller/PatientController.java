@@ -2,10 +2,7 @@ package org.superfive.telemedicine.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.service.PatientService;
@@ -24,10 +21,12 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    // Get all patients
+    // Get all patients by filter
     @GetMapping("")
-    public ResponseEntity<List<Patient>> getAllPatients() {
-        return ResponseEntity.ok(patientService.getAllPatients());
+    public ResponseEntity<List<Patient>> getAllPatientsByFilter(
+            @RequestParam(value = "accountStatus", required = false) String accountStatus
+    ) {
+        return ResponseEntity.ok(patientService.getAllPatientsByFilter(accountStatus));
     }
 
     // Get a patient by ID
@@ -41,6 +40,9 @@ public class PatientController {
     public ResponseEntity<Set<Appointment>> getPatientAppointments(@PathVariable(value = "patientID") int patientID) {
         return ResponseEntity.ok(patientService.getPatientAppointments(patientID));
     }
+
+
+
 
     // Create patients
     // Update patient
