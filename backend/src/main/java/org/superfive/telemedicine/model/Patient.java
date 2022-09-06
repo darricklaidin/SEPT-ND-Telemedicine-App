@@ -1,5 +1,6 @@
 package org.superfive.telemedicine.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Patient extends User {
     private String accountStatus;  // ACTIVE or DEACTIVATED
 
     // Appointments
+    @JsonIgnore
     @OneToMany(
             mappedBy = "patient",
             cascade = CascadeType.ALL,
