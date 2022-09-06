@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @AttributeOverride(name = "userID", column = @Column(name = "doctorID"))
@@ -22,9 +22,10 @@ public class Doctor extends User {
     // Doctor's appointments
     @OneToMany(mappedBy = "doctor") // Mapped bi-directionally to Appointment
     @JsonIgnore
-    private Set<Appointment> appointments;
+    private List<Appointment> appointments;
+
     public Doctor(int doctorID, String firstName, String lastName, String email, String password, Specialty specialty,
-                  String accountStatus, Set<Appointment> appointments) {
+                  String accountStatus, List<Appointment> appointments) {
         super(doctorID, firstName, lastName, email, password);
         this.specialty = specialty;
         this.accountStatus = accountStatus;
