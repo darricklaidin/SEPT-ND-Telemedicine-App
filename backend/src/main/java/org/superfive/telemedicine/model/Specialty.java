@@ -17,6 +17,10 @@ public class Specialty {
     private String name;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "specialty", fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "specialty",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
     private Set<Doctor> doctors;
 }
