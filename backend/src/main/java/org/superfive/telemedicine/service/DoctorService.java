@@ -1,14 +1,17 @@
 package org.superfive.telemedicine.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Doctor;
 import org.superfive.telemedicine.repository.DoctorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.superfive.telemedicine.utility.comparator.appointment.SortAppointment;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class DoctorService {
@@ -20,41 +23,21 @@ public class DoctorService {
     }
 
     // Get all doctors
-    public List<Doctor> getAllDoctors() {
-        return doctorRepository.findAllBy();
+    public Page<Doctor> getAllDoctorsByFilter(Pageable pageable) {
+        return doctorRepository.findAllBy(pageable);
     }
 
     // Get a doctor by ID
     public Doctor getDoctorByID(int doctorID) throws ResourceNotFoundException {
         return doctorRepository.findByUserID(doctorID)
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor ID", "doctorID", doctorID));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", "doctorID", doctorID));
     }
 
     // Get a doctor's appointments
-    public Set<Appointment> getDoctorAppointments(int doctorID) {
-        return this.getDoctorByID(doctorID).getAppointments();
+    public List<Appointment> getDoctorAppointments(int doctorID, String sortMethod) {
+        List<Appointment> appointments = new ArrayList<>(this.getDoctorByID(doctorID).getAppointments());
+        SortAppointment.sortAppointment(sortMethod, appointments);
+        return appointments;
     }
 
-    // Get all doctors by specialty
-    public List<Doctor> getAllDoctorsBySpecialty(Integer specialtyID) {
-        return doctorRepository.findAllBySpecialtySpecialtyID(specialtyID);
-    }
-
-    // Get all doctors by status
-    public List<Doctor> getAllDoctorsByStatus(String accountStatus) {
-        return doctorRepository.findAllByAccountStatus(accountStatus);
-    }
-
-    public List<Doctor> getAllDoctorsByFilter(Integer specialtyID, String accountStatus) {
-        if (specialtyID == null && accountStatus == null) {
-            return doctorRepository.findAllBy();
-        }
-        else if (specialtyID == null) {
-            return doctorRepository.findAllByAccountStatus(accountStatus);
-        }
-        else if (accountStatus == null) {
-            return doctorRepository.findAllBySpecialtySpecialtyID(specialtyID);
-        }
-        return doctorRepository.findAllBySpecialtySpecialtyIDAndAccountStatus(specialtyID, accountStatus);
-    }
 }

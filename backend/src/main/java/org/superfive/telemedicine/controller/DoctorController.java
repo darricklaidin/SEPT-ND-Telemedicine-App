@@ -1,5 +1,7 @@
 package org.superfive.telemedicine.controller;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Doctor;
@@ -24,13 +26,10 @@ public class DoctorController {
     // Update doctors
     // DEACTIVATE doctors (possibly use POST to modify accountStatus value instead of DELETE)
 
-    // Get all doctors by filter
+    // TODO: Get all doctors by filter
     @GetMapping("")
-    public ResponseEntity<List<Doctor>> getAllDoctorsByFilter(
-            @RequestParam(value = "specialtyID", required = false) Integer specialtyID,
-            @RequestParam(value = "accountStatus", required = false) String accountStatus
-    ) {
-        return ResponseEntity.ok(doctorService.getAllDoctorsByFilter(specialtyID, accountStatus));
+    public ResponseEntity<Page<Doctor>> getAllDoctorsByFilter(Pageable pageable) {
+        return ResponseEntity.ok(doctorService.getAllDoctorsByFilter(pageable));
     }
 
     // Get a doctor by ID
@@ -41,8 +40,11 @@ public class DoctorController {
 
     // Get a doctor's appointments
     @GetMapping("/{doctorID}/appointments")
-    public ResponseEntity<Set<Appointment>> getDoctorAppointments(@PathVariable(value = "doctorID") int doctorID) {
-        return ResponseEntity.ok(doctorService.getDoctorAppointments(doctorID));
+    public ResponseEntity<List<Appointment>> getDoctorAppointments(
+            @PathVariable(value = "doctorID") int doctorID,
+            @RequestParam(value = "sort", required = false) String sortMethod
+            ) {
+        return ResponseEntity.ok(doctorService.getDoctorAppointments(doctorID, sortMethod));
     }
 
 }
