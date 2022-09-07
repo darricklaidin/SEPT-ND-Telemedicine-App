@@ -24,7 +24,7 @@ public class PatientController {
 
     // TODO: Get all patients by filter
     @GetMapping("")
-    public ResponseEntity<Page<Patient>> getAllPatients(Pageable pageable) {
+    public ResponseEntity<Page<Patient>> getAllPatientsByFilter(Pageable pageable) {
         return ResponseEntity.ok(patientService.getAllPatients(pageable));
     }
 
