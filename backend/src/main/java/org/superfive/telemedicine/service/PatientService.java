@@ -1,14 +1,17 @@
 package org.superfive.telemedicine.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.repository.PatientRepository;
+import org.superfive.telemedicine.utility.comparator.appointment.SortAppointment;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class PatientService {
@@ -19,21 +22,19 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
-    public List<Patient> getAllPatientsByFilter(String accountStatus) {
-        if (accountStatus == null) {
-            return patientRepository.findAllBy();
-        }
-        return patientRepository.findAllByAccountStatus(accountStatus);
+    public Page<Patient> getAllPatients(Pageable pageable) {
+        return patientRepository.findAllBy(pageable);
     }
 
     public Patient getPatientByID(int patientID) throws ResourceNotFoundException {
         return patientRepository.findByUserID(patientID)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient ID", "patientID", patientID));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "patientID", patientID));
     }
 
-    public Set<Appointment> getPatientAppointments(int patientID) {
-        return this.getPatientByID(patientID).getAppointments();
+    public List<Appointment> getPatientAppointments(int patientID, String sortMethod) {
+        List<Appointment> appointments = new ArrayList<>(this.getPatientByID(patientID).getAppointments());
+        SortAppointment.sortAppointment(sortMethod, appointments);
+        return appointments;
     }
-
 
 }

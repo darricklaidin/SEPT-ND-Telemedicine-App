@@ -1,6 +1,8 @@
 package org.superfive.telemedicine.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.superfive.telemedicine.model.Appointment;
@@ -8,7 +10,6 @@ import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.service.PatientService;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/patients")
@@ -21,12 +22,10 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    // Get all patients by filter
+    // TODO: Get all patients by filter
     @GetMapping("")
-    public ResponseEntity<List<Patient>> getAllPatientsByFilter(
-            @RequestParam(value = "accountStatus", required = false) String accountStatus
-    ) {
-        return ResponseEntity.ok(patientService.getAllPatientsByFilter(accountStatus));
+    public ResponseEntity<Page<Patient>> getAllPatients(Pageable pageable) {
+        return ResponseEntity.ok(patientService.getAllPatients(pageable));
     }
 
     // Get a patient by ID
@@ -36,12 +35,14 @@ public class PatientController {
     }
 
     // Get a patient's appointments
+    // Sort by appointmentID, appointmentSchedule
     @GetMapping("/{patientID}/appointments")
-    public ResponseEntity<Set<Appointment>> getPatientAppointments(@PathVariable(value = "patientID") int patientID) {
-        return ResponseEntity.ok(patientService.getPatientAppointments(patientID));
+    public ResponseEntity<List<Appointment>> getPatientAppointments(
+            @PathVariable(value = "patientID") int patientID,
+            @RequestParam(value = "sort", required = false) String sortMethod
+    ) {
+        return ResponseEntity.ok(patientService.getPatientAppointments(patientID, sortMethod));
     }
-
-
 
 
     // Create patients
