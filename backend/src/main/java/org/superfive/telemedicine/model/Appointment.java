@@ -1,7 +1,7 @@
 package org.superfive.telemedicine.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -13,12 +13,12 @@ import java.util.Calendar;
  */
 @Entity
 @Getter
+@Setter
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int appointmentID;
 
-    @NotBlank
     private Calendar appointmentSchedule;
     @NotBlank
     private String appointmentStatus;  // ONGOING, COMPLETED, UPCOMING

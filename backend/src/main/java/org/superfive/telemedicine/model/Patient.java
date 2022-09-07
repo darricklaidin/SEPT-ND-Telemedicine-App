@@ -2,6 +2,7 @@ package org.superfive.telemedicine.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -10,6 +11,7 @@ import java.util.Set;
 @Entity
 @AttributeOverride(name = "userID", column = @Column(name = "patientID"))
 @Getter
+@Setter
 public class Patient extends User {
     // TODO: Prescribed medicines
 
@@ -20,8 +22,9 @@ public class Patient extends User {
     @JsonIgnore
     @OneToMany(
             mappedBy = "patient",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY
+            orphanRemoval = true
     )
     private Set<Appointment> appointments;
 
