@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     container:
-      image: java:11
+      image: eclipse-temurin:11
 
     services:
       mysql:
