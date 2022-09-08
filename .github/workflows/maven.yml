@@ -10,6 +10,21 @@ on:
     branches: [ "main" , "dev" , "feature/SEPT-38_manage-patient-appointments" ]
 
 jobs:
+  container-job:
+    runs-on: ubuntu-latest
+
+    container:
+      image: java:11
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+
   build:
 
     runs-on: ubuntu-latest
@@ -24,3 +39,6 @@ jobs:
         cache: maven
     - name: Build and Test with Maven
       run: mvn -B package --file backend/pom.xml
+      env:
+        MYSQL_HOST: mysql
+        MYSQL_PORT: ${{ job.services.mysql.ports[3306] }}
