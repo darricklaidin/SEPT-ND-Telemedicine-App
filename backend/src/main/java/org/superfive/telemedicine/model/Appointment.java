@@ -5,10 +5,11 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.Calendar;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 /**
- * The Appointment entity stores a Calendar instance (date and time) of the appointment, a doctor participant, and a
+ * The Appointment entity stores a its id, start date time, end date time, a doctor participant, and a
  * patient participant.
  */
 @Entity
@@ -19,9 +20,12 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int appointmentID;
 
-    private Calendar appointmentSchedule;
+    @NotNull
+    private LocalDateTime startDateTime;
+    @NotNull
+    private LocalDateTime endDateTime;
     @NotBlank
-    private String appointmentStatus;  // ONGOING, COMPLETED, UPCOMING
+    private String appointmentStatus;  // UPCOMING, ONGOING, COMPLETED
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(
@@ -41,10 +45,11 @@ public class Appointment {
 
     public Appointment() {}
 
-    public Appointment(int appointmentID, Calendar appointmentSchedule, String appointmentStatus, Doctor doctor,
+    public Appointment(int appointmentID, LocalDateTime startDateTime, LocalDateTime endDateTime, String appointmentStatus, Doctor doctor,
                        Patient patient) {
         this.appointmentID = appointmentID;
-        this.appointmentSchedule = appointmentSchedule;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.appointmentStatus = appointmentStatus;
         this.doctor = doctor;
         this.patient = patient;

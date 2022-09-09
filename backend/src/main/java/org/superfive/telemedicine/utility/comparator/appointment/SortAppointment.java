@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class SortAppointment {
+    private SortAppointment(){}
+
     public static void sortAppointment(String sortMethod, List<Appointment> appointments) {
         if (sortMethod != null) {
             String sortAttribute = sortMethod.split(",")[0];
@@ -24,8 +26,14 @@ public class SortAppointment {
                     Collections.reverse(appointments);
                 }
             }
-            else if (sortAttribute.equalsIgnoreCase("appointmentSchedule")) {
-                appointments.sort(new AppointmentScheduleComparator());
+            else if (sortAttribute.equalsIgnoreCase("startDateTime")) {
+                appointments.sort(new StartDateTimeComparator());
+                if (sortDirection.equalsIgnoreCase("Desc")) {
+                    Collections.reverse(appointments);
+                }
+            }
+            else if (sortAttribute.equalsIgnoreCase("endDateTime")) {
+                appointments.sort(new EndDateTimeComparator());
                 if (sortDirection.equalsIgnoreCase("Desc")) {
                     Collections.reverse(appointments);
                 }

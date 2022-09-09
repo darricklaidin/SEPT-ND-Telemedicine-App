@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.superfive.telemedicine.exception.InvalidScheduleException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.repository.AppointmentRepository;
+
+import java.time.LocalDateTime;
 
 
 @Service
@@ -30,9 +33,15 @@ public class AppointmentService {
     }
 
     // Add a new appointment
-    public Appointment addAppointment(Appointment appointment) {
-        appointmentRepository.save(appointment);
+    public Appointment addAppointment(Appointment appointment) throws InvalidScheduleException {
+        LocalDateTime startDateTime = appointment.getStartDateTime();
+        LocalDateTime endDateTime = appointment.getEndDateTime();
 
+        if (startDateTime.isAfter(endDateTime)) {
+            throw new InvalidScheduleException(startDateTime, endDateTime);
+        }
+
+        appointmentRepository.save(appointment);
         return appointment;
     }
 
@@ -41,7 +50,8 @@ public class AppointmentService {
         Appointment newAppointment = this.getAppointmentByID(appointmentID);
 
         // Update attributes
-        newAppointment.setAppointmentSchedule(updatedAppointment.getAppointmentSchedule());
+        newAppointment.setStartDateTime(updatedAppointment.getStartDateTime());
+        newAppointment.setEndDateTime(updatedAppointment.getEndDateTime());
         newAppointment.setAppointmentStatus(updatedAppointment.getAppointmentStatus());
         newAppointment.setDoctor(updatedAppointment.getDoctor());
         newAppointment.setPatient(updatedAppointment.getPatient());

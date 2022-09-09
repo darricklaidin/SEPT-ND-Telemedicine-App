@@ -28,4 +28,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponse error = new ErrorResponse("Record Not Found", details);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(InvalidScheduleException.class)
+    public final ResponseEntity<Object> handleInvalidScheduleException(InvalidScheduleException ex, WebRequest request) {
+        List<String> details = new ArrayList<>();
+        details.add(ex.getLocalizedMessage());
+        ErrorResponse error = new ErrorResponse("Schedule is invalid", details);
+        return new ResponseEntity<>(error, HttpStatus.NOT_ACCEPTABLE);
+    }
 }
