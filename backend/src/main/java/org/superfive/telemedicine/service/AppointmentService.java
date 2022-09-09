@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.superfive.telemedicine.exception.IDAlreadyExistsException;
 import org.superfive.telemedicine.exception.InvalidScheduleException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
@@ -33,7 +34,17 @@ public class AppointmentService {
     }
 
     // Add a new appointment
-    public Appointment addAppointment(Appointment appointment) throws InvalidScheduleException {
+    public Appointment addAppointment(Appointment appointment) throws IDAlreadyExistsException, InvalidScheduleException {
+        // Ensure appointment ID does not already exist
+        try {
+            this.getAppointmentByID(appointment.getAppointmentID());
+            throw new IDAlreadyExistsException(appointment.getAppointmentID());
+        }
+        catch(ResourceNotFoundException ex) {
+            // appointment ID does not exist so new appointment can be added
+        }
+
+        // Ensure start date time comes before end date time
         LocalDateTime startDateTime = appointment.getStartDateTime();
         LocalDateTime endDateTime = appointment.getEndDateTime();
 
@@ -46,10 +57,20 @@ public class AppointmentService {
     }
 
     // Reschedule an existing appointment by ID
-    public Appointment rescheduleAppointmentByID(int appointmentID, Appointment updatedAppointment) {
+    public Appointment rescheduleAppointmentByID(int appointmentID, Appointment updatedAppointment) throws
+            InvalidScheduleException {
         Appointment newAppointment = this.getAppointmentByID(appointmentID);
 
         // Update attributes
+
+        // Ensure start date time comes before end date time
+        LocalDateTime startDateTime = updatedAppointment.getStartDateTime();
+        LocalDateTime endDateTime = updatedAppointment.getEndDateTime();
+
+        if (startDateTime.isAfter(endDateTime)) {
+            throw new InvalidScheduleException(startDateTime, endDateTime);
+        }
+
         newAppointment.setStartDateTime(updatedAppointment.getStartDateTime());
         newAppointment.setEndDateTime(updatedAppointment.getEndDateTime());
         newAppointment.setAppointmentStatus(updatedAppointment.getAppointmentStatus());
