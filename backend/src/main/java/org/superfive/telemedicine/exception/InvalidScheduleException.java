@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 
-@ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE)
+@ResponseStatus(value = HttpStatus.BAD_REQUEST)
 @Getter
 public class InvalidScheduleException extends RuntimeException {
 
