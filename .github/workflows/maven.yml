@@ -23,7 +23,7 @@ jobs:
           MYSQL_HOST: localhost
           MYSQL_PORT: ${{ job.services.mysql-service.ports[3306] }}
         ports:
-          - 3306:3307
+          - 3307:3306
         options: --health-cmd="mysqladmin ping" --health-interval=1s --health-timeout=10s --health-retries=10
 
     steps:
