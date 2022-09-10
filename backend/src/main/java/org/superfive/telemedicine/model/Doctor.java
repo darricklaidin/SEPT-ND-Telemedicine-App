@@ -34,6 +34,16 @@ public class Doctor extends User {
     )
     private Set<Appointment> appointments;
 
+    // Doctor's availability
+    @JsonIgnore
+    @OneToMany(
+            mappedBy = "doctor",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Availability> availabilities;
+
     public Doctor(int doctorID, String firstName, String lastName, String email, String password, Specialty specialty,
                   String accountStatus, Set<Appointment> appointments) {
         super(doctorID, firstName, lastName, email, password);

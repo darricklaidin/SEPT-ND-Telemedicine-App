@@ -6,9 +6,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
+import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.model.Doctor;
 import org.superfive.telemedicine.repository.DoctorRepository;
-import org.superfive.telemedicine.utility.comparator.appointment.SortAppointment;
+import org.superfive.telemedicine.utility.SortUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,14 @@ public class DoctorService {
     // Get a doctor's appointments
     public List<Appointment> getDoctorAppointments(int doctorID, String sortMethod) {
         List<Appointment> appointments = new ArrayList<>(this.getDoctorByID(doctorID).getAppointments());
-        SortAppointment.sortAppointment(sortMethod, appointments);
+        SortUtility.sortAppointments(sortMethod, appointments);
         return appointments;
     }
 
+    // Get a doctor's availabilities
+    public List<Availability> getDoctorAvailabilities(int doctorID, String sortMethod) {
+        List<Availability> availabilities = new ArrayList<>(this.getDoctorByID(doctorID).getAvailabilities());
+        SortUtility.sortAvailabilities(sortMethod, availabilities);
+        return availabilities;
+    }
 }
