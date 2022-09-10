@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
@@ -16,13 +16,13 @@ public class Availability {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int availabilityID;
 
-    @NotEmpty
+    @NotNull
     private DayOfWeek dayOfWeek;
 
-    @NotEmpty
+    @NotNull
     private LocalTime startTime;
 
-    @NotEmpty
+    @NotNull
     private LocalTime endTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
