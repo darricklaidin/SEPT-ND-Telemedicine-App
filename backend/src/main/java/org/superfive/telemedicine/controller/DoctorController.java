@@ -26,10 +26,10 @@ public class DoctorController {
     // Update doctors
     // DEACTIVATE doctors (possibly use POST to modify accountStatus value instead of DELETE)
 
-    // TODO: Get all doctors by filter
+    // Get all doctors
     @GetMapping("")
-    public ResponseEntity<Page<Doctor>> getAllDoctorsByFilter(Pageable pageable) {
-        return ResponseEntity.ok(doctorService.getAllDoctorsByFilter(pageable));
+    public ResponseEntity<Page<Doctor>> getAllDoctors(Pageable pageable) {
+        return ResponseEntity.ok(doctorService.getAllDoctors(pageable));
     }
 
     // Get a doctor by ID

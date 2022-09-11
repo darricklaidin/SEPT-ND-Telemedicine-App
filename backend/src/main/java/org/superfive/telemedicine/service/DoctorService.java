@@ -24,7 +24,7 @@ public class DoctorService {
     }
 
     // Get all doctors
-    public Page<Doctor> getAllDoctorsByFilter(Pageable pageable) {
+    public Page<Doctor> getAllDoctors(Pageable pageable) {
         return doctorRepository.findAllBy(pageable);
     }
 

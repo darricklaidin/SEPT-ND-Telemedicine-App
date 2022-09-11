@@ -22,9 +22,9 @@ public class PatientController {
         this.patientService = patientService;
     }
 
-    // TODO: Get all patients by filter
+    // Get all patients
     @GetMapping("")
-    public ResponseEntity<Page<Patient>> getAllPatientsByFilter(Pageable pageable) {
+    public ResponseEntity<Page<Patient>> getAllPatients(Pageable pageable) {
         return ResponseEntity.ok(patientService.getAllPatients(pageable));
     }
 

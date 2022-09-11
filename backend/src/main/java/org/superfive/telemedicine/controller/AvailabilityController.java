@@ -18,10 +18,10 @@ public class AvailabilityController {
         this.availabilityService = availabilityService;
     }
 
-    // TODO: Get all availabilities by filter
+    // Get all availabilities
     @GetMapping("")
-    public ResponseEntity<Page<Availability>> getAllAvailabilitiesByFilter(Pageable pageable) {
-        return ResponseEntity.ok(availabilityService.getAllAvailabilitiesByFilter(pageable));
+    public ResponseEntity<Page<Availability>> getAllAvailabilities(Pageable pageable) {
+        return ResponseEntity.ok(availabilityService.getAllAvailabilities(pageable));
     }
 
     // Get availability by id

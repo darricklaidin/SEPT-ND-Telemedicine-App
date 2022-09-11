@@ -19,7 +19,7 @@ public class AvailabilityService {
         this.availabilityRepository = availabilityRepository;
     }
 
-    public Page<Availability> getAllAvailabilitiesByFilter(Pageable pageable) {
+    public Page<Availability> getAllAvailabilities(Pageable pageable) {
         return availabilityRepository.findAllBy(pageable);
     }
 
