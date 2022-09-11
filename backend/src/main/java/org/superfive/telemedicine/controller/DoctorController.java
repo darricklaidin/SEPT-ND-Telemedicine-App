@@ -68,4 +68,10 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.updateDoctor(doctorID, doctor));
     }
 
+    // Delete doctors
+    @DeleteMapping("/{doctorID}")
+    public ResponseEntity<Doctor> deleteDoctor(@PathVariable(value = "doctorID") int doctorID) {
+        return ResponseEntity.ok(doctorService.deleteDoctor(doctorID));
+    }
+
 }

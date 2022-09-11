@@ -71,21 +71,39 @@ public class DoctorService {
         // Ensure doctor exists
         Doctor updatedDoctor = this.getDoctorByID(doctorID);
 
-        updatedDoctor.setFirstName(Objects.isNull(doctor.getFirstName()) ?
+        updatedDoctor.setFirstName(
+                Objects.isNull(doctor.getFirstName()) ?
                 updatedDoctor.getFirstName() : doctor.getFirstName());
-        updatedDoctor.setLastName(Objects.isNull(doctor.getLastName()) ?
+
+        updatedDoctor.setLastName(
+                Objects.isNull(doctor.getLastName()) ?
                 updatedDoctor.getLastName() : doctor.getLastName());
-        updatedDoctor.setEmail(Objects.isNull(doctor.getEmail()) ?
+
+        updatedDoctor.setEmail(
+                Objects.isNull(doctor.getEmail()) ?
                 updatedDoctor.getEmail() : doctor.getEmail());
-        updatedDoctor.setPassword(Objects.isNull(doctor.getPassword()) ?
+
+        updatedDoctor.setPassword(
+                Objects.isNull(doctor.getPassword()) ?
                 updatedDoctor.getPassword() : doctor.getPassword());
-        updatedDoctor.setSpecialty(Objects.isNull(doctor.getSpecialty()) ?
+
+        updatedDoctor.setSpecialty(
+                Objects.isNull(doctor.getSpecialty()) ?
                 updatedDoctor.getSpecialty() : doctor.getSpecialty());
-        updatedDoctor.setAccountStatus(Objects.isNull(doctor.getAccountStatus()) ?
+
+        updatedDoctor.setAccountStatus(
+                Objects.isNull(doctor.getAccountStatus()) ?
                 updatedDoctor.getAccountStatus() : doctor.getAccountStatus());
 
         doctorRepository.save(updatedDoctor);
 
         return updatedDoctor;
+    }
+
+    // Delete an existing doctor
+    public Doctor deleteDoctor(int doctorID) {
+        Doctor deletedDoctor = this.getDoctorByID(doctorID);
+        doctorRepository.deleteById(doctorID);
+        return deletedDoctor;
     }
 }
