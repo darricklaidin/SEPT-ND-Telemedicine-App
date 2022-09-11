@@ -10,7 +10,10 @@ on:
       - "develop"
       - "feature/**"
   pull_request:
-    branches: [ "main" , "develop" , "feature/SEPT-38_manage-patient-appointments" ]
+    branches:
+      - "main"
+      - "develop"
+      - "feature/**"
 
 jobs:
 
