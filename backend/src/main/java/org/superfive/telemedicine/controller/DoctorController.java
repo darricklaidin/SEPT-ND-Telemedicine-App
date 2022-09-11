@@ -22,10 +22,6 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
-    // Create doctors
-    // Update doctors
-    // DEACTIVATE doctors (possibly use POST to modify accountStatus value instead of DELETE)
-
     // Get all doctors
     @GetMapping("")
     public ResponseEntity<Page<Doctor>> getAllDoctors(Pageable pageable) {
@@ -56,5 +52,20 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.getDoctorAvailabilities(doctorID, sortMethod));
     }
 
+    // Create doctors
+    @PostMapping("")
+    public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
+        return ResponseEntity.ok(doctorService.createDoctor(doctor));
+    }
+
+    // Update doctors
+    // Deactivate doctors (use PUT to modify accountStatus value instead of DELETE)
+    @PutMapping("/{doctorID}")
+    public ResponseEntity<Doctor> updateDoctor(
+            @RequestBody Doctor doctor,
+            @PathVariable(value = "doctorID") int doctorID
+    ) {
+        return ResponseEntity.ok(doctorService.updateDoctor(doctorID, doctor));
+    }
 
 }

@@ -14,7 +14,6 @@ import java.util.Set;
 @Setter
 public class Doctor extends User {
     // Doctor's specialty
-    @NotBlank
     @ManyToOne
     @JoinColumn(name = "specialtyID", referencedColumnName = "specialtyID", nullable = false)
     private Specialty specialty;
@@ -45,12 +44,14 @@ public class Doctor extends User {
     private Set<Availability> availabilities;
 
     public Doctor(int doctorID, String firstName, String lastName, String email, String password, Specialty specialty,
-                  String accountStatus, Set<Appointment> appointments) {
+                  String accountStatus, Set<Availability> availabilities, Set<Appointment> appointments) {
         super(doctorID, firstName, lastName, email, password);
         this.specialty = specialty;
         this.accountStatus = accountStatus;
+        this.availabilities = availabilities;
         this.appointments = appointments;
     }
+
     public Doctor() {
         super();
     }
