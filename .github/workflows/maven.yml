@@ -1,0 +1,40 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" , "develop" , "feature/SEPT-38_manage-patient-appointments" ]
+  pull_request:
+    branches: [ "main" , "develop" , "feature/SEPT-38_manage-patient-appointments" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: tele-med
+          MYSQL_HOST: localhost
+          MYSQL_PORT: 3307
+        ports:
+          - 3307:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=1s --health-timeout=10s --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Verify tele-med DB exists
+        run: mysql --host 127.0.0.1 --port 3307 -uroot -e "SHOW DATABASES LIKE 'tele-med'"
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build and Test with Maven
+        run: mvn -B package --file backend/pom.xml
