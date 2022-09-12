@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.superfive.telemedicine.exception.IDAlreadyExistsException;
-import org.superfive.telemedicine.exception.InvalidScheduleException;
+import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
+import org.superfive.telemedicine.exception.InvalidDateTimeException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.repository.AppointmentRepository;
@@ -34,11 +34,11 @@ public class AppointmentService {
     }
 
     // Add a new appointment
-    public Appointment addAppointment(Appointment appointment) throws IDAlreadyExistsException, InvalidScheduleException {
+    public Appointment addAppointment(Appointment appointment) throws ResourceAlreadyExistsException, InvalidDateTimeException {
         // Ensure appointment ID does not already exist
         try {
             this.getAppointmentByID(appointment.getAppointmentID());
-            throw new IDAlreadyExistsException(appointment.getAppointmentID());
+            throw new ResourceAlreadyExistsException("Appointment", "appointmentID", appointment.getAppointmentID());
         }
         catch(ResourceNotFoundException ex) {
             // appointment ID does not exist so new appointment can be added
@@ -49,7 +49,7 @@ public class AppointmentService {
         LocalDateTime endDateTime = appointment.getEndDateTime();
 
         if (startDateTime.isAfter(endDateTime)) {
-            throw new InvalidScheduleException(startDateTime, endDateTime);
+            throw new InvalidDateTimeException(startDateTime, endDateTime);
         }
 
         appointmentRepository.save(appointment);
@@ -58,7 +58,7 @@ public class AppointmentService {
 
     // Reschedule an existing appointment by ID
     public Appointment rescheduleAppointmentByID(int appointmentID, Appointment updatedAppointment) throws
-            InvalidScheduleException {
+            InvalidDateTimeException {
         Appointment newAppointment = this.getAppointmentByID(appointmentID);
 
         // Update attributes
@@ -68,7 +68,7 @@ public class AppointmentService {
         LocalDateTime endDateTime = updatedAppointment.getEndDateTime();
 
         if (startDateTime.isAfter(endDateTime)) {
-            throw new InvalidScheduleException(startDateTime, endDateTime);
+            throw new InvalidDateTimeException(startDateTime, endDateTime);
         }
 
         newAppointment.setStartDateTime(updatedAppointment.getStartDateTime());

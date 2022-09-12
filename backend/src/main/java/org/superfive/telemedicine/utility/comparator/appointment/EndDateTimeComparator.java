@@ -7,9 +7,9 @@ import java.util.Comparator;
 
 public class EndDateTimeComparator implements Comparator<Appointment> {
     public int compare(Appointment appointment1, Appointment appointment2) {
-        LocalDateTime appointment1Schedule = appointment1.getEndDateTime();
-        LocalDateTime appointment2Schedule = appointment2.getEndDateTime();
+        LocalDateTime appointment1EndDateTime = appointment1.getEndDateTime();
+        LocalDateTime appointment2EndDateTime = appointment2.getEndDateTime();
 
-        return appointment1Schedule.compareTo(appointment2Schedule);
+        return appointment1EndDateTime.compareTo(appointment2EndDateTime);
     }
 }

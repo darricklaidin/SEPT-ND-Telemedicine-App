@@ -8,7 +8,7 @@ import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.repository.PatientRepository;
-import org.superfive.telemedicine.utility.comparator.appointment.SortAppointment;
+import org.superfive.telemedicine.utility.SortUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class PatientService {
 
     public List<Appointment> getPatientAppointments(int patientID, String sortMethod) {
         List<Appointment> appointments = new ArrayList<>(this.getPatientByID(patientID).getAppointments());
-        SortAppointment.sortAppointment(sortMethod, appointments);
+        SortUtility.sortAppointments(sortMethod, appointments);
         return appointments;
     }
 

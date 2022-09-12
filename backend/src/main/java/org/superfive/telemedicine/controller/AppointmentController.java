@@ -18,7 +18,7 @@ public class AppointmentController {
         this.appointmentService = appointmentService;
     }
 
-    // TODO: Get all appointments by filter (CRITERIA API)
+    // Get all appointments
     @GetMapping("")
     public ResponseEntity<Page<Appointment>> getAllAppointments(Pageable pageable) {
         return ResponseEntity.ok(appointmentService.getAllAppointments(pageable));
