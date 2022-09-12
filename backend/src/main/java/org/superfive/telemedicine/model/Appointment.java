@@ -6,7 +6,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * The Appointment entity stores a its id, start date time, end date time, a doctor participant, and a
@@ -21,9 +22,11 @@ public class Appointment {
     private int appointmentID;
 
     @NotNull
-    private LocalDateTime startDateTime;
+    private LocalDate date;
     @NotNull
-    private LocalDateTime endDateTime;
+    private LocalTime startTime;
+    @NotNull
+    private LocalTime endTime;
     @NotBlank
     private String appointmentStatus;  // UPCOMING, ONGOING, COMPLETED
 
@@ -45,14 +48,15 @@ public class Appointment {
 
     public Appointment() {}
 
-    public Appointment(int appointmentID, LocalDateTime startDateTime, LocalDateTime endDateTime, String appointmentStatus, Doctor doctor,
-                       Patient patient) {
+
+    public Appointment(int appointmentID, LocalDate date, LocalTime startTime, LocalTime endTime,
+                       String appointmentStatus, Doctor doctor, Patient patient) {
         this.appointmentID = appointmentID;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
         this.appointmentStatus = appointmentStatus;
         this.doctor = doctor;
         this.patient = patient;
     }
-
 }

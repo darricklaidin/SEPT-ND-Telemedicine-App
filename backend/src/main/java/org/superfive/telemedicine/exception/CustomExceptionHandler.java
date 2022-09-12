@@ -29,11 +29,11 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(InvalidDateTimeException.class)
-    public final ResponseEntity<Object> handleInvalidScheduleException(InvalidDateTimeException ex, WebRequest request) {
+    @ExceptionHandler(InvalidTimeException.class)
+    public final ResponseEntity<Object> handleInvalidTimeException(InvalidTimeException ex, WebRequest request) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorResponse error = new ErrorResponse("Invalid Schedule", details);
+        ErrorResponse error = new ErrorResponse("Invalid time range", details);
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
