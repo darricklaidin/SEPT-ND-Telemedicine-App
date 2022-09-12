@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.superfive.telemedicine.exception.InvalidTimeException;
 import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
-import org.superfive.telemedicine.exception.InvalidDateTimeException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 @Service
@@ -34,7 +34,7 @@ public class AppointmentService {
     }
 
     // Add a new appointment
-    public Appointment addAppointment(Appointment appointment) throws ResourceAlreadyExistsException, InvalidDateTimeException {
+    public Appointment addAppointment(Appointment appointment) throws ResourceAlreadyExistsException, InvalidTimeException {
         // Ensure appointment ID does not already exist
         try {
             this.getAppointmentByID(appointment.getAppointmentID());
@@ -44,12 +44,12 @@ public class AppointmentService {
             // appointment ID does not exist so new appointment can be added
         }
 
-        // Ensure start date time comes before end date time
-        LocalDateTime startDateTime = appointment.getStartDateTime();
-        LocalDateTime endDateTime = appointment.getEndDateTime();
+        // Ensure start time comes before end time
+        LocalTime startTime = appointment.getStartTime();
+        LocalTime endTime = appointment.getEndTime();
 
-        if (startDateTime.isAfter(endDateTime)) {
-            throw new InvalidDateTimeException(startDateTime, endDateTime);
+        if (startTime.isAfter(endTime)) {
+            throw new InvalidTimeException(startTime, endTime);
         }
 
         appointmentRepository.save(appointment);
@@ -57,25 +57,39 @@ public class AppointmentService {
     }
 
     // Reschedule an existing appointment by ID
-    public Appointment rescheduleAppointmentByID(int appointmentID, Appointment updatedAppointment) throws
-            InvalidDateTimeException {
+    public Appointment rescheduleAppointment(int appointmentID, Appointment updatedAppointment) throws
+            InvalidTimeException {
         Appointment newAppointment = this.getAppointmentByID(appointmentID);
 
-        // Update attributes
-
-        // Ensure start date time comes before end date time
-        LocalDateTime startDateTime = updatedAppointment.getStartDateTime();
-        LocalDateTime endDateTime = updatedAppointment.getEndDateTime();
-
-        if (startDateTime.isAfter(endDateTime)) {
-            throw new InvalidDateTimeException(startDateTime, endDateTime);
+        // Check if attributes are null before updating
+        if (updatedAppointment.getDate() != null) {
+            newAppointment.setDate(updatedAppointment.getDate());
         }
 
-        newAppointment.setStartDateTime(updatedAppointment.getStartDateTime());
-        newAppointment.setEndDateTime(updatedAppointment.getEndDateTime());
-        newAppointment.setAppointmentStatus(updatedAppointment.getAppointmentStatus());
-        newAppointment.setDoctor(updatedAppointment.getDoctor());
-        newAppointment.setPatient(updatedAppointment.getPatient());
+        if (updatedAppointment.getStartTime() != null) {
+            newAppointment.setStartTime(updatedAppointment.getStartTime());
+        }
+
+        if (updatedAppointment.getEndTime() != null) {
+            newAppointment.setEndTime(updatedAppointment.getEndTime());
+        }
+
+        if (updatedAppointment.getAppointmentStatus() != null) {
+            newAppointment.setAppointmentStatus(updatedAppointment.getAppointmentStatus());
+        }
+
+        if (updatedAppointment.getDoctor() != null) {
+            newAppointment.setDoctor(updatedAppointment.getDoctor());
+        }
+
+        if (updatedAppointment.getPatient() != null) {
+            newAppointment.setPatient(updatedAppointment.getPatient());
+        }
+
+        // Ensure times will still be valid after update
+        if (newAppointment.getStartTime().isAfter(newAppointment.getEndTime())) {
+            throw new InvalidTimeException(newAppointment.getStartTime(), newAppointment.getEndTime());
+        }
 
         appointmentRepository.save(newAppointment);
 
@@ -83,7 +97,7 @@ public class AppointmentService {
     }
 
     // Cancel an existing appointment by ID
-    public Integer cancelAppointmentByID(int appointmentID) {
+    public Integer cancelAppointment(int appointmentID) {
         appointmentRepository.deleteById(appointmentID);
 
         return appointmentID;

@@ -52,19 +52,32 @@ public class AvailabilityService {
     public Availability rescheduleAvailability(Availability availability, int availabilityID) throws InvalidTimeException {
         Availability updatedAvailability = this.getAvailabilityByID(availabilityID);
 
-        // Ensure times are still valid after update
-        if (availability.getStartTime().isAfter(availability.getEndTime())) {
-            throw new InvalidTimeException(availability.getStartTime(), availability.getEndTime());
+        // Check if attributes are null before updating
+        System.out.println(availability.getDayOfWeek());
+        if (availability.getDayOfWeek() != null) {
+            updatedAvailability.setDayOfWeek(availability.getDayOfWeek());
         }
 
-        updatedAvailability.setDayOfWeek(availability.getDayOfWeek());
-        updatedAvailability.setStartTime(availability.getStartTime());
-        updatedAvailability.setEndTime(availability.getEndTime());
-        updatedAvailability.setDoctor(availability.getDoctor());
+        if (availability.getStartTime() != null) {
+            updatedAvailability.setStartTime(availability.getStartTime());
+        }
+
+        if (availability.getEndTime() != null) {
+            updatedAvailability.setEndTime(availability.getEndTime());
+        }
+
+        if (availability.getDoctor() != null) {
+            updatedAvailability.setDoctor(availability.getDoctor());
+        }
+
+        // Ensure times will still be valid after update
+        if (updatedAvailability.getStartTime().isAfter(updatedAvailability.getEndTime())) {
+            throw new InvalidTimeException(updatedAvailability.getStartTime(), updatedAvailability.getEndTime());
+        }
 
         availabilityRepository.save(updatedAvailability);
 
-        return availability;
+        return updatedAvailability;
 
     }
 

@@ -71,29 +71,29 @@ public class DoctorService {
         // Ensure doctor exists
         Doctor updatedDoctor = this.getDoctorByID(doctorID);
 
-        updatedDoctor.setFirstName(
-                Objects.isNull(doctor.getFirstName()) ?
-                updatedDoctor.getFirstName() : doctor.getFirstName());
+        if (doctor.getFirstName() != null) {
+            updatedDoctor.setFirstName(doctor.getFirstName());
+        }
 
-        updatedDoctor.setLastName(
-                Objects.isNull(doctor.getLastName()) ?
-                updatedDoctor.getLastName() : doctor.getLastName());
+        if (doctor.getLastName() != null) {
+            updatedDoctor.setLastName(doctor.getLastName());
+        }
 
-        updatedDoctor.setEmail(
-                Objects.isNull(doctor.getEmail()) ?
-                updatedDoctor.getEmail() : doctor.getEmail());
+        if (doctor.getEmail() != null) {
+            updatedDoctor.setEmail(doctor.getEmail());
+        }
 
-        updatedDoctor.setPassword(
-                Objects.isNull(doctor.getPassword()) ?
-                updatedDoctor.getPassword() : doctor.getPassword());
+        if (doctor.getPassword() != null) {
+            updatedDoctor.setPassword(doctor.getPassword());
+        }
 
-        updatedDoctor.setSpecialty(
-                Objects.isNull(doctor.getSpecialty()) ?
-                updatedDoctor.getSpecialty() : doctor.getSpecialty());
+        if (doctor.getSpecialty() != null) {
+            updatedDoctor.setSpecialty(doctor.getSpecialty());
+        }
 
-        updatedDoctor.setAccountStatus(
-                Objects.isNull(doctor.getAccountStatus()) ?
-                updatedDoctor.getAccountStatus() : doctor.getAccountStatus());
+        if (doctor.getAccountStatus() != null) {
+            updatedDoctor.setAccountStatus(doctor.getAccountStatus());
+        }
 
         doctorRepository.save(updatedDoctor);
 
