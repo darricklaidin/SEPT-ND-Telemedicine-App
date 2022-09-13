@@ -33,7 +33,7 @@ public class DoctorService {
     // Get a doctor by ID
     public Doctor getDoctorByID(int doctorID) throws ResourceNotFoundException {
         return doctorRepository.findByUserID(doctorID)
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor", "doctorID", doctorID));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", "userID", doctorID));
     }
 
     // Get a doctor's appointments
@@ -55,7 +55,7 @@ public class DoctorService {
         // Ensure doctor ID does not already exist
         try {
             this.getDoctorByID(newDoctor.getUserID());
-            throw new ResourceAlreadyExistsException("Doctor", "doctorID", newDoctor.getUserID());
+            throw new ResourceAlreadyExistsException("Doctor", "userID", newDoctor.getUserID());
         }
         catch (ResourceNotFoundException exception) {
             // Doctor id does not exist, continue...
@@ -87,15 +87,16 @@ public class DoctorService {
             updatedDoctor.setPassword(doctor.getPassword());
         }
 
+        if (doctor.getDateOfBirth() != null) {
+            updatedDoctor.setDateOfBirth(doctor.getDateOfBirth());
+        }
+
         if (doctor.getSpecialty() != null) {
             updatedDoctor.setSpecialty(doctor.getSpecialty());
         }
 
         if (doctor.getAccountStatus() != null) {
             updatedDoctor.setAccountStatus(doctor.getAccountStatus());
-        }
-        if (doctor.getDateOfBirth() != null) {
-            updatedDoctor.setDateOfBirth(doctor.getDateOfBirth());
         }
 
         doctorRepository.save(updatedDoctor);
@@ -106,7 +107,9 @@ public class DoctorService {
     // Delete an existing doctor
     public Doctor deleteDoctor(int doctorID) {
         Doctor deletedDoctor = this.getDoctorByID(doctorID);
+
         doctorRepository.deleteById(doctorID);
+
         return deletedDoctor;
     }
 }
