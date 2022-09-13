@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
+import org.superfive.telemedicine.model.Doctor;
 import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.repository.PatientRepository;
 import org.superfive.telemedicine.utility.SortUtility;
@@ -28,7 +30,7 @@ public class PatientService {
 
     public Patient getPatientByID(int patientID) throws ResourceNotFoundException {
         return patientRepository.findByUserID(patientID)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient", "patientID", patientID));
+                .orElseThrow(() -> new ResourceNotFoundException("Patient", "userID", patientID));
     }
 
     public List<Appointment> getPatientAppointments(int patientID, String sortMethod) {
@@ -37,4 +39,59 @@ public class PatientService {
         return appointments;
     }
 
+    public Patient createPatient(Patient patient) throws ResourceAlreadyExistsException {
+        // Ensure that patient id does not already exist
+        try {
+            this.getPatientByID(patient.getUserID());
+            throw new ResourceAlreadyExistsException("Patient", "userID", patient.getUserID());
+        }
+        catch (ResourceNotFoundException exception) {
+            // Patient does not already exist, continue...
+        }
+
+        patientRepository.save(patient);
+
+        return patient;
+    }
+
+    public Patient updatePatient(int patientID, Patient patient) throws ResourceAlreadyExistsException {
+        // Check that patient exists
+        Patient oldPatient = this.getPatientByID(patientID);
+
+        if (patient.getFirstName() != null) {
+            oldPatient.setFirstName(patient.getFirstName());
+        }
+
+        if (patient.getLastName() != null) {
+            oldPatient.setLastName(patient.getLastName());
+        }
+
+        if (patient.getEmail() != null) {
+            oldPatient.setEmail(patient.getEmail());
+        }
+
+        if (patient.getPassword() != null) {
+            oldPatient.setPassword(patient.getPassword());
+        }
+
+        if (patient.getDateOfBirth() != null) {
+            oldPatient.setDateOfBirth(patient.getDateOfBirth());
+        }
+
+        if (patient.getAccountStatus() != null) {
+            oldPatient.setAccountStatus(patient.getAccountStatus());
+        }
+
+        patientRepository.save(oldPatient);
+
+        return oldPatient;
+    }
+
+    public Patient deletePatient(int patientID) {
+        Patient deletedPatient = this.getPatientByID(patientID);
+
+        patientRepository.deleteById(patientID);
+
+        return deletedPatient;
+    }
 }

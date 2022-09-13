@@ -44,8 +44,26 @@ public class PatientController {
         return ResponseEntity.ok(patientService.getPatientAppointments(patientID, sortMethod));
     }
 
+    // Create a new patient
+    @PostMapping("")
+    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
+        return ResponseEntity.ok(patientService.createPatient(patient));
+    }
 
-    // Create patients
     // Update patient
-    // Deactivate patient (possibly use POST to modify accountStatus value instead of DELETE)
+    // Deactivate patient (use PUT to modify accountStatus value instead of DELETE)
+    @PutMapping("/{patientID}")
+    public ResponseEntity<Patient> updatePatient(
+            @PathVariable(value = "patientID") int patientID,
+            @RequestBody Patient patient
+    ) {
+        return ResponseEntity.ok(patientService.updatePatient(patientID, patient));
+    }
+
+    // Delete patient by id
+    @DeleteMapping("/{patientID}")
+    public ResponseEntity<Patient> deletePatient(@PathVariable(value = "patientID") int patientID) {
+        return ResponseEntity.ok(patientService.deletePatient(patientID));
+    }
+
 }
