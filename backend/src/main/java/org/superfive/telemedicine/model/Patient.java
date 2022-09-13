@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -32,9 +33,9 @@ public class Patient extends User {
         super();
     }
 
-    public Patient(int patientID, String firstName, String lastName, String email, String password,
+    public Patient(int patientID, String firstName, String lastName, String email, String password, LocalDate dateOfBirth,
                    String accountStatus, Set<Appointment> appointments) {
-        super(patientID, firstName, lastName, email, password);
+        super(patientID, firstName, lastName, email, password, dateOfBirth);
         this.accountStatus = accountStatus;
         this.appointments = appointments;
     }

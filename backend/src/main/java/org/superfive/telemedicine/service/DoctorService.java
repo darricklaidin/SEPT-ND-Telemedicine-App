@@ -94,6 +94,9 @@ public class DoctorService {
         if (doctor.getAccountStatus() != null) {
             updatedDoctor.setAccountStatus(doctor.getAccountStatus());
         }
+        if (doctor.getDateOfBirth() != null) {
+            updatedDoctor.setDateOfBirth(doctor.getDateOfBirth());
+        }
 
         doctorRepository.save(updatedDoctor);
 

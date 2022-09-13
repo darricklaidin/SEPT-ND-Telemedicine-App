@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @MappedSuperclass
 @Getter
@@ -31,14 +33,19 @@ public class User {
     @Column(nullable = false, length = 60)
     private String password;
 
+    @NotNull
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
+
     public User() {
     }
 
-    public User(int userID, String firstName, String lastName, String email, String password) {
+    public User(int userID, String firstName, String lastName, String email, String password, LocalDate dateOfBirth) {
         this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.dateOfBirth = dateOfBirth;
     }
 }
