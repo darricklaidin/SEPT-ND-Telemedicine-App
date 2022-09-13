@@ -18,7 +18,7 @@ public class Specialty {
 
     @Column(length = 50)
     @NotBlank
-    private String name;
+    private String specialtyName;
 
     @JsonIgnore
     @OneToMany(
@@ -27,4 +27,13 @@ public class Specialty {
             orphanRemoval = true
     )
     private Set<Doctor> doctors;
+
+    public Specialty(int specialtyID, String specialtyName, Set<Doctor> doctors) {
+        this.specialtyID = specialtyID;
+        this.specialtyName = specialtyName;
+        this.doctors = doctors;
+    }
+
+    public Specialty() {
+    }
 }
