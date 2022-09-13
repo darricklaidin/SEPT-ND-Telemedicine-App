@@ -47,7 +47,7 @@ public class AvailabilityController {
 
     // Delete availability
     @DeleteMapping("/{availabilityID}")
-    public ResponseEntity<Integer> deleteAvailability(@PathVariable(value = "availabilityID") int availabilityID) {
+    public ResponseEntity<Availability> deleteAvailability(@PathVariable(value = "availabilityID") int availabilityID) {
         return ResponseEntity.ok(availabilityService.deleteAvailability(availabilityID));
     }
 }

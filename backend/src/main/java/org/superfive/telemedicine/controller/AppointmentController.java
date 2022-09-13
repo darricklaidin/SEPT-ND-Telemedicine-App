@@ -45,7 +45,7 @@ public class AppointmentController {
 
     // Delete (Cancel) an existing appointment by ID
     @DeleteMapping("/{appointmentID}")
-    public ResponseEntity<Integer> cancelAppointment(@PathVariable(value = "appointmentID") int appointmentID) {
+    public ResponseEntity<Appointment> cancelAppointment(@PathVariable(value = "appointmentID") int appointmentID) {
         return ResponseEntity.ok(appointmentService.cancelAppointment(appointmentID));
     }
 }

@@ -81,9 +81,11 @@ public class AvailabilityService {
 
     }
 
-    public Integer deleteAvailability(int availabilityID) {
+    public Availability deleteAvailability(int availabilityID) {
+        Availability deletedAvailability = this.getAvailabilityByID(availabilityID);
+
         availabilityRepository.deleteById(availabilityID);
 
-        return availabilityID;
+        return deletedAvailability;
     }
 }

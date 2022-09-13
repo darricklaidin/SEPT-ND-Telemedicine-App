@@ -380,10 +380,12 @@ public class AppointmentService {
     }
 
     // Cancel an existing appointment by ID
-    public Integer cancelAppointment(int appointmentID) {
+    public Appointment cancelAppointment(int appointmentID) {
+        Appointment deletedAppointment = this.getAppointmentByID(appointmentID);
+
         appointmentRepository.deleteById(appointmentID);
 
-        return appointmentID;
+        return deletedAppointment;
     }
 
 
