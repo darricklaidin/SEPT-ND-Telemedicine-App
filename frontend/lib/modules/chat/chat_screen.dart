@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
 
-/// Displays chat UI
+import '../../data/messages_data.dart';
+
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  ChatScreen({Key? key}) : super(key: key);
 
   static const routeName = '/chat';
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+    });
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -78,88 +84,10 @@ class ChatScreen extends StatelessWidget {
             height: 24,
             color: Colors.black38,
           ),
+          _buildChatScrollView(),
           const SizedBox(
-            height: 10,
+            height: 5,
           ),
-          BubbleNormal(
-            bubbleRadius: 10,
-            delivered: true,
-            seen: true,
-            text:
-                'hello, doctor, i believe i have the \ncoronavirus as i am experiencing \nmild symtoms, what do i do?',
-            color: const Color.fromARGB(255, 30, 119, 253),
-            tail: true,
-            textStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-            ),
-            sent: true,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          BubbleNormal(
-            bubbleRadius: 10,
-            text:
-                'I\'m here for you, don\'t worry. \nWhat symptoms are you \nexperiencing?',
-            color: Colors.blueGrey.shade50,
-            tail: true,
-            textStyle: const TextStyle(
-              color: Colors.black45,
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
-            isSender: false,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          BubbleNormal(
-            bubbleRadius: 10,
-            delivered: true,
-            seen: true,
-            text: 'fever\ndry cough\ntiredness\nsore throat',
-            color: const Color.fromARGB(255, 30, 119, 253),
-            tail: true,
-            textStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-            ),
-            sent: true,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          BubbleNormal(
-            bubbleRadius: 10,
-            text:
-                'oh so sorry about that. do\nyou have any underlying\ndiseases?',
-            color: Colors.blueGrey.shade50,
-            tail: true,
-            textStyle: const TextStyle(
-              color: Colors.black45,
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
-            isSender: false,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          BubbleNormal(
-            bubbleRadius: 10,
-            delivered: true,
-            seen: true,
-            text: 'oh no',
-            color: const Color.fromARGB(255, 30, 119, 253),
-            tail: true,
-            textStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-            ),
-            sent: true,
-          ),
-          const Spacer(),
           Container(
             color: Colors.blueGrey.shade50,
             padding: const EdgeInsets.all(8),
@@ -208,4 +136,75 @@ class ChatScreen extends StatelessWidget {
       ),
     );
   }
+
+  // Widget _buildChatScrollView() {
+  //   return Expanded(
+  //       child: ListView(
+  //     scrollDirection: Axis.vertical,
+  //     shrinkWrap: true,
+  //     reverse: true,
+  //     children: _buildMessages(),
+  //   ));
+  // }
+
+  Expanded _buildChatScrollView() {
+    return Expanded(
+        child: ListView.builder(
+            scrollDirection: Axis.vertical,
+            controller: _scrollController,
+            shrinkWrap: true,
+            itemCount: messageList.length,
+            // prototypeItem: ListTile(
+            //   title: Text(items.first),
+            // ),
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: BubbleNormal(
+                  bubbleRadius: 10,
+                  delivered: true,
+                  seen: true,
+                  text: messageList[index].text,
+                  color: messageList[index].isSender
+                      ? const Color.fromARGB(255, 30, 119, 253)
+                      : Colors.blueGrey.shade50,
+                  tail: true,
+                  textStyle: TextStyle(
+                      color: messageList[index].isSender
+                          ? Colors.white
+                          : Colors.black45,
+                      fontSize: 13,
+                      fontWeight: messageList[index].isSender
+                          ? FontWeight.normal
+                          : FontWeight.bold),
+                  sent: true,
+                  isSender: messageList[index].isSender,
+                ),
+              );
+            }));
+  }
+
+  // return messageList.map(
+  //   (msg) {
+  //     return Padding(
+  //       padding: const EdgeInsets.only(top: 20),
+  //       child: BubbleNormal(
+  //         bubbleRadius: 10,
+  //         delivered: true,
+  //         seen: true,
+  //         text: msg.text,
+  //         color: msg.isSender
+  //             ? const Color.fromARGB(255, 30, 119, 253)
+  //             : Colors.blueGrey.shade50,
+  //         tail: true,
+  //         textStyle: TextStyle(
+  //             color: msg.isSender ? Colors.white : Colors.black45,
+  //             fontSize: 13,
+  //             fontWeight: msg.isSender ? FontWeight.normal : FontWeight.bold),
+  //         sent: true,
+  //         isSender: msg.isSender,
+  //       ),
+  //     );
+  //   },
+  // ).toList();
 }

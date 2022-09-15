@@ -74,7 +74,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   List<Widget> _buildScreens() {
-    return [const HomeScreen(), const ChatScreen()];
+    return [const HomeScreen(), ChatScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
