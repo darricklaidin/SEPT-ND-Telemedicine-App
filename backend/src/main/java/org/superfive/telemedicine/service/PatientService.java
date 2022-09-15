@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
-import org.superfive.telemedicine.model.Doctor;
 import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.repository.PatientRepository;
 import org.superfive.telemedicine.utility.SortUtility;

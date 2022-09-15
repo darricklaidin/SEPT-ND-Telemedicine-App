@@ -14,7 +14,6 @@ import org.superfive.telemedicine.utility.SortUtility;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class DoctorService {

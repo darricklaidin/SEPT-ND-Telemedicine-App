@@ -10,8 +10,6 @@ import org.superfive.telemedicine.repository.SpecialtyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.Objects;
-
 @Service
 public class SpecialtyService {
     private final SpecialtyRepository specialtyRepository;
