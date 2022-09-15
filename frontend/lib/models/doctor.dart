@@ -1,4 +1,4 @@
-import 'package:frontend/src/models/user.dart';
+import 'package:frontend/models/user.dart';
 
 class Doctor extends User {
   final String specialty;

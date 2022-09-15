@@ -1,20 +1,95 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
-import 'src/app.dart';
-import 'src/modules/settings/settings_controller.dart';
-import 'src/modules/settings/settings_service.dart';
+import 'config/themes/light_palette.dart';
+import 'modules/home/home_screen.dart';
 
-void main() async {
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
-  final settingsController = SettingsController(SettingsService());
+void main() {
+  runApp(const MyApp());
+}
 
-  // Load the user's preferred theme while the splash screen is displayed.
-  // This prevents a sudden theme change when the app is first displayed.
-  await settingsController.loadSettings();
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsView.
-  runApp(MyApp(settingsController: settingsController));
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  PersistentTabController? _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PersistentTabController(initialIndex: 0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'SEPT-ND-Telemedicine-App',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: LightPalette.primary,
+            secondary: LightPalette.secondary,
+          ),
+        ),
+        home: Builder(builder: (BuildContext context) {
+          return PersistentTabView(
+            context,
+            controller: _controller,
+            screens: _buildScreens(),
+            items: _navBarsItems(),
+            confineInSafeArea: true,
+            backgroundColor: Colors.white, // Default is Colors.white.
+            handleAndroidBackButtonPress: true, // Default is true.
+            resizeToAvoidBottomInset:
+                true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+            stateManagement: true, // Default is true.
+            hideNavigationBarWhenKeyboardShows:
+                true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+            decoration: NavBarDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              colorBehindNavBar: Colors.white,
+            ),
+            popAllScreensOnTapOfSelectedTab: true,
+            popActionScreens: PopActionScreensType.all,
+            itemAnimationProperties: const ItemAnimationProperties(
+              // Navigation Bar's items animation properties.
+              duration: Duration(milliseconds: 200),
+              curve: Curves.ease,
+            ),
+            screenTransitionAnimation: const ScreenTransitionAnimation(
+              // Screen transition animation on change of selected tab.
+              animateTabTransition: true,
+              curve: Curves.ease,
+              duration: Duration(milliseconds: 200),
+            ),
+            navBarStyle: NavBarStyle
+                .style1, // Choose the nav bar style with this property.
+          );
+        }));
+  }
+
+  List<Widget> _buildScreens() {
+    return [const HomeScreen(), const HomeScreen()];
+  }
+
+  List<PersistentBottomNavBarItem> _navBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.home),
+        title: ("Home"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.settings),
+        title: ("Settings"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+      ),
+    ];
+  }
 }

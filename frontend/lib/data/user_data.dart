@@ -1,4 +1,4 @@
-import 'package:frontend/src/models/doctor.dart';
+import '../models/doctor.dart';
 
 List<Doctor> doctorList = [
   Doctor(
