@@ -27,7 +27,9 @@ public class Appointment {
     private LocalTime startTime;
     @NotNull
     private LocalTime endTime;
+    
     @NotBlank
+    @Column(length = 9)
     private String appointmentStatus;  // UPCOMING, ONGOING, COMPLETED
 
     @ManyToOne(fetch = FetchType.EAGER)
