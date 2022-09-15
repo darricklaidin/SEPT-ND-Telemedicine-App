@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:chat_bubbles/chat_bubbles.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../data/messages_data.dart';
+import '../home/home_screen.dart';
 
 class ChatScreen extends StatelessWidget {
   ChatScreen({Key? key}) : super(key: key);
 
-  static const routeName = '/chat';
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -18,15 +19,16 @@ class ChatScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: _buildTitleBar(),
-        leading: const Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-          size: 20,
-        ),
-      ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: _buildTitleBar(),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, size: 20, color: Colors.black),
+            onPressed: () => pushNewScreen(
+              context,
+              screen: const HomeScreen(),
+            ),
+          )),
       body: Column(
         children: [
           _buildTopBar(),

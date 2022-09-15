@@ -84,12 +84,18 @@ class _MyAppState extends State<MyApp> {
         title: ("Home"),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/',
+        ),
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.chat_bubble),
         title: ("Chat"),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/chat',
+        ),
       ),
     ];
   }
