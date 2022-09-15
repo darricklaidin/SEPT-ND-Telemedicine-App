@@ -4,6 +4,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'config/themes/light_palette.dart';
 import 'modules/home/home_screen.dart';
+import 'modules/chat/chat_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -73,7 +74,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   List<Widget> _buildScreens() {
-    return [const HomeScreen(), const HomeScreen()];
+    return [const HomeScreen(), const ChatScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -85,8 +86,8 @@ class _MyAppState extends State<MyApp> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.settings),
-        title: ("Settings"),
+        icon: const Icon(CupertinoIcons.chat_bubble),
+        title: ("Chat"),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
