@@ -12,6 +12,8 @@ import java.util.Optional;
 @Repository
 public interface SpecialtyRepository extends JpaRepository<Specialty, Integer> {
     Page<Specialty> findAllBy(Pageable pageable);
+
     Optional<Specialty> findBySpecialtyID(int specialtyId);
-    //Created by Java, returns an Optional Object. Hence need to use Optional.
+
+    Optional<Specialty> findBySpecialtyName(String specialtyName);
 }

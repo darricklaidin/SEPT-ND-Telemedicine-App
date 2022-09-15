@@ -5,17 +5,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.superfive.telemedicine.dto.SpecialtyDTO;
 import org.superfive.telemedicine.model.Specialty;
 import org.superfive.telemedicine.service.SpecialtyService;
 
 @RestController
 @RequestMapping("/api/specialties")
 public class SpecialtyController {
-
     private final SpecialtyService specialtyService;
 
     @Autowired
-    public SpecialtyController(SpecialtyService specialtyService) {this.specialtyService = specialtyService;}
+    public SpecialtyController(SpecialtyService specialtyService) {
+        this.specialtyService = specialtyService;
+    }
 
     // Get all specialties
     @GetMapping("")
@@ -31,17 +33,17 @@ public class SpecialtyController {
 
     // Create specialties
     @PostMapping("")
-    public ResponseEntity<Specialty> createSpecialty(@RequestBody Specialty specialty) {
-        return ResponseEntity.ok(specialtyService.createSpecialty(specialty));
+    public ResponseEntity<Specialty> createSpecialty(@RequestBody SpecialtyDTO specialtyDTO) {
+        return ResponseEntity.ok(specialtyService.createSpecialty(specialtyDTO));
     }
 
     // Update specialties
     @PutMapping("/{specialtyID}")
     public ResponseEntity<Specialty> updateSpecialty(
-            @RequestBody Specialty specialty,
+            @RequestBody SpecialtyDTO specialtyDTO,
             @PathVariable(value = "specialtyID") int specialtyID
     ) {
-        return ResponseEntity.ok(specialtyService.updateSpecialty(specialtyID, specialty));
+        return ResponseEntity.ok(specialtyService.updateSpecialty(specialtyID, specialtyDTO));
     }
 
     // Delete specialties
@@ -49,5 +51,4 @@ public class SpecialtyController {
     public ResponseEntity<Specialty> deleteSpecialty(@PathVariable(value = "specialtyID") int specialtyID) {
         return ResponseEntity.ok(specialtyService.deleteSpecialty(specialtyID));
     }
-
 }

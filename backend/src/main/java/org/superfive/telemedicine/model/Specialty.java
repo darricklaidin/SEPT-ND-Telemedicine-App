@@ -28,10 +28,8 @@ public class Specialty {
     )
     private Set<Doctor> doctors;
 
-    public Specialty(int specialtyID, String specialtyName, Set<Doctor> doctors) {
-        this.specialtyID = specialtyID;
+    public Specialty(String specialtyName) {
         this.specialtyName = specialtyName;
-        this.doctors = doctors;
     }
 
     public Specialty() {
