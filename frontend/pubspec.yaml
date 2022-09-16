@@ -37,6 +37,7 @@ dependencies:
 
   persistent_bottom_nav_bar: any
 
+  chat_bubbles: any
 
 dev_dependencies:
   flutter_test:
