@@ -2,11 +2,9 @@ package org.superfive.telemedicine.utility;
 
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Availability;
-import org.superfive.telemedicine.utility.comparator.appointment.AppointmentIDComparator;
-import org.superfive.telemedicine.utility.comparator.appointment.EndDateTimeComparator;
-import org.superfive.telemedicine.utility.comparator.appointment.PatientIDComparator;
-import org.superfive.telemedicine.utility.comparator.appointment.StartDateTimeComparator;
-import org.superfive.telemedicine.utility.comparator.availability.*;
+import org.superfive.telemedicine.utility.comparator.appointment.*;
+import org.superfive.telemedicine.utility.comparator.availability.AvailabilityIDComparator;
+import org.superfive.telemedicine.utility.comparator.availability.DayOfWeekComparator;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,11 +26,14 @@ public class SortUtility {
             if (sortAttribute.equalsIgnoreCase("appointmentID")) {
                 appointments.sort(new AppointmentIDComparator());
             }
-            else if (sortAttribute.equalsIgnoreCase("startDateTime")) {
-                appointments.sort(new StartDateTimeComparator());
+            else if (sortAttribute.equalsIgnoreCase("date")) {
+                appointments.sort(new DateComparator());
             }
-            else if (sortAttribute.equalsIgnoreCase("endDateTime")) {
-                appointments.sort(new EndDateTimeComparator());
+            else if (sortAttribute.equalsIgnoreCase("startTime")) {
+                appointments.sort(new StartTimeComparator());
+            }
+            else if (sortAttribute.equalsIgnoreCase("endTime")) {
+                appointments.sort(new EndTimeComparator());
             }
             else if (sortAttribute.equalsIgnoreCase("doctorID")) {
                 appointments.sort(new org.superfive.telemedicine.utility.comparator.appointment.DoctorIDComparator());
@@ -65,13 +66,13 @@ public class SortUtility {
                 availabilities.sort(new DayOfWeekComparator());
             }
             else if (sortAttribute.equalsIgnoreCase("startTime")) {
-                availabilities.sort(new StartTimeComparator());
+                availabilities.sort(new org.superfive.telemedicine.utility.comparator.availability.StartTimeComparator());
             }
             else if (sortAttribute.equalsIgnoreCase("endTime")) {
-                availabilities.sort(new EndTimeComparator());
+                availabilities.sort(new org.superfive.telemedicine.utility.comparator.availability.EndTimeComparator());
             }
             else if (sortAttribute.equalsIgnoreCase("doctorID")) {
-                availabilities.sort(new DoctorIDComparator());
+                availabilities.sort(new org.superfive.telemedicine.utility.comparator.availability.DoctorIDComparator());
             }
 
             if (sortDirection.equalsIgnoreCase("Desc")) {

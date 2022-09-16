@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -43,9 +44,9 @@ public class Doctor extends User {
     )
     private Set<Availability> availabilities;
 
-    public Doctor(int doctorID, String firstName, String lastName, String email, String password, Specialty specialty,
-                  String accountStatus, Set<Availability> availabilities, Set<Appointment> appointments) {
-        super(doctorID, firstName, lastName, email, password);
+    public Doctor(int doctorID, String firstName, String lastName, String email, String password, LocalDate dateOfBirth,
+                  Specialty specialty, String accountStatus, Set<Availability> availabilities, Set<Appointment> appointments) {
+        super(doctorID, firstName, lastName, email, password, dateOfBirth);
         this.specialty = specialty;
         this.accountStatus = accountStatus;
         this.availabilities = availabilities;

@@ -14,7 +14,6 @@ import org.superfive.telemedicine.utility.SortUtility;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class DoctorService {
@@ -33,7 +32,7 @@ public class DoctorService {
     // Get a doctor by ID
     public Doctor getDoctorByID(int doctorID) throws ResourceNotFoundException {
         return doctorRepository.findByUserID(doctorID)
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor", "doctorID", doctorID));
+                .orElseThrow(() -> new ResourceNotFoundException("Doctor", "userID", doctorID));
     }
 
     // Get a doctor's appointments
@@ -55,7 +54,7 @@ public class DoctorService {
         // Ensure doctor ID does not already exist
         try {
             this.getDoctorByID(newDoctor.getUserID());
-            throw new ResourceAlreadyExistsException("Doctor", "doctorID", newDoctor.getUserID());
+            throw new ResourceAlreadyExistsException("Doctor", "userID", newDoctor.getUserID());
         }
         catch (ResourceNotFoundException exception) {
             // Doctor id does not exist, continue...
@@ -71,29 +70,33 @@ public class DoctorService {
         // Ensure doctor exists
         Doctor updatedDoctor = this.getDoctorByID(doctorID);
 
-        updatedDoctor.setFirstName(
-                Objects.isNull(doctor.getFirstName()) ?
-                updatedDoctor.getFirstName() : doctor.getFirstName());
+        if (doctor.getFirstName() != null) {
+            updatedDoctor.setFirstName(doctor.getFirstName());
+        }
 
-        updatedDoctor.setLastName(
-                Objects.isNull(doctor.getLastName()) ?
-                updatedDoctor.getLastName() : doctor.getLastName());
+        if (doctor.getLastName() != null) {
+            updatedDoctor.setLastName(doctor.getLastName());
+        }
 
-        updatedDoctor.setEmail(
-                Objects.isNull(doctor.getEmail()) ?
-                updatedDoctor.getEmail() : doctor.getEmail());
+        if (doctor.getEmail() != null) {
+            updatedDoctor.setEmail(doctor.getEmail());
+        }
 
-        updatedDoctor.setPassword(
-                Objects.isNull(doctor.getPassword()) ?
-                updatedDoctor.getPassword() : doctor.getPassword());
+        if (doctor.getPassword() != null) {
+            updatedDoctor.setPassword(doctor.getPassword());
+        }
 
-        updatedDoctor.setSpecialty(
-                Objects.isNull(doctor.getSpecialty()) ?
-                updatedDoctor.getSpecialty() : doctor.getSpecialty());
+        if (doctor.getDateOfBirth() != null) {
+            updatedDoctor.setDateOfBirth(doctor.getDateOfBirth());
+        }
 
-        updatedDoctor.setAccountStatus(
-                Objects.isNull(doctor.getAccountStatus()) ?
-                updatedDoctor.getAccountStatus() : doctor.getAccountStatus());
+        if (doctor.getSpecialty() != null) {
+            updatedDoctor.setSpecialty(doctor.getSpecialty());
+        }
+
+        if (doctor.getAccountStatus() != null) {
+            updatedDoctor.setAccountStatus(doctor.getAccountStatus());
+        }
 
         doctorRepository.save(updatedDoctor);
 
@@ -103,7 +106,9 @@ public class DoctorService {
     // Delete an existing doctor
     public Doctor deleteDoctor(int doctorID) {
         Doctor deletedDoctor = this.getDoctorByID(doctorID);
+
         doctorRepository.deleteById(doctorID);
+
         return deletedDoctor;
     }
 }

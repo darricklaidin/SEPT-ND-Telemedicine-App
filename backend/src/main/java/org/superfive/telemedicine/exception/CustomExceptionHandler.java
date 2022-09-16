@@ -15,33 +15,41 @@ import java.util.List;
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<Object> handleAllExceptions(Exception ex, WebRequest request) {
-        List<String> details = new ArrayList<>();
-        details.add(ex.getLocalizedMessage());
-        ErrorResponse error = new ErrorResponse("Server Error", details);
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        return handleException(ex, "Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public final ResponseEntity<Object> handleRecordNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        List<String> details = new ArrayList<>();
-        details.add(ex.getLocalizedMessage());
-        ErrorResponse error = new ErrorResponse("Record Not Found", details);
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        return handleException(ex, "Invalid Time Range", HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(InvalidDateTimeException.class)
-    public final ResponseEntity<Object> handleInvalidScheduleException(InvalidDateTimeException ex, WebRequest request) {
-        List<String> details = new ArrayList<>();
-        details.add(ex.getLocalizedMessage());
-        ErrorResponse error = new ErrorResponse("Invalid Schedule", details);
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(InvalidTimeException.class)
+    public final ResponseEntity<Object> handleInvalidTimeException(InvalidTimeException ex, WebRequest request) {
+        return handleException(ex, "Invalid Time Range", HttpStatus.BAD_REQUEST);
+
     }
 
     @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public final ResponseEntity<Object> handleIDAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
+    public final ResponseEntity<Object> handleIDAlreadyExistsException(ResourceAlreadyExistsException ex,
+                                                                       WebRequest request) {
+        return handleException(ex, "Record Already Exists", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EntityTimeClashException.class)
+    public final ResponseEntity<Object> handleEntityTimeClashException(EntityTimeClashException ex, WebRequest request) {
+        return handleException(ex, "Time Clash", HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DoctorUnavailableException.class)
+    public final ResponseEntity<Object> handleDoctorUnavailableException(DoctorUnavailableException ex,
+                                                                         WebRequest request) {
+        return handleException(ex, "Doctor Unavailable", HttpStatus.BAD_REQUEST);
+    }
+
+    private final ResponseEntity<Object> handleException(Exception ex, String msg, HttpStatus httpStatus) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
-        ErrorResponse error = new ErrorResponse("Record Already Exists", details);
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        ErrorResponse error = new ErrorResponse(msg, details);
+        return new ResponseEntity<>(error, httpStatus);
     }
 }
