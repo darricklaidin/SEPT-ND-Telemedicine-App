@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 
+import '../config/constants.dart';
 import '../models/doctor.dart';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
 Future<Doctor> getDoctor() async {
-  final response =
-      await http.get(Uri.parse('http://10.0.0.82:8080/api/doctors/2'));
+  final response = await http.get(Uri.parse('${baseUrl}api/doctors/2'));
   if (response.statusCode == 200) {
     return Doctor.fromJson(jsonDecode(response.body));
   } else {
@@ -16,8 +16,7 @@ Future<Doctor> getDoctor() async {
 }
 
 Future<User> getPatient() async {
-  final response =
-      await http.get(Uri.parse('http://10.0.0.82:8080/api/patients/1'));
+  final response = await http.get(Uri.parse('${baseUrl}api/patients/1'));
   if (response.statusCode == 200) {
     return User.fromJson(jsonDecode(response.body));
   } else {
