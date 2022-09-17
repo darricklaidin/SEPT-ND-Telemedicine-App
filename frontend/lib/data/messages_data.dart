@@ -3,7 +3,7 @@ import '../models/message.dart';
 List<Message> messageList = [
   Message(
     text:
-        'hello doctor, i believe i have coronavirus as i am experiencing mild symtoms, what do i do?',
+        'hello doctor, i believe i have coronavirus as i am experiencing mild symptoms, what do i do?',
     isSender: true,
   ),
   Message(
