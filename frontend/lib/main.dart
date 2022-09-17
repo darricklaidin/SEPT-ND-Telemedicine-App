@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'config/themes/light_palette.dart';
+import 'modules/doctor/doctor_profile_screen.dart';
 import 'modules/home/home_screen.dart';
 import 'modules/chat/chat_screen.dart';
 
@@ -74,7 +75,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   List<Widget> _buildScreens() {
-    return [const HomeScreen(), ChatScreen()];
+    return [const HomeScreen(), const DoctorProfileScreen(), ChatScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -86,6 +87,15 @@ class _MyAppState extends State<MyApp> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
         routeAndNavigatorSettings: const RouteAndNavigatorSettings(
           initialRoute: '/',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.search),
+        title: ("Search"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/search',
         ),
       ),
       PersistentBottomNavBarItem(
