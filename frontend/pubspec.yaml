@@ -37,7 +37,6 @@ dependencies:
 
   persistent_bottom_nav_bar: any
 
-  chat_bubbles: any
   talkjs_flutter: ^0.4.1
 
 dev_dependencies:
