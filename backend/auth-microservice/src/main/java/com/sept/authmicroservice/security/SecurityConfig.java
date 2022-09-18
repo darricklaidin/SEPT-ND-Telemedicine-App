@@ -55,8 +55,7 @@ public class SecurityConfig {
                         "/**/*.css",
                         "/**/*.js"
                 ).permitAll()
-                .antMatchers(SecurityConstant.AUTH + SecurityConstant.SIGN_UP).permitAll()
-                .antMatchers(SecurityConstant.AUTH + SecurityConstant.LOGIN).permitAll()
+                .antMatchers(SecurityConstant.AUTH + '*').permitAll()
                 .antMatchers(SecurityConstant.VALIDATE_JWT).permitAll()
                 .anyRequest().authenticated();
 
