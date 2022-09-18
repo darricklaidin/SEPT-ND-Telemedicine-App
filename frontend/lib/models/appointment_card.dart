@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/patient/patient_join_appointment.dart';
 
 class AppointmentCard extends StatefulWidget {
   final String name;
@@ -74,7 +75,17 @@ class _AppointmentCardState extends State<AppointmentCard>{
                 ),
                 const SizedBox(width: 20),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(  // TODO: Push new page
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          PatientJoinAppointment(
+                            delete: widget.delete,
+                            name: widget.name,
+                          )
+                      ),
+                    );
+                  },
                   icon: const Icon(CupertinoIcons.right_chevron),
                   color: Colors.white,
                 ),
