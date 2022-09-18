@@ -15,7 +15,7 @@ class PatientService {
       return jsonData.map<Appointment>((appointment) => Appointment.fromJson(appointment)).toList();
     }
     else {
-      throw Exception('Failed to load patients');
+      throw Exception("Failed to load patient's appointments");
     }
   }
 

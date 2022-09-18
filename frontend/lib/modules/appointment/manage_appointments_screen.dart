@@ -1,6 +1,7 @@
 import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/services/appointment_service.dart';
 import 'package:frontend/services/patient_service.dart';
 import 'package:frontend/utility.dart';
 import 'package:frontend/models/appointment_card.dart';
@@ -72,6 +73,12 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                     date: DateFormat('dd MMM yyyy').format(appointments[index].date),
                     startTime: Utility.timeToString(appointments[index].startTime),
                     endTime: Utility.timeToString(appointments[index].endTime),
+                    delete: () async {
+                      await AppointmentService.deleteAppointment(appointments[index].appointmentID);
+                      setState(() {
+                        appointments.removeAt(index);
+                      });
+                    },
                   );
                 },
               ),
