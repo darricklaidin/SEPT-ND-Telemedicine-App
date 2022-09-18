@@ -3,7 +3,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:talkjs_flutter/talkjs_flutter.dart';
 
 import '../home/home_screen.dart';
-import '../../service/user_service.dart';
+import '../../services/user_service.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
