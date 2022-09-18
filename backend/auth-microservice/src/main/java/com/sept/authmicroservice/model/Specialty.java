@@ -26,7 +26,8 @@ public class Specialty {
     @OneToMany(
             mappedBy = "specialty",
             fetch = FetchType.LAZY,
-            orphanRemoval = true
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
     )
     private Set<Doctor> doctors;
 

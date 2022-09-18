@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import com.sept.authmicroservice.model.User;
 import com.sept.authmicroservice.payload.ApiResponse;
+import com.sept.authmicroservice.payload.DoctorSignUp;
 import com.sept.authmicroservice.payload.LoginRequest;
 import com.sept.authmicroservice.payload.SignUpRequest;
 import com.sept.authmicroservice.service.AuthService;
@@ -16,8 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.format.DateTimeParseException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -41,7 +40,6 @@ public class AuthController {
             body = new ApiResponse(false, e.getMessage());
         } catch (Exception e) {
             retStatus = HttpStatus.UNAUTHORIZED;
-            e.printStackTrace();
             body = new ApiResponse(false, e.getMessage());
         }
 
@@ -51,20 +49,14 @@ public class AuthController {
     // register a new user
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        HttpStatus retStatus = HttpStatus.OK;
-        Object body;
-        try {
-            User user = authService.registerUser(signUpRequest);
-            body = new ApiResponse(true, "Successfully created user", user);
-        } catch (DateTimeParseException e) {
-            retStatus = HttpStatus.BAD_REQUEST;
-            body = new ApiResponse(false, "Invalid value for DOB");
-        } catch (Exception e) {
-            retStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            e.printStackTrace();
-            body = new ApiResponse(false, e.getMessage());
-        }
+        User user = authService.registerUser(signUpRequest);
+        return ResponseEntity.ok().body(user);
+    }
 
-        return ResponseEntity.status(retStatus).body(body);
+    // register a new doctor
+    @PostMapping("/signup-doctor")
+    public ResponseEntity<Object> registerDoctor(@Valid @RequestBody DoctorSignUp signUpRequest) {
+        User user = authService.registerDoctor(signUpRequest);
+        return ResponseEntity.ok().body(user);
     }
 }

@@ -3,6 +3,9 @@ package com.sept.authmicroservice.payload;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -10,10 +13,5 @@ import lombok.Setter;
 public class JwtAuthenticationResponse {
     private boolean success;
     private String accessToken;
-    private String roles = "User";
-
-    public JwtAuthenticationResponse(boolean status, String accessToken) {
-        this.success = status;
-        this.accessToken = accessToken;
-    }
+    private Collection<? extends GrantedAuthority> roles;
 }
