@@ -90,7 +90,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // create a TalkJS user
     final me = isPatient ? await getPatient() : await getDoctor();
     _me = _session.getUser(
-      id: '${(isPatient ? 'p' : 'd')}${me.id.toString()}', // create unique depending on user type
+      id: '${(isPatient ? 'p' : 'd')}${me.userID.toString()}', // create unique depending on user type
       name: '${me.firstName} ${me.lastName}',
       email: [me.email],
       photoUrl: 'https://talkjs.com/images/avatar-1.jpg',
@@ -103,7 +103,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final other = isPatient ? await getDoctor() : await getPatient();
 
     _other = _session.getUser(
-      id: '${(isPatient ? 'p' : 'd')}${other.id.toString()}',
+      id: '${(isPatient ? 'p' : 'd')}${other.userID.toString()}',
       name: '${other.firstName} ${other.lastName}',
       email: [other.email],
       photoUrl: 'https://talkjs.com/images/avatar-1.jpg',

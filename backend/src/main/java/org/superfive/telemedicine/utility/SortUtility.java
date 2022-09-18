@@ -41,6 +41,9 @@ public class SortUtility {
             else if (sortAttribute.equalsIgnoreCase("patientID")) {
                 appointments.sort(new PatientIDComparator());
             }
+            else if (sortAttribute.equalsIgnoreCase("dateTime")) {
+                appointments.sort(new DateComparator().thenComparing(new StartTimeComparator()));
+            }
 
             if (sortDirection.equalsIgnoreCase("Desc")) {
                 Collections.reverse(appointments);

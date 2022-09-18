@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
+import 'modules/appointment/manage_appointments_screen.dart';
 import 'modules/doctor/doctor_profile_screen.dart';
 import 'modules/home/home_screen.dart';
 import 'modules/chat/chat_screen.dart';
@@ -36,6 +38,7 @@ class _MyAppState extends State<MyApp> {
             primary: LightPalette.primary,
             secondary: LightPalette.secondary,
           ),
+        fontFamily: GoogleFonts.raleway().fontFamily,  // set default font
         ),
         home: Builder(builder: (BuildContext context) {
           return PersistentTabView(
@@ -75,7 +78,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   List<Widget> _buildScreens() {
-    return [const HomeScreen(), const DoctorProfileScreen(), ChatScreen()];
+    return [
+      const HomeScreen(),
+      const DoctorProfileScreen(),
+      ManageAppointmentsScreen(),
+      ChatScreen(),
+    ];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems() {
@@ -97,6 +105,15 @@ class _MyAppState extends State<MyApp> {
         routeAndNavigatorSettings: const RouteAndNavigatorSettings(
           initialRoute: '/search',
         ),
+      ),
+      PersistentBottomNavBarItem(
+          icon: const Icon(CupertinoIcons.calendar),
+          title: ("Appointments"),
+          activeColorPrimary: CupertinoColors.activeBlue,
+          inactiveColorPrimary: CupertinoColors.systemGrey,
+          routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+            initialRoute: '/appointments',
+          )
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.chat_bubble),

@@ -1,21 +1,37 @@
 class User {
-  final int id;
+  final int userID;
   final String firstName;
   final String lastName;
   final String email;
+  final DateTime dateOfBirth;
+  final String accountStatus;
 
   User(
-      {required this.id,
+      {required this.userID,
       required this.firstName,
       required this.lastName,
-      required this.email});
+      required this.email,
+      required this.dateOfBirth,
+      required this.accountStatus});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['userID'],
+      userID: json['userID'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       email: json['email'],
+      dateOfBirth: json['dateOfBirth'],
+      accountStatus: json['accountStatus'],
     );
+  }
+
+  @override
+  String toString() {
+    return 'User{userID: $userID\n'
+        'firstName: $firstName\n'
+        'lastName: $lastName\n'
+        'email: $email\n'
+        'dateOfBirth: $dateOfBirth\n'
+        'accountStatus: $accountStatus}';
   }
 }
