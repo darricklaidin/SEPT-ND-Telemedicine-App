@@ -1,8 +1,11 @@
+import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:frontend/services/patient_service.dart';
+import 'package:frontend/utility.dart';
 import 'package:frontend/models/appointment_card.dart';
 import 'package:frontend/models/appointment.dart';
+import 'package:intl/intl.dart';
 
 class ManageAppointmentsScreen extends StatefulWidget {
   ManageAppointmentsScreen({Key? key}) : super(key: key);
@@ -14,11 +17,22 @@ class ManageAppointmentsScreen extends StatefulWidget {
 
 class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
 
-  // final List appointments = [
-  //   Appointment(appointmentID: 1, date: "1 Jan 2022", startTime: "7:31 PM",
-  //       endTime: "8:31 PM", appointmentStatus: "Upcoming",
-  //       doctorID: 1, patientID: 2),
-  // ];
+  List<Appointment> appointments = List<Appointment>.empty(growable: true);
+
+  void loadAppointments() async {
+    appointments = await PatientService.fetchPatientAppointments();
+    setState(() {
+      appointments = appointments;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    print("FETCHING APPOINTMENTS");
+    loadAppointments();
+    print("DONE");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,25 +60,22 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 10),
             Expanded(
-              child: ListView(
-                children: <Widget>[
-                  AppointmentCard(
-                      name: "Bryan Hong",
-                      age: 30,
-                      startDateTime: DateTime.now(),
-                      endDateTime: DateTime.now().add(const Duration(hours: 1))
-                  ),
-                  const SizedBox(height: 20,),
-                  AppointmentCard(
-                      name: "John Krasinkiussy",
-                      age: 21,
-                      startDateTime: DateTime.now(),
-                      endDateTime: DateTime.now().add(const Duration(hours: 1))
-                  ),
-                ],
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                itemCount: appointments.length,
+                itemBuilder: (context, index) {
+                  return AppointmentCard(
+                    name: "${appointments[index].doctor.firstName} ${appointments[index].doctor.lastName}",
+                    age: AgeCalculator.age(appointments[index].doctor.dateOfBirth).years,
+                    date: DateFormat('dd MMM yyyy').format(appointments[index].date),
+                    startTime: Utility.timeToString(appointments[index].startTime),
+                    endTime: Utility.timeToString(appointments[index].endTime),
+                  );
+                },
               ),
-            )
+            ),
           ],
         ),
       )

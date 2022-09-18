@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class AppointmentCard extends StatefulWidget {
   const AppointmentCard({Key? key, required this.name, required this.age,
-    required this.startDateTime, required this.endDateTime}) : super(key: key);
+    required this.date, required this.startTime, required this.endTime}) : super(key: key);
 
   final String name;
   final int age;
-  final DateTime startDateTime;
-  final DateTime endDateTime;
+  final String date;
+  final String startTime;
+  final String endTime;
 
   @override
   _AppointmentCardState createState() => _AppointmentCardState();
@@ -93,13 +93,13 @@ class _AppointmentCardState extends State<AppointmentCard>{
                   width: 10,
                 ),
                 Text(
-                  DateFormat('dd MMM yyyy').format(widget.startDateTime),
+                  widget.date,
                   style: const TextStyle(
                     color: Colors.white,
                   ),
                 ),
                 const SizedBox(
-                  width: 50,
+                  width: 40,
                 ),
                 const Icon(
                   CupertinoIcons.time,
@@ -109,7 +109,7 @@ class _AppointmentCardState extends State<AppointmentCard>{
                   width: 10,
                 ),
                 Text(
-                  "${DateFormat.jm().format(widget.startDateTime)} - ${DateFormat.jm().format(widget.endDateTime)}",
+                  "${widget.startTime} - ${widget.endTime}",
                   style: const TextStyle(
                     color: Colors.white,
                   ),

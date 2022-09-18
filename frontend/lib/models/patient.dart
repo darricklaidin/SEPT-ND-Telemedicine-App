@@ -1,21 +1,19 @@
 import 'package:frontend/models/user.dart';
 
-class Doctor extends User {
-  final String specialty;
+class Patient extends User {
 
-  Doctor({userID, firstName, lastName, email, dateOfBirth, accountStatus, required this.specialty})
+  Patient({userID, firstName, lastName, email, dateOfBirth, accountStatus})
       : super(userID: userID, firstName: firstName, lastName: lastName, email: email,
       dateOfBirth: dateOfBirth, accountStatus: accountStatus);
 
-  factory Doctor.fromJson(Map<String, dynamic> json) {
-    return Doctor(
+  factory Patient.fromJson(Map<String, dynamic> json) {
+    return Patient(
       userID: json['userID'],
       firstName: json['firstName'],
       lastName: json['lastName'],
       email: json['email'],
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
       accountStatus: json['accountStatus'],
-      specialty: json['specialty']['specialtyName'],
     );
   }
 
@@ -27,8 +25,11 @@ class Doctor extends User {
   //     'email': email,
   //     'dateOfBirth': dateOfBirth,
   //     'accountStatus': accountStatus,
-  //     'specialty': specialty,
   //   };
   // }
 
+  @override
+  String toString() {
+    return super.toString();
+  }
 }
