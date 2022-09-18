@@ -13,8 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,7 +48,12 @@ public class User implements UserDetails {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable
-    private Set<Role> roles = new HashSet<>();
+    private List<Role> roles;
+
+    public User(int userID, List<Role> roles) {
+        this.userID = userID;
+        this.roles = roles;
+    }
 
     /*
      * UserDetails interface methods
