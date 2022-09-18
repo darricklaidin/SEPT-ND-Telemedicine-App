@@ -1,16 +1,21 @@
 package com.sept.authmicroservice.security;
 
+import com.sept.authmicroservice.model.Role;
+import com.sept.authmicroservice.model.RoleName;
 import com.sept.authmicroservice.model.User;
+import com.sept.authmicroservice.payload.UserDTO;
 import io.jsonwebtoken.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenProvider {
+    private static final String AUTHORITIES_KEY = "authorities";
+
     public String generateToken(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         String userId = Integer.toString(user.getUserID());
@@ -18,11 +23,13 @@ public class JwtTokenProvider {
         Date now = new Date(System.currentTimeMillis());
         Date expiryDate = new Date(now.getTime() + SecurityConstant.EXPIRATION_TIME);
 
+        String authorities = user.getRoles().stream().map(authority -> authority.getName().toString()).collect(Collectors.joining(","));
+
         // add claims
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userId);
         claims.put("email", user.getEmail());
-        claims.put("role", user.getRoles());
+        claims.put(AUTHORITIES_KEY, authorities);
 
         return Jwts.builder()
                 .setSubject(userId)
@@ -51,10 +58,22 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public int getUserIdFromJWT(String token) {
+    public Authentication getAuthentication(String token) {
+        UserDTO userDTO = getUserDtoFromToken(token);
+        User principal = new User(userDTO.getUserID(), userDTO.getRoles());
+
+        List<Role> roles = new ArrayList<>();
+
+        return new UsernamePasswordAuthenticationToken(principal, "", userDTO.getRoles());
+    }
+
+    public UserDTO getUserDtoFromToken(String token) {
         Claims claims = Jwts.parser().setSigningKey(SecurityConstant.SECRET).parseClaimsJws(token).getBody();
         String id = (String) claims.get("id");
 
-        return Integer.parseInt(id);
+        List<Role> authorities = Arrays.asList(claims.get(AUTHORITIES_KEY).toString().split(",")).stream()
+                .map(authority -> new Role(RoleName.valueOf(authority))).collect(Collectors.toList());
+
+        return new UserDTO(Integer.parseInt(id), authorities);
     }
 }

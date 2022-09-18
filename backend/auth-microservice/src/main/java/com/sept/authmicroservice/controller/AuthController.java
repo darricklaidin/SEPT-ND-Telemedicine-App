@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -48,15 +45,34 @@ public class AuthController {
 
     // register a new user
     @PostMapping("/signup")
-    public ResponseEntity<Object> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<User> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         User user = authService.registerUser(signUpRequest);
         return ResponseEntity.ok().body(user);
     }
 
     // register a new doctor
     @PostMapping("/signup-doctor")
-    public ResponseEntity<Object> registerDoctor(@Valid @RequestBody DoctorSignUp signUpRequest) {
+    public ResponseEntity<User> registerDoctor(@Valid @RequestBody DoctorSignUp signUpRequest) {
         User user = authService.registerDoctor(signUpRequest);
         return ResponseEntity.ok().body(user);
+    }
+
+    // validate token
+    @GetMapping("/validate")
+    public ResponseEntity<Object> getUser(@RequestHeader("Authorization") String token) {
+        HttpStatus retStatus = HttpStatus.OK;
+        Object body;
+        try {
+            body = authService.getUser(token);
+        } catch (IllegalArgumentException e) {
+            retStatus = HttpStatus.BAD_REQUEST;
+            body = new ApiResponse(false, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            retStatus = HttpStatus.UNAUTHORIZED;
+            body = new ApiResponse(false, "Validation failed");
+        }
+
+        return ResponseEntity.status(retStatus).body(body);
     }
 }

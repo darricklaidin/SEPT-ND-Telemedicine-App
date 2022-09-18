@@ -3,10 +3,7 @@ package com.sept.authmicroservice.service;
 import com.sept.authmicroservice.exception.ResourceAlreadyExistsException;
 import com.sept.authmicroservice.exception.ResourceNotFoundException;
 import com.sept.authmicroservice.model.*;
-import com.sept.authmicroservice.payload.DoctorSignUp;
-import com.sept.authmicroservice.payload.JwtAuthenticationResponse;
-import com.sept.authmicroservice.payload.LoginRequest;
-import com.sept.authmicroservice.payload.SignUpRequest;
+import com.sept.authmicroservice.payload.*;
 import com.sept.authmicroservice.repository.RoleRepository;
 import com.sept.authmicroservice.repository.SpecialtyRepository;
 import com.sept.authmicroservice.repository.UserRepository;
@@ -18,11 +15,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AuthService {
@@ -59,7 +57,7 @@ public class AuthService {
         checkIfEmailAlreadyExists(signUpRequest.getEmail());
 
         // set roles
-        Set<Role> roles = new HashSet<>();
+        List<Role> roles = new ArrayList<>();
         roles.add(
                 roleRepository.findByName(RoleName.PATIENT));
 
@@ -78,7 +76,7 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("Specialty", "specialtyID", signUpRequest.getSpecialtyId()));
 
         // set roles
-        Set<Role> roles = new HashSet<>();
+        List<Role> roles = new ArrayList<>();
         roles.add(
                 roleRepository.findByName(RoleName.DOCTOR));
 
@@ -101,6 +99,15 @@ public class AuthService {
             return LocalDate.parse(dob);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid value for DOB");
+        }
+    }
+
+    public UserDTO getUser(String token) {
+        if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+            String jwt = token.substring(7);
+            return tokenProvider.getUserDtoFromToken(jwt);
+        } else {
+            throw new IllegalArgumentException("Invalid token format");
         }
     }
 }
