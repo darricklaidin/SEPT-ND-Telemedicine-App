@@ -6,5 +6,4 @@ public class SecurityConstant {
     public static final String SECRET = "SuperFiveSecret173";
     public static final long EXPIRATION_TIME = 604800000; // 7 days
     public static final String AUTH = "/api/auth/";
-    public static final String VALIDATE_JWT = "user";
 }

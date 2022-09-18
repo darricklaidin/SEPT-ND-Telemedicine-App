@@ -56,7 +56,6 @@ public class SecurityConfig {
                         "/**/*.js"
                 ).permitAll()
                 .antMatchers(SecurityConstant.AUTH + '*').permitAll()
-                .antMatchers(SecurityConstant.VALIDATE_JWT).permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
