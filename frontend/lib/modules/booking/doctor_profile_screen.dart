@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/appointment/book_appointment_screen.dart';
 
 class DoctorProfileScreen extends StatelessWidget {
   const DoctorProfileScreen({Key? key}) : super(key: key);
@@ -132,14 +131,14 @@ class DoctorProfileScreen extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildBookAppointmentBtn(BuildContext context) {
+  List<Widget> _buildBookAppointmentBtn(context) {
     return [
       Center(
         child: SizedBox(
           height: 40,
           child: TextButton(
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const BookAppointmentScreen()));
+              Navigator.pushNamed(context, '/booking');
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(
