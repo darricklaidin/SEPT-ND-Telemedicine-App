@@ -36,14 +36,17 @@ class _PatientJoinAppointmentState extends State<PatientJoinAppointment> {
             ElevatedButton(
               onPressed: () {
                 widget.delete();
-                },  // TODO: Cancel appointment
+                Navigator.pop(context);
+                },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
               ),
               child: const Text("Cancel"),
             ),
             ElevatedButton(
-              onPressed: () {},  // TODO: Join Chat Page
+              onPressed: () {
+                  Navigator.pushNamed(context, '/chat');
+              },  // FIXME: Join Chat Page
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber,
               ),
