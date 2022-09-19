@@ -76,7 +76,7 @@ class _AppointmentCardState extends State<AppointmentCard>{
                 const SizedBox(width: 20),
                 IconButton(
                   onPressed: () {
-                    Navigator.push(  // TODO: Push new page
+                    Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) =>
                           PatientJoinAppointment(
