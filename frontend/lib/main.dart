@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'config/themes/light_palette.dart';
 import 'modules/appointment/manage_appointments_screen.dart';
@@ -10,8 +9,7 @@ import 'modules/authorization/login_screen.dart';
 import 'modules/doctor/doctor_profile_screen.dart';
 import 'modules/home/home_screen.dart';
 import 'modules/chat/chat_screen.dart';
-
-const storage = FlutterSecureStorage();
+import 'services/auth_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,12 +31,6 @@ class _MyAppState extends State<MyApp> {
     _controller = PersistentTabController(initialIndex: 0);
   }
 
-  Future<String> get jwtOrEmpty async {
-    var jwt = await storage.read(key: "jwt");
-    if (jwt == null) return "";
-    return jwt;
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -51,12 +43,15 @@ class _MyAppState extends State<MyApp> {
           fontFamily: GoogleFonts.raleway().fontFamily, // set default font
         ),
         home: FutureBuilder(
-            future: jwtOrEmpty,
+            future: checkAuth(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) return const CircularProgressIndicator();
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
               // if jwt is present and validated redirect to home screen
               print(snapshot.data);
-              if (snapshot.data == "") {
+              print(snapshot.hasError);
+              if (snapshot.data == null || snapshot.hasError) {
                 return const LoginScreen();
               } else {
                 return _buildApp();
