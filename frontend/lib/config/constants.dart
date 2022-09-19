@@ -5,6 +5,6 @@ const String authPort = '8080';
 const String bookingApiPort = '8081';
 
 // Change the local host depending on which device/emulator you are using
-const String localhost = androidLocalHost;
+const String localhost = nimeshNetwork;
 const String apiAuthRootUrl = 'http://$localhost:$authPort/api';
 const String apiBookingRootUrl = 'http://$localhost:$bookingApiPort/api';
