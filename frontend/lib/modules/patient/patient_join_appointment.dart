@@ -45,7 +45,7 @@ class _PatientJoinAppointmentState extends State<PatientJoinAppointment> {
             ),
             ElevatedButton(
               onPressed: () {
-                  Navigator.pushNamed(context, '/chat');
+                  // Navigator.pushNamed(context, '/chat');
               },  // FIXME: Join Chat Page
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber,
