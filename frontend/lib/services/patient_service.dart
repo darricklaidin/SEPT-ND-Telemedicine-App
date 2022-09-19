@@ -6,8 +6,7 @@ import 'dart:convert';
 
 class PatientService {
 
-  static Future<List<Appointment>> fetchPatientAppointments() async {
-    int patientID = 1;  // TODO: get patientID from login
+  static Future<List<Appointment>> fetchPatientAppointments(int patientID) async {
 
     var response = await http.get(Uri.parse('$apiRootUrl/patients/$patientID/appointments?sort=datetime'));
 

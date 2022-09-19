@@ -26,6 +26,15 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
           showNavigationArrow: true,
           showTodayButton: true,
           toggleDaySelection: true,
+          onCancel: () {
+            Navigator.pop(context);
+          },
+          onSubmit: (date) {
+            // TODO: Book appointment
+            print(date);
+
+            // Navigator.pop(context);
+          },
         ),
       )
     );
