@@ -45,6 +45,7 @@ dependencies:
   intl: any
 
   age_calculator: ^1.0.0
+  flutter_secure_storage: ^6.0.0
 
 dev_dependencies:
   flutter_test:
