@@ -24,11 +24,13 @@ Future<String> getJWT() async {
 }
 
 Future<UserDTO?> validateJWT(String token) async {
-  String url = '${apiAuthRootUrl}api/auth/validate';
-  final response = await http.get(Uri.parse(url));
+  UserDTO? res;
+  Uri url = Uri.parse('$apiAuthRootUrl/auth/validate');
+  final response = await http.get(url, headers: {
+    'Authorization': 'Bearer $token',
+  });
   if (response.statusCode == 200) {
-    return UserDTO.fromJson(jsonDecode(response.body));
-  } else {
-    return null;
+    res = UserDTO.fromJson(jsonDecode(response.body));
   }
+  return res;
 }
