@@ -62,3 +62,7 @@ Future<ApiResponse> loginUser(String email, String password) async {
   }
   return res;
 }
+
+Future<void> logoutUser() async {
+  await storage.deleteAll();
+}

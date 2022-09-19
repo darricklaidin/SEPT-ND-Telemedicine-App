@@ -19,6 +19,18 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController =
       TextEditingController(text: "nim@nim123");
 
+  @override
+  void initState() {
+    _getAuth();
+    super.initState();
+  }
+
+  _getAuth() async {
+    if (await checkAuth() != null) {
+      Navigator.pushReplacementNamed(context, '/home');
+    }
+  }
+
   Future<void> login(context) async {
     if (_formKey.currentState!.validate()) {
       var email = _emailController.text;
@@ -26,8 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       ApiResponse res = await loginUser(email, password);
       if (res.success) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+        Navigator.pushNamed(context, '/home');
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(res.msg ?? 'Invalid Credentials'),

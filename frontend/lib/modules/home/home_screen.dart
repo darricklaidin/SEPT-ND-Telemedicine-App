@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/authorization/login_screen.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+
+import '../../services/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  Future<void> logout(context) async {
+    await logoutUser();
+    Navigator.of(context, rootNavigator: true).pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,13 +17,11 @@ class HomeScreen extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     Color color = Theme.of(context).colorScheme.primary;
 
-    return Builder(
-      builder: (context) {
-        return Scaffold(
-          body: _buildBody(context, color, height, width),
-        );
-      }
-    );
+    return Builder(builder: (context) {
+      return Scaffold(
+        body: _buildBody(context, color, height, width),
+      );
+    });
   }
 
   Widget _buildBody(BuildContext context, color, height, width) {
@@ -39,17 +43,22 @@ class HomeScreen extends StatelessWidget {
             child: _buildContent(height, width),
           ),
           Positioned(
-              top: height/2,
-              right: width/2-50,
+              top: height / 2 - 50,
+              right: width / 2 - 50,
               child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen())
-                    );
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
                   },
-                  child: const Text("Login")
-              )
-          ),
+                  child: const Text("Login"))),
+          Positioned(
+              top: height / 2 + 50,
+              right: width / 2 - 50,
+              child: ElevatedButton(
+                  onPressed: () => logout(context),
+                  child: const Text("Logout"))),
         ],
       ),
     );
