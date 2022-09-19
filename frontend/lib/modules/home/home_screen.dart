@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/authorization/login_screen.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -9,12 +11,16 @@ class HomeScreen extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     Color color = Theme.of(context).colorScheme.primary;
 
-    return Scaffold(
-      body: _buildBody(color, height, width),
+    return Builder(
+      builder: (context) {
+        return Scaffold(
+          body: _buildBody(context, color, height, width),
+        );
+      }
     );
   }
 
-  Widget _buildBody(color, height, width) {
+  Widget _buildBody(BuildContext context, color, height, width) {
     return SizedBox(
       height: height,
       width: width,
@@ -31,6 +37,18 @@ class HomeScreen extends StatelessWidget {
             width: width,
             height: height - 100,
             child: _buildContent(height, width),
+          ),
+          Positioned(
+              top: height/2,
+              right: width/2-50,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen())
+                    );
+                  },
+                  child: const Text("Login")
+              )
           ),
         ],
       ),
