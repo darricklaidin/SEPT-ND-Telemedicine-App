@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/services/auth_service.dart';
+
+import '../../models/api_response.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -9,6 +12,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController =
+      TextEditingController(text: 'n@g.com');
+  final TextEditingController _passwordController =
+      TextEditingController(text: "nim@nim123");
+
+  Future<void> login(context) async {
+    var email = _emailController.text;
+    var password = _passwordController.text;
+
+    ApiResponse res = await loginUser(email, password);
+    if (res.success) {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+    } else {
+      print(res.msg);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,12 +40,13 @@ class _LoginScreenState extends State<LoginScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Align(
+          Align(
             alignment: Alignment.center,
             child: SizedBox(
               width: 300,
               child: TextField(
-                decoration: InputDecoration(
+                controller: _emailController,
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'E-mail',
                 ),
@@ -32,11 +54,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          const SizedBox(
+          SizedBox(
             width: 300,
             child: TextField(
+              controller: _passwordController,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Password',
               ),
@@ -47,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.red),
             ),
-            onPressed: () {},
+            onPressed: () => login(context),
             child: const Text(
               "Login",
             ),

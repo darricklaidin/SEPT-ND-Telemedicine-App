@@ -13,5 +13,6 @@ import java.util.Collection;
 public class JwtAuthenticationResponse {
     private boolean success;
     private String accessToken;
+    private int userID;
     private Collection<? extends GrantedAuthority> roles;
 }
