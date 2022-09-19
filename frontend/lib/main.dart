@@ -49,11 +49,6 @@ class _MyAppState extends State<MyApp> {
                 return const Center(child: CircularProgressIndicator());
               }
               // if jwt is present and validated redirect to home screen
-<<<<<<< HEAD
-              print(snapshot.data);
-              print(snapshot.hasError);
-=======
->>>>>>> 57f319e (fix validate jwt in login)
               if (snapshot.data == null || snapshot.hasError) {
                 return const LoginScreen();
               } else {
