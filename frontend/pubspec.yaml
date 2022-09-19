@@ -46,6 +46,8 @@ dependencies:
 
   age_calculator: ^1.0.0
 
+  syncfusion_flutter_datepicker: ^20.2.49
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
