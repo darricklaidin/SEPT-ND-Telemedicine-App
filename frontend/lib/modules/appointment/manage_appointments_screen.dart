@@ -19,20 +19,22 @@ class ManageAppointmentsScreen extends StatefulWidget {
 class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
 
   List<Appointment> appointments = List<Appointment>.empty(growable: true);
+  bool isLoading = true;
 
   void loadAppointments() async {
+    print("Fetching appointments...");
     appointments = await PatientService.fetchPatientAppointments();
     setState(() {
       appointments = appointments;
+      isLoading = false;
     });
+    print("Fetched appointments.");
   }
 
   @override
   void initState() {
     super.initState();
-    print("FETCHING APPOINTMENTS");
     loadAppointments();
-    print("DONE");
   }
 
   @override
@@ -61,28 +63,52 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                itemCount: appointments.length,
-                itemBuilder: (context, index) {
-                  return AppointmentCard(
-                    name: "${appointments[index].doctor.firstName} ${appointments[index].doctor.lastName}",
-                    age: AgeCalculator.age(appointments[index].doctor.dateOfBirth).years,
-                    date: DateFormat('dd MMM yyyy').format(appointments[index].date),
-                    startTime: Utility.timeToString(appointments[index].startTime),
-                    endTime: Utility.timeToString(appointments[index].endTime),
-                    delete: () async {
-                      await AppointmentService.deleteAppointment(appointments[index].appointmentID);
-                      setState(() {
-                        appointments.removeAt(index);
-                      });
-                    },
+            const SizedBox(height: 25),
+            Builder(
+              builder: (context) {
+                if (isLoading) {
+                  return const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
-                },
-              ),
-            ),
+                }
+                else {
+                  return Expanded(
+                    child: ListView.builder(
+                      padding: const EdgeInsets.all(0),
+                      itemCount: appointments.length,
+                      itemBuilder: (context, index) {
+                        return AppointmentCard(
+                          name: "${appointments[index].doctor.firstName} ${appointments[index].doctor.lastName}",
+                          age: AgeCalculator.age(appointments[index].doctor.dateOfBirth).years,
+                          date: DateFormat('dd MMM yyyy').format(appointments[index].date),
+                          startTime: Utility.timeToString(appointments[index].startTime),
+                          endTime: Utility.timeToString(appointments[index].endTime),
+                          delete: () async {
+                            await AppointmentService.deleteAppointment(appointments[index].appointmentID);
+                            setState(() {
+                              appointments.removeAt(index);
+                            });
+                            if (!mounted) {
+                              return;
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(bottom: 10.0),
+                                content: Text("Appointment deleted"),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    ),
+                  );
+                }
+            }),
           ],
         ),
       )

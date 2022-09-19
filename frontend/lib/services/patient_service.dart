@@ -10,6 +10,7 @@ class PatientService {
     int patientID = 1;  // TODO: get patientID from login
 
     var response = await http.get(Uri.parse('$apiRootUrl/patients/$patientID/appointments?sort=datetime'));
+
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
       return jsonData.map<Appointment>((appointment) => Appointment.fromJson(appointment)).toList();
