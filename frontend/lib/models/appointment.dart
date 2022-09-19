@@ -34,18 +34,6 @@ class Appointment {
     );
   }
 
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'appointmentID': appointmentID,
-  //     'date': date,
-  //     'startTime': startTime,
-  //     'endTime': endTime,
-  //     'appointmentStatus': appointmentStatus,
-  //     // 'doctor': doctor,
-  //     'patient': patient,
-  //   };
-  // }
-
   @override
   String toString() {
     return 'Appointment{appointmentID: $appointmentID\n'

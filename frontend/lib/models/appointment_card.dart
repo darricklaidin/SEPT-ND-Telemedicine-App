@@ -1,15 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/patient/patient_join_appointment.dart';
 
 class AppointmentCard extends StatefulWidget {
-  const AppointmentCard({Key? key, required this.name, required this.age,
-    required this.date, required this.startTime, required this.endTime}) : super(key: key);
-
   final String name;
   final int age;
   final String date;
   final String startTime;
   final String endTime;
+
+  final Function delete;
+
+  const AppointmentCard({Key? key, required this.name, required this.age,
+    required this.date, required this.startTime, required this.endTime, required this.delete}) : super(key: key);
 
   @override
   _AppointmentCardState createState() => _AppointmentCardState();
@@ -56,7 +59,9 @@ class _AppointmentCardState extends State<AppointmentCard>{
                 ),
                 const SizedBox(width: 25),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.delete();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.red,
                   ),
@@ -70,7 +75,17 @@ class _AppointmentCardState extends State<AppointmentCard>{
                 ),
                 const SizedBox(width: 20),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          PatientJoinAppointment(
+                            delete: widget.delete,
+                            name: widget.name,
+                          )
+                      ),
+                    );
+                  },
                   icon: const Icon(CupertinoIcons.right_chevron),
                   color: Colors.white,
                 ),
