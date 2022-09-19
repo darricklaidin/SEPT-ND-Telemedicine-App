@@ -11,14 +11,21 @@ class AppointmentCard extends StatefulWidget {
 
   final Function delete;
 
-  const AppointmentCard({Key? key, required this.name, required this.age,
-    required this.date, required this.startTime, required this.endTime, required this.delete}) : super(key: key);
+  const AppointmentCard(
+      {Key? key,
+      required this.name,
+      required this.age,
+      required this.date,
+      required this.startTime,
+      required this.endTime,
+      required this.delete})
+      : super(key: key);
 
   @override
   _AppointmentCardState createState() => _AppointmentCardState();
 }
 
-class _AppointmentCardState extends State<AppointmentCard>{
+class _AppointmentCardState extends State<AppointmentCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -41,19 +48,18 @@ class _AppointmentCardState extends State<AppointmentCard>{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        // if name exceeds length
-                          widget.name.length > 13 ? "${widget.name.substring(0, 13)}..." : widget.name,
+                          // if name exceeds length
+                          widget.name.length > 13
+                              ? "${widget.name.substring(0, 13)}..."
+                              : widget.name,
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                          )
-                      ),
-                      Text(
-                          "Age: ${widget.age.toString()}",
+                          )),
+                      Text("Age: ${widget.age.toString()}",
                           style: const TextStyle(
                             color: Colors.white,
-                          )
-                      ),
+                          )),
                     ],
                   ),
                 ),
@@ -62,28 +68,25 @@ class _AppointmentCardState extends State<AppointmentCard>{
                   onPressed: () {
                     widget.delete();
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red),
                   ),
-                  child: const Text(
-                      "Cancel",
+                  child: const Text("Cancel",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                      )
-                  ),
+                      )),
                 ),
                 const SizedBox(width: 20),
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>
-                          PatientJoinAppointment(
-                            delete: widget.delete,
-                            name: widget.name,
-                          )
-                      ),
+                      MaterialPageRoute(
+                          builder: (context) => PatientJoinAppointment(
+                                delete: widget.delete,
+                                name: widget.name,
+                              )),
                     );
                   },
                   icon: const Icon(CupertinoIcons.right_chevron),
@@ -97,7 +100,7 @@ class _AppointmentCardState extends State<AppointmentCard>{
                 color: Colors.white,
                 thickness: 1.5,
               ),
-            ),  // Replace with line
+            ), // Replace with line
             Row(
               children: <Widget>[
                 const Icon(
@@ -136,5 +139,4 @@ class _AppointmentCardState extends State<AppointmentCard>{
       ),
     );
   }
-
 }

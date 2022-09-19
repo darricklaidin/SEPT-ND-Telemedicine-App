@@ -19,8 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-
-          Align(
+          const Align(
             alignment: Alignment.center,
             child: SizedBox(
               width: 300,
@@ -32,9 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-
           const SizedBox(height: 20),
-
           const SizedBox(
             width: 300,
             child: TextField(
@@ -45,37 +42,32 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
           ),
-
           const SizedBox(height: 20),
-
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-              onPressed: () {},
-              child: const Text(
-                "Login",
-              ),
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.red),
+            ),
+            onPressed: () {},
+            child: const Text(
+              "Login",
+            ),
           ),
-
           const SizedBox(height: 20),
-
           const Text(
             "Forgot Password?",
             style: TextStyle(decoration: TextDecoration.underline),
           ),
-
           const SizedBox(height: 20),
-
           RichText(
-            text: TextSpan(
-              children: [
-                const TextSpan(
-                  text: "Don't have an account? ",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: "Raleway",
-                  ),
+            text: TextSpan(children: [
+              const TextSpan(
+                text: "Don't have an account? ",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: "Raleway",
                 ),
-                TextSpan(
+              ),
+              TextSpan(
                   text: 'Register now',
                   style: TextStyle(
                     color: Colors.deepPurple[300],
@@ -83,15 +75,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      print('Register Text Clicked');
-                    }
-                ),
-              ]),
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text('Register Text Clicked'),
+                      ));
+                    }),
+            ]),
           ),
-
         ],
       ),
-
     );
   }
 }
