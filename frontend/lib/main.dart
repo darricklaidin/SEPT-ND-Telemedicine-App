@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'config/themes/light_palette.dart';
-import 'modules/doctor/doctor_profile_screen.dart';
+import 'modules/booking/booking_screen.dart';
+import 'modules/booking/doctor_profile_screen.dart';
 import 'modules/home/home_screen.dart';
 import 'modules/chat/chat_screen.dart';
 
@@ -94,9 +95,9 @@ class _MyAppState extends State<MyApp> {
         title: ("Search"),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
-        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
-          initialRoute: '/search',
-        ),
+        routeAndNavigatorSettings: RouteAndNavigatorSettings(
+            initialRoute: '/search',
+            routes: {'/booking': (ctx) => const BookingScreen()}),
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.chat_bubble),

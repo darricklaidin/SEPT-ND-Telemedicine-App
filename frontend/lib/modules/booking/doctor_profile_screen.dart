@@ -24,7 +24,7 @@ class DoctorProfileScreen extends StatelessWidget {
             ..._buildProfileHeader(),
             _buildExperienceCard(),
             ..._buildAboutSection(),
-            ..._buildBookAppointmentBtn()
+            ..._buildBookAppointmentBtn(context)
           ],
         ),
       ),
@@ -131,13 +131,15 @@ class DoctorProfileScreen extends StatelessWidget {
     ];
   }
 
-  List<Widget> _buildBookAppointmentBtn() {
+  List<Widget> _buildBookAppointmentBtn(context) {
     return [
       Center(
         child: SizedBox(
           height: 40,
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/booking');
+            },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(
                   const Color.fromARGB(255, 237, 201, 94)),
