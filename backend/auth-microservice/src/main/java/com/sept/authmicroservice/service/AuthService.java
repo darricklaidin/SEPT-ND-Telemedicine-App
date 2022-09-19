@@ -46,11 +46,15 @@ public class AuthService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername().trim(),
                         loginRequest.getPassword().trim()));
+        // get user id
+        User user = (User) authentication.getPrincipal();
+        int userId = user.getUserID();
 
+        // generate token
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.generateToken(authentication);
 
-        return new JwtAuthenticationResponse(true, jwt, authentication.getAuthorities());
+        return new JwtAuthenticationResponse(true, jwt, userId, authentication.getAuthorities());
     }
 
     public User registerUser(SignUpRequest signUpRequest) {

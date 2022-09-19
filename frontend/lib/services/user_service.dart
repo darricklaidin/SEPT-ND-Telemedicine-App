@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
 Future<Doctor> getDoctor() async {
-  final response = await http.get(Uri.parse('${apiRootUrl}api/doctors/2'));
+  final response = await http.get(Uri.parse('${apiAuthRootUrl}api/doctors/2'));
   if (response.statusCode == 200) {
     return Doctor.fromJson(jsonDecode(response.body));
   } else {
@@ -16,7 +16,7 @@ Future<Doctor> getDoctor() async {
 }
 
 Future<User> getPatient() async {
-  final response = await http.get(Uri.parse('${apiRootUrl}api/patients/1'));
+  final response = await http.get(Uri.parse('${apiAuthRootUrl}api/patients/1'));
   if (response.statusCode == 200) {
     return User.fromJson(jsonDecode(response.body));
   } else {
