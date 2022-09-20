@@ -1,20 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import 'src/app.dart';
-import 'src/modules/settings/settings_controller.dart';
-import 'src/modules/settings/settings_service.dart';
+import 'config/themes/light_palette.dart';
+import 'modules/authorization/login_screen.dart';
+import 'modules/home/main_screen.dart';
 
-void main() async {
-  // Set up the SettingsController, which will glue user settings to multiple
-  // Flutter Widgets.
-  final settingsController = SettingsController(SettingsService());
+void main() {
+  runApp(const MyApp());
+}
 
-  // Load the user's preferred theme while the splash screen is displayed.
-  // This prevents a sudden theme change when the app is first displayed.
-  await settingsController.loadSettings();
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsView.
-  runApp(MyApp(settingsController: settingsController));
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'SEPT-ND-Telemedicine-App',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch().copyWith(
+            primary: LightPalette.primary,
+            secondary: LightPalette.secondary,
+          ),
+          fontFamily: GoogleFonts.raleway().fontFamily, // set default font
+        ),
+        initialRoute: '/',
+        routes: {
+          "/": (context) => const LoginScreen(),
+          "/home": (context) => const MainScreen()
+        });
+  }
 }
