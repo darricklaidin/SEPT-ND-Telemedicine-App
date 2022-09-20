@@ -6,6 +6,6 @@ import java.util.Comparator;
 
 public class PatientIDComparator implements Comparator<Appointment> {
     public int compare(Appointment appointment1, Appointment appointment2) {
-        return Integer.compare(appointment1.getPatient().getUserID(), appointment2.getPatient().getUserID());
+        return Integer.compare(appointment1.getPatientID(), appointment2.getPatientID());
     }
 }

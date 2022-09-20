@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.superfive.telemedicine.exception.*;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Availability;
-import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
 import org.superfive.telemedicine.utility.SortUtility;
@@ -25,13 +24,10 @@ public class AppointmentService {
 
     private final AvailabilityRepository availabilityRepository;
 
-    private final PatientService patientService;
-
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, AvailabilityRepository availabilityRepository, PatientService patientService) {
+    public AppointmentService(AppointmentRepository appointmentRepository, AvailabilityRepository availabilityRepository) {
         this.appointmentRepository = appointmentRepository;
         this.availabilityRepository = availabilityRepository;
-        this.patientService = patientService;
     }
 
     // Get all appointments
@@ -73,7 +69,7 @@ public class AppointmentService {
 
         // Ensure appointment is made at a valid date and time
         List<Availability> doctorAvailabilities = availabilityRepository.findByDoctorID(appointment.getDoctorID());
-        Patient patient = patientService.getPatientByID(appointment.getPatient().getUserID());
+        List<Appointment> patientAppointments = appointmentRepository.findByPatientID(appointment.getPatientID());
 
         LocalDate appointmentDate = appointment.getDate();
         DayOfWeek appointmentDayOfWeek = appointmentDate.getDayOfWeek();
@@ -126,7 +122,6 @@ public class AppointmentService {
                     }
 
                     // Check if patient has no other appointments during appointment time
-                    Set<Appointment> patientAppointments = patient.getAppointments();
                     // Search any of the patient appointments that fall on the same date as the new appointment
                     for (Appointment patientAppointment : patientAppointments) {
                         if (patientAppointment.getDate().equals(appointmentDate)) {
@@ -145,7 +140,7 @@ public class AppointmentService {
                                 continue;
                             } else {
                                 // Throw exception here for patient time clash
-                                throw new EntityTimeClashException("Patient", patient.getUserID(),
+                                throw new EntityTimeClashException("Patient", appointment.getPatientID(),
                                         patientAppointment.getStartTime(), patientAppointment.getEndTime(),
                                         appointmentStartTime, appointmentEndTime);
                             }

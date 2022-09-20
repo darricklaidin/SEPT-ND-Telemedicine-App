@@ -35,26 +35,21 @@ public class Appointment {
     @NotNull
     private int doctorID;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(
-            name = "patientID",
-            referencedColumnName = "patientID",
-            nullable = false
-    )
-    private Patient patient;
+    @NotNull
+    private int patientID;
 
     public Appointment() {
     }
 
 
     public Appointment(int appointmentID, LocalDate date, LocalTime startTime, LocalTime endTime,
-                       String appointmentStatus, int doctorID, Patient patient) {
+                       String appointmentStatus, int doctorID, int patientID) {
         this.appointmentID = appointmentID;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.appointmentStatus = appointmentStatus;
         this.doctorID = doctorID;
-        this.patient = patient;
+        this.patientID = patientID;
     }
 }

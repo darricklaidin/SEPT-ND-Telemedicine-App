@@ -16,5 +16,5 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Inte
 
     Optional<Availability> findByAvailabilityID(int availabilityID);
 
-    List<Availability> findByDoctorID(int appointmentID);
+    List<Availability> findByDoctorID(int doctorID);
 }
