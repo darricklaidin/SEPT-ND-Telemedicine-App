@@ -34,8 +34,7 @@ public class AvailabilityService {
         try {
             this.getAvailabilityByID(availability.getAvailabilityID());
             throw new ResourceAlreadyExistsException("Availability", "availabilityID", availability.getAvailabilityID());
-        }
-        catch (ResourceNotFoundException exception) {
+        } catch (ResourceNotFoundException exception) {
             // Id does not exist yet, continue...
         }
 
@@ -52,23 +51,9 @@ public class AvailabilityService {
     public Availability rescheduleAvailability(Availability availability, int availabilityID) throws InvalidTimeException {
         Availability updatedAvailability = this.getAvailabilityByID(availabilityID);
 
-        // Check if attributes are null before updating
-        System.out.println(availability.getDayOfWeek());
-        if (availability.getDayOfWeek() != null) {
-            updatedAvailability.setDayOfWeek(availability.getDayOfWeek());
-        }
-
-        if (availability.getStartTime() != null) {
-            updatedAvailability.setStartTime(availability.getStartTime());
-        }
-
-        if (availability.getEndTime() != null) {
-            updatedAvailability.setEndTime(availability.getEndTime());
-        }
-
-        if (availability.getDoctor() != null) {
-            updatedAvailability.setDoctor(availability.getDoctor());
-        }
+        updatedAvailability.setDayOfWeek(availability.getDayOfWeek());
+        updatedAvailability.setStartTime(availability.getStartTime());
+        updatedAvailability.setEndTime(availability.getEndTime());
 
         // Ensure times will still be valid after update
         if (updatedAvailability.getStartTime().isAfter(updatedAvailability.getEndTime())) {
@@ -78,7 +63,6 @@ public class AvailabilityService {
         availabilityRepository.save(updatedAvailability);
 
         return updatedAvailability;
-
     }
 
     public Availability deleteAvailability(int availabilityID) {

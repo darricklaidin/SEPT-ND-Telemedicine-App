@@ -43,47 +43,13 @@ public class PatientService {
         try {
             this.getPatientByID(patient.getUserID());
             throw new ResourceAlreadyExistsException("Patient", "userID", patient.getUserID());
-        }
-        catch (ResourceNotFoundException exception) {
+        } catch (ResourceNotFoundException exception) {
             // Patient does not already exist, continue...
         }
 
         patientRepository.save(patient);
 
         return patient;
-    }
-
-    public Patient updatePatient(int patientID, Patient patient) throws ResourceAlreadyExistsException {
-        // Check that patient exists
-        Patient oldPatient = this.getPatientByID(patientID);
-
-        if (patient.getFirstName() != null) {
-            oldPatient.setFirstName(patient.getFirstName());
-        }
-
-        if (patient.getLastName() != null) {
-            oldPatient.setLastName(patient.getLastName());
-        }
-
-        if (patient.getEmail() != null) {
-            oldPatient.setEmail(patient.getEmail());
-        }
-
-        if (patient.getPassword() != null) {
-            oldPatient.setPassword(patient.getPassword());
-        }
-
-        if (patient.getDateOfBirth() != null) {
-            oldPatient.setDateOfBirth(patient.getDateOfBirth());
-        }
-
-        if (patient.getAccountStatus() != null) {
-            oldPatient.setAccountStatus(patient.getAccountStatus());
-        }
-
-        patientRepository.save(oldPatient);
-
-        return oldPatient;
     }
 
     public Patient deletePatient(int patientID) {

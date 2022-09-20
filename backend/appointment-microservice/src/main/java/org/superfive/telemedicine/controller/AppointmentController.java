@@ -36,13 +36,6 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.addAppointment(appointment));
     }
 
-    // Update (Reschedule) an existing appointment by ID
-    @PutMapping("/{appointmentID}")
-    public ResponseEntity<Appointment> rescheduleAppointment(@PathVariable(value = "appointmentID") int appointmentID,
-                                                             @RequestBody Appointment updatedAppointment) {
-        return ResponseEntity.ok(appointmentService.rescheduleAppointment(appointmentID, updatedAppointment));
-    }
-
     // Delete (Cancel) an existing appointment by ID
     @DeleteMapping("/{appointmentID}")
     public ResponseEntity<Appointment> cancelAppointment(@PathVariable(value = "appointmentID") int appointmentID) {

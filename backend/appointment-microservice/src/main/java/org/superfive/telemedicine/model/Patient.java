@@ -2,22 +2,26 @@ package org.superfive.telemedicine.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import java.time.LocalDate;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Entity
-@AttributeOverride(name = "userID", column = @Column(name = "patientID"))
 @Getter
 @Setter
-public class Patient extends User {
+@NoArgsConstructor
+public class Patient {
     // TODO: Prescribed medicines
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int patientID;
 
-    @NotBlank
-    private String accountStatus;  // ACTIVE or DEACTIVATED
+    @NotNull
+    @Column(unique = true)
+    private int userID;
 
     // Appointments
     @JsonIgnore
@@ -29,16 +33,8 @@ public class Patient extends User {
     )
     private Set<Appointment> appointments;
 
-    public Patient() {
-        super();
+    public Patient(int patientID, int userID) {
+        this.patientID = patientID;
+        this.userID = userID;
     }
-
-    public Patient(int patientID, String firstName, String lastName, String email, String password, LocalDate dateOfBirth,
-                   String accountStatus, Set<Appointment> appointments) {
-        super(patientID, firstName, lastName, email, password, dateOfBirth);
-        this.accountStatus = accountStatus;
-        this.appointments = appointments;
-    }
-
-
 }

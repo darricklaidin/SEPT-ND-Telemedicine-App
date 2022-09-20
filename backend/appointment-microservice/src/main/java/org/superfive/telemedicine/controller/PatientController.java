@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/patients")
 public class PatientController {
-
     private final PatientService patientService;
 
     @Autowired
@@ -50,20 +49,9 @@ public class PatientController {
         return ResponseEntity.ok(patientService.createPatient(patient));
     }
 
-    // Update patient
-    // Deactivate patient (use PUT to modify accountStatus value instead of DELETE)
-    @PutMapping("/{patientID}")
-    public ResponseEntity<Patient> updatePatient(
-            @PathVariable(value = "patientID") int patientID,
-            @RequestBody Patient patient
-    ) {
-        return ResponseEntity.ok(patientService.updatePatient(patientID, patient));
-    }
-
     // Delete patient by id
     @DeleteMapping("/{patientID}")
     public ResponseEntity<Patient> deletePatient(@PathVariable(value = "patientID") int patientID) {
         return ResponseEntity.ok(patientService.deletePatient(patientID));
     }
-
 }

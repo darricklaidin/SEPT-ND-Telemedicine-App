@@ -25,21 +25,17 @@ public class Availability {
     @NotNull
     private LocalTime endTime;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(
-            name = "doctorID",
-            referencedColumnName = "doctorID",
-            nullable = false
-    )
-    private Doctor doctor;
+    @NotNull
+    private int doctorID;
 
-    public Availability(int availabilityID, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, Doctor doctor) {
+    public Availability(int availabilityID, DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, int doctorID) {
         this.availabilityID = availabilityID;
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.doctor = doctor;
+        this.doctorID = doctorID;
     }
 
-    public Availability() {}
+    public Availability() {
+    }
 }
