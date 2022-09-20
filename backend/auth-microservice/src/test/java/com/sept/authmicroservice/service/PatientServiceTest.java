@@ -54,6 +54,11 @@ class PatientServiceTest {
 
     @Test
     void getPatientByID() {
+        when(patientRepository.findByUserID(patient.getUserID())).thenReturn(Optional.of(patient));
+
+        Patient test_patient = patientService.getPatientByID(patient.getUserID());
+
+        Assertions.assertTrue(test_patient.equals(patient));
     }
 
     @Test

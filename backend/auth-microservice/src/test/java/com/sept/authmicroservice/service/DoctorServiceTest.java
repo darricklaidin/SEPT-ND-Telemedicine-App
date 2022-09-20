@@ -1,5 +1,6 @@
 package com.sept.authmicroservice.service;
 
+import com.sept.authmicroservice.payload.DoctorSignUp;
 import com.sept.authmicroservice.repository.DoctorRepository;
 import com.sept.authmicroservice.repository.PatientRepository;
 import com.sept.authmicroservice.service.DoctorService;
@@ -48,18 +49,30 @@ class DoctorServiceTest {
         doctorRepository = Mockito.mock(DoctorRepository.class);
         doctorService = new DoctorService(doctorRepository);
         LocalDate dob = LocalDate.of(2000, Month.APRIL, 18);
-        Role role1 = new Role(RoleName.PATIENT);
-        Specialty specialty1 = new Specialty("Surgery");
+//        Role role1 = new Role(RoleName.PATIENT);
+//        Specialty specialty1 = new Specialty("Surgery");
 
-        doctor = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com", "password", dob, role1 , specialty1);
+        doctor = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com", "password", dob, null , null);
     }
+
+    //public DoctorSignUp(String firstName, String lastName, String email, String password,
+    //            String dateOfBirth, Integer specialtyId)
 
     @Test
     void getAllDoctors() {
+
+
     }
 
     @Test
     void getDoctorByID() {
+
+        when(doctorRepository.findByUserID(doctor.getUserID())).thenReturn(Optional.of(doctor));
+
+        Doctor test_doctor = doctorService.getDoctorByID(doctor.getUserID());
+
+        Assertions.assertTrue(test_doctor.equals(doctor));
+
     }
 
     //public Doctor(int userID, String firstName, String lastName, String email, String password,
@@ -69,31 +82,38 @@ class DoctorServiceTest {
     void updateDoctor() {
         LocalDate dob2 = LocalDate.of(2002, Month.JULY, 16);
         Doctor doctor2 = new Doctor(2, "Darrick", "Hong", "update@gmail.com", "update", dob2 , null, null);
-        Doctor doctor3 = new Doctor(2, "Nim", "Tong", "update@gmail.com", "update", dob2, null);
-        BDDMockito.given(patientRepository.findByUserID(patient.getUserID())).willReturn(Optional.of(patient));
+        Doctor doctor3 = new Doctor(2, "Nim", "Tong", "update@gmail.com", "update", dob2, null,null);
+        BDDMockito.given(doctorRepository.findByUserID(doctor.getUserID())).willReturn(Optional.of(doctor));
 
-        patientService.updatePatient(patient.getUserID(), patient2);
+        doctorService.updateDoctor(doctor.getUserID(), doctor2);
 
-        assertEquals(1, patient.getUserID());
-        assertEquals("Darrick", patient.getFirstName());
-        assertEquals("Hong", patient.getLastName());
-        assertEquals("update@gmail.com", patient.getEmail());
-        assertEquals("update", patient.getPassword());
-        assertEquals(dob2,patient.getDateOfBirth());
-        assertEquals(null, patient.getRoles());
+        assertEquals(1, doctor.getUserID());
+        assertEquals("Darrick", doctor.getFirstName());
+        assertEquals("Hong", doctor.getLastName());
+        assertEquals("update@gmail.com", doctor.getEmail());
+        assertEquals("update", doctor.getPassword());
+        assertEquals(dob2,doctor.getDateOfBirth());
+        assertEquals(null, doctor.getRoles());
+        assertEquals(null, doctor.getSpecialty());
 
-        patientService.updatePatient(patient.getUserID(), patient3);
+        doctorService.updateDoctor(doctor.getUserID(), doctor3);
 
-        assertEquals(1, patient.getUserID());
-        assertEquals("Nim", patient.getFirstName());
-        assertEquals("Tong", patient.getLastName());
-        assertEquals("update@gmail.com", patient.getEmail());
-        assertEquals("update", patient.getPassword());
-        assertEquals(dob2,patient.getDateOfBirth());
-        assertEquals(null, patient.getRoles());
+        assertEquals(1, doctor.getUserID());
+        assertEquals("Nim", doctor.getFirstName());
+        assertEquals("Tong", doctor.getLastName());
+        assertEquals("update@gmail.com", doctor.getEmail());
+        assertEquals("update", doctor.getPassword());
+        assertEquals(dob2,doctor.getDateOfBirth());
+        assertEquals(null, doctor.getRoles());
+        assertEquals(null, doctor.getSpecialty());
     }
 
     @Test
     void deleteDoctor() {
+        when(doctorRepository.findByUserID(doctor.getUserID())).thenReturn(Optional.of(doctor));
+
+        doctorService.deleteDoctor(doctor.getUserID());
+
+        verify(doctorRepository).deleteById(doctor.getUserID());
     }
 }
