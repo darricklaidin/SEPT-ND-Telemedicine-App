@@ -1,4 +1,4 @@
-package org.superfive.telemedicine.dto;
+package com.sept.authmicroservice.payload;
 
 import javax.validation.constraints.NotBlank;
 
