@@ -57,7 +57,7 @@ public class AuthService {
         return new JwtAuthenticationResponse(true, jwt, userId, authentication.getAuthorities());
     }
 
-    public User registerUser(SignUpRequest signUpRequest) {
+    public User registerPatient(SignUpRequest signUpRequest) {
         checkIfEmailAlreadyExists(signUpRequest.getEmail());
 
         // set roles
@@ -67,9 +67,9 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
 
-        User newUser = new User(-1, signUpRequest.getFirstName(), signUpRequest.getLastName(),
+        Patient newPatient = new Patient(-1, signUpRequest.getFirstName(), signUpRequest.getLastName(),
                 signUpRequest.getEmail(), encodedPassword, parseDOB(signUpRequest.getDateOfBirth()), roles);
-        return userRepository.save(newUser);
+        return userRepository.save(newPatient);
     }
 
     public Doctor registerDoctor(DoctorSignUp signUpRequest) {

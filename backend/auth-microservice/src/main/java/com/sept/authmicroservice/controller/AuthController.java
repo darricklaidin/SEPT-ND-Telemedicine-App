@@ -43,10 +43,10 @@ public class AuthController {
         return ResponseEntity.status(retStatus).body(body);
     }
 
-    // register a new user
+    // register a new patient
     @PostMapping("/signup")
-    public ResponseEntity<User> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        User user = authService.registerUser(signUpRequest);
+    public ResponseEntity<User> registerPatient(@Valid @RequestBody SignUpRequest signUpRequest) {
+        User user = authService.registerPatient(signUpRequest);
         return ResponseEntity.ok().body(user);
     }
 
