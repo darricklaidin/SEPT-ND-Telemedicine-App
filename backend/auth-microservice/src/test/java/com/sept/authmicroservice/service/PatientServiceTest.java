@@ -20,6 +20,11 @@ class PatientServiceTest {
     }
 
     @Test
+    @void updatePatient() {
+
+    }
+
+    @Test
     void deletePatient() {
     }
 }
