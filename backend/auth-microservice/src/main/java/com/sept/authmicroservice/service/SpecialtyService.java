@@ -6,7 +6,7 @@ import com.sept.authmicroservice.model.Specialty;
 import com.sept.authmicroservice.repository.SpecialtyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.superfive.telemedicine.dto.SpecialtyDTO;
+import com.sept.authmicroservice.payload.SpecialtyDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
