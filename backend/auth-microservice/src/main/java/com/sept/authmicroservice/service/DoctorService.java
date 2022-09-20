@@ -1,6 +1,5 @@
 package com.sept.authmicroservice.service;
 
-import com.sept.authmicroservice.exception.ResourceAlreadyExistsException;
 import com.sept.authmicroservice.exception.ResourceNotFoundException;
 import com.sept.authmicroservice.model.Doctor;
 import com.sept.authmicroservice.repository.DoctorRepository;
@@ -8,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class DoctorService {
@@ -29,21 +26,6 @@ public class DoctorService {
     public Doctor getDoctorByID(int doctorID) throws ResourceNotFoundException {
         return doctorRepository.findByUserID(doctorID)
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor", "userID", doctorID));
-    }
-
-    // Create a new doctor
-    public Doctor createDoctor(Doctor newDoctor) throws ResourceAlreadyExistsException {
-        // Ensure doctor ID does not already exist
-        try {
-            this.getDoctorByID(newDoctor.getUserID());
-            throw new ResourceAlreadyExistsException("Doctor", "userID", newDoctor.getUserID());
-        } catch (ResourceNotFoundException exception) {
-            // Doctor id does not exist, continue...
-        }
-
-        doctorRepository.save(newDoctor);
-
-        return newDoctor;
     }
 
     // Update an existing doctor

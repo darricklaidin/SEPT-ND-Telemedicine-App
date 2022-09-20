@@ -30,12 +30,6 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.getDoctorByID(doctorID));
     }
 
-    // Create doctors
-    @PostMapping("")
-    public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {
-        return ResponseEntity.ok(doctorService.createDoctor(doctor));
-    }
-
     // Update doctors
     // Deactivate doctors (use PUT to modify accountStatus value instead of DELETE)
     @PutMapping("/{doctorID}")
@@ -51,5 +45,4 @@ public class DoctorController {
     public ResponseEntity<Doctor> deleteDoctor(@PathVariable(value = "doctorID") int doctorID) {
         return ResponseEntity.ok(doctorService.deleteDoctor(doctorID));
     }
-
 }

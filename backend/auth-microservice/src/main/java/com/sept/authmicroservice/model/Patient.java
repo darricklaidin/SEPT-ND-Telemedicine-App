@@ -16,8 +16,8 @@ public class Patient extends User {
     private String symptoms;
 
     public Patient(int userID, String firstName, String lastName, String email, String password,
-                   LocalDate dateOfBirth, List<Role> roles, String symptoms) {
+                   LocalDate dateOfBirth, List<Role> roles) {
         super(userID, firstName, lastName, email, password, dateOfBirth, roles);
-        this.symptoms = symptoms;
+        this.symptoms = null;
     }
 }

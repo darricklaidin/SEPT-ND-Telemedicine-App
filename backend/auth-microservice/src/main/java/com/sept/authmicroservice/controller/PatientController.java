@@ -32,12 +32,6 @@ public class PatientController {
         return ResponseEntity.ok(patientService.getPatientByID(patientID));
     }
 
-    // Create a new patient
-    @PostMapping("")
-    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
-        return ResponseEntity.ok(patientService.createPatient(patient));
-    }
-
     // Delete patient by id
     @DeleteMapping("/{patientID}")
     public ResponseEntity<Patient> deletePatient(@PathVariable(value = "patientID") int patientID) {
