@@ -32,18 +32,24 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> login(context) async {
-    if (_formKey.currentState!.validate()) {
-      var email = _emailController.text;
-      var password = _passwordController.text;
+    ApiResponse res = ApiResponse();
+    try {
+      if (_formKey.currentState!.validate()) {
+        var email = _emailController.text;
+        var password = _passwordController.text;
 
-      ApiResponse res = await loginUser(email, password);
-      if (res.success) {
-        Navigator.pushNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(res.msg ?? 'Invalid Credentials'),
-            backgroundColor: LightPalette.error));
+        res = await loginUser(email, password);
       }
+    } catch (e) {
+      res.msg = "Error";
+    }
+
+    if (res.success) {
+      Navigator.pushNamed(context, '/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(res.msg ?? 'Invalid Credentials'),
+          backgroundColor: LightPalette.error));
     }
   }
 

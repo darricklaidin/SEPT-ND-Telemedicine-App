@@ -3,7 +3,8 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:talkjs_flutter/talkjs_flutter.dart';
 
 import '../home/home_screen.dart';
-import '../../services/user_service.dart';
+import '../../services/doctor_service.dart';
+import '../../services/patient_service.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({Key? key}) : super(key: key);
@@ -88,7 +89,9 @@ class _ChatScreenState extends State<ChatScreen> {
     _session = Session(appId: 'taq5zIcQ');
 
     // create a TalkJS user
-    final me = isPatient ? await getPatient() : await getDoctor();
+    final me = isPatient
+        ? await PatientService.fetchPatient(3)
+        : await DoctorService.fetchDoctor(1);
     _me = _session.getUser(
       id: '${(isPatient ? 'p' : 'd')}${me.userID.toString()}', // create unique depending on user type
       name: '${me.firstName} ${me.lastName}',
@@ -100,7 +103,9 @@ class _ChatScreenState extends State<ChatScreen> {
     _session.me = _me;
 
     // create another user to create a conversation with
-    final other = isPatient ? await getDoctor() : await getPatient();
+    final other = isPatient
+        ? await DoctorService.fetchDoctor(1)
+        : await PatientService.fetchPatient(3);
 
     _other = _session.getUser(
       id: '${(isPatient ? 'p' : 'd')}${other.userID.toString()}',
