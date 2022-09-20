@@ -6,6 +6,8 @@ import 'package:time_picker_widget/time_picker_widget.dart';
 import '../../models/appointment.dart';
 import '../../models/doctor.dart';
 import '../../models/patient.dart';
+import 'package:frontend/models/availability.dart';
+import 'package:frontend/services/doctor_service.dart';
 
 class BookAppointmentScreen extends StatefulWidget {
   // Doctor doctor;
@@ -18,6 +20,8 @@ class BookAppointmentScreen extends StatefulWidget {
 
 class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   int _index = 0;
+
+  bool isLoading = true;
 
   // TODO: Use authentication for doctor and patient
 
@@ -41,20 +45,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
     accountStatus: "Active",
   );
 
-
-  // TODO: Dynamically generate these depending on doctor's availability and user appointments
-  // List<>
-
-
-  final List<DateTime> UNAVAILABE_DATES = [
-    // DateTime(2022, 09, 20),
-    // DateTime(2022, 09, 21)
-  ];
-
-  // list the available hours from the backend as INT values in 24 hr format
-  final List<int> _availableHours = [4, 5, 6, 7, 10, 11, 13, 14, 16, 19];
-  // hardcode this list(from this you can get the slots hourly)
-  final List<int> _availableMinutes = [0];
+  List<int> daysOfWeekAvailable = List<int>.empty(growable: true);
 
   // selected time - in 12 hr format
   TimeOfDay? selectedStartTime;
@@ -89,8 +80,34 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
     }
   }
 
+  void initializeCalendarRestrictions(int doctorID, int patientID) async {
+    // Load doctor availabilities from backend
+    List<Availability> doctorAvailabilities = await DoctorService.fetchDoctorAvailabilities(doctorID);
+    setState(() {
+      for (Availability availability in doctorAvailabilities) {
+        daysOfWeekAvailable.add(availability.dayOfWeek!);
+      }
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initializeCalendarRestrictions(doctor.userID, 1);
+
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Padding(
+        padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
         body: Stepper(
             currentStep: _index,
@@ -164,7 +181,12 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
           title: const Text('Select Date'),
           content: SfDateRangePicker(
             minDate: DateTime.now(),
-            monthViewSettings: DateRangePickerMonthViewSettings(blackoutDates: UNAVAILABE_DATES),
+            monthViewSettings: const DateRangePickerMonthViewSettings(
+              firstDayOfWeek: 1,
+            ),
+            selectableDayPredicate: (date) {
+              return daysOfWeekAvailable.contains(date.weekday);
+            },
             selectionMode: DateRangePickerSelectionMode.single,
             monthCellStyle: const DateRangePickerMonthCellStyle(
               blackoutDateTextStyle: TextStyle(color: Colors.grey),
@@ -172,7 +194,6 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
             showNavigationArrow: true,
             showTodayButton: true,
             onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-              print(args.value);
               setState(() {
                 selectedDate = args.value;
               });
@@ -197,7 +218,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                     selectableTimePredicate: (time) => true,
                   ).then((time) => setState(() {
                     selectedStartTime = time;
-                    print(selectedStartTime);
+                    // print(selectedStartTime);
                   }));
                 },
                 child: Text(
@@ -225,7 +246,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                     selectableTimePredicate: (time) => true,
                   ).then((time) => setState(() {
                     selectedEndTime = time;
-                    print(selectedEndTime);
+                    // print(selectedEndTime);
                   }));
                 },
                 child: Text(

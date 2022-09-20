@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 class AppointmentService {
 
   static Future deleteAppointment(int? appointmentID) async {
-    // print("Appointment id: $appointmentID");
     var response = await http.delete(Uri.parse('$apiRootUrl/appointments/$appointmentID'));
     if (response.statusCode == 200) {
       print("Deleted appointment $appointmentID");
@@ -24,8 +23,6 @@ class AppointmentService {
       },
       body: jsonEncode(appointment.toJson()),
     );
-
-    print(response.body);
 
     if (response.statusCode == 200) {
       return "success";
