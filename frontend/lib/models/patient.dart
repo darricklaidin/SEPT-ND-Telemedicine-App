@@ -1,4 +1,5 @@
 import 'package:frontend/models/user.dart';
+import 'package:intl/intl.dart';
 
 class Patient extends User {
 
@@ -31,5 +32,16 @@ class Patient extends User {
   @override
   String toString() {
     return super.toString();
+  }
+
+  toJson() {
+    return {
+      'userID': userID,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'dateOfBirth': DateFormat('yyyy-MM-dd').format(dateOfBirth),
+      'accountStatus': accountStatus,
+    };
   }
 }

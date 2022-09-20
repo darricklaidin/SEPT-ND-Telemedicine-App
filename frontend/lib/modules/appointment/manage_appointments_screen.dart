@@ -23,7 +23,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
 
   void loadAppointments() async {
     print("Fetching appointments...");
-    appointments = await PatientService.fetchPatientAppointments(1);
+    appointments = await PatientService.fetchPatientAppointments(1);  // TODO: 1: patientID use user authentication
     setState(() {
       appointments = appointments;
       isLoading = false;
@@ -53,15 +53,28 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 onPressed: () {},
               )
             ),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Appointments",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+            Row(
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Appointments",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
+                const Spacer(),
+                ElevatedButton(
+                  onPressed: () {
+                    isLoading = true;
+                    loadAppointments();
+                  },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
+                  child: Text("Refresh", style: TextStyle(color: Colors.white),),
+                ),
+              ],
             ),
             const SizedBox(height: 25),
             Builder(

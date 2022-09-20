@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/appointment/book_appointment_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
-import 'modules/booking/booking_screen.dart';
-import 'modules/booking/doctor_profile_screen.dart';
+import 'modules/doctor/searched_doctor_profile_screen.dart';
 import 'package:frontend/modules/appointment/manage_appointments_screen.dart';
 import 'modules/home/home_screen.dart';
 import 'modules/chat/chat_screen.dart';
@@ -105,7 +105,7 @@ class _MyAppState extends State<MyApp> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
         routeAndNavigatorSettings: RouteAndNavigatorSettings(
             initialRoute: '/search',
-            routes: {'/booking': (context) => const BookingScreen()}),
+            routes: {'/booking': (context) => const BookAppointmentScreen()}),
       ),
       PersistentBottomNavBarItem(
           icon: const Icon(CupertinoIcons.calendar),
