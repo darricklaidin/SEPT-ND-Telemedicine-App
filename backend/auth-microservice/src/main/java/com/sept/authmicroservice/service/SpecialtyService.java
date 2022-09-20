@@ -42,8 +42,9 @@ public class SpecialtyService {
         } catch (ResourceNotFoundException exception) {
             // Specialty id does not exist, continue...
         }
-
-        return specialtyRepository.save(new Specialty(newSpecialty.getSpecialtyName()));
+        Specialty temp = new Specialty(newSpecialty.getSpecialtyName());
+        specialtyRepository.save(temp);
+        return temp;
     }
 
     public Specialty updateSpecialty(int specialtyID, SpecialtyDTO specialtyDTO) {

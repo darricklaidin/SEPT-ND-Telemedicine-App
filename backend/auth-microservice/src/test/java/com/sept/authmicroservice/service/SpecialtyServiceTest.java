@@ -20,7 +20,9 @@ import com.sept.authmicroservice.service.*;
 import com.sept.authmicroservice.repository.SpecialtyRepository;
 import com.sept.authmicroservice.service.SpecialtyService;
 import com.sept.authmicroservice.payload.SpecialtyDTO;
+import org.springframework.data.domain.Page;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.Month;
@@ -50,34 +52,61 @@ class SpecialtyServiceTest {
         specialty = new Specialty(specialtyName);
         specialtyRepository = Mockito.mock(SpecialtyRepository.class);
         specialtyService = new SpecialtyService(specialtyRepository);
+        specialtyDTO = new SpecialtyDTO();
+        specialtyDTO.setSpecialtyName(specialtyName);
+        specialty.setSpecialtyID(1);
     }
 
-    @Test
-    void getAllSpecialties() {
-
-    }
+//    @Test
+//    void getAllSpecialties() {
+//        Pageable pageable = null;
+//        Page<Specialty> specialties = null;
+//        when(specialtyRepository.findAllBy(pageable)).thenReturn(specialties);
+//    }
 
     @Test
     void getSpecialtyByID() {
+        when(specialtyRepository.findBySpecialtyID(specialtyID)).thenReturn(Optional.of(specialty));
+        Assertions.assertTrue(specialtyService.getSpecialtyByID(specialtyID).equals(specialty));
     }
 
     @Test
     void getSpecialtyByName() {
+        when(specialtyRepository.findBySpecialtyName(specialtyName)).thenReturn(Optional.of(specialty));
+        Assertions.assertTrue(specialtyService.getSpecialtyByName(specialtyName).equals(specialty));
     }
 
     @Test
     void createSpecialty() {
-        specialtyDTO = new SpecialtyDTO();
-        specialtyDTO.setSpecialtyName(specialtyName);
+//        when(specialtyRepository.save(specialty)).thenReturn(specialty);
         Specialty newSpecialty = specialtyService.createSpecialty(specialtyDTO);
-        Assertions.assertTrue(newSpecialty.equals(specialty));
+        Assertions.assertTrue(newSpecialty.getSpecialtyName().equals(specialty.getSpecialtyName()));
+//        verify(specialtyRepository).save(specialty);
     }
 
     @Test
-    void updateSpecialty() {
+    public void TestCreate2Patients_FALSE() throws ResourceAlreadyExistsException{
+        specialtyService.createSpecialty(specialtyDTO);
+        when(specialtyRepository.findBySpecialtyName(specialtyDTO.getSpecialtyName())).thenReturn(Optional.of(specialty));
+        Assertions.assertThrows(ResourceAlreadyExistsException.class, () -> specialtyService.createSpecialty(specialtyDTO));
     }
+//
+//    @Test
+//    void updateSpecialty() {
+//
+//        Specialty specialty1 = new Specialty("Chemotherapy");
+//        SpecialtyDTO specialtyDTO1 = new SpecialtyDTO();
+//        specialtyDTO1.setSpecialtyName(specialty1.getSpecialtyName());
+//        Specialty specialty2 = new Specialty("Optometry");
+//
+//    }
 
     @Test
     void deleteSpecialty() {
+        when(specialtyRepository.findBySpecialtyID(specialty.getSpecialtyID())).thenReturn(Optional.of(specialty));
+
+        specialtyService.deleteSpecialty(specialty.getSpecialtyID());
+
+        verify(specialtyRepository).deleteById(specialty.getSpecialtyID());
     }
 }
