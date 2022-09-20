@@ -21,13 +21,11 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   bool isLoading = true;
 
   void loadAppointments() async {
-    print("Fetching appointments...");
     appointments = await PatientService.fetchPatientAppointments();
     setState(() {
       appointments = appointments;
       isLoading = false;
     });
-    print("Fetched appointments.");
   }
 
   @override

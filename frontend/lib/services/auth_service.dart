@@ -66,3 +66,7 @@ Future<ApiResponse> loginUser(String email, String password) async {
 Future<void> logoutUser() async {
   await storage.deleteAll();
 }
+
+Future<int> getUserIdFromStorage() async {
+  return int.parse(await storage.read(key: "userId") ?? "-1");
+}

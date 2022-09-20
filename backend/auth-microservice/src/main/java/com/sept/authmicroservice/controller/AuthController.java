@@ -37,7 +37,7 @@ public class AuthController {
             body = new ApiResponse(false, e.getMessage());
         } catch (Exception e) {
             retStatus = HttpStatus.UNAUTHORIZED;
-            body = new ApiResponse(false, e.getMessage());
+            body = new ApiResponse(false, "Invalid Credentials");
         }
 
         return ResponseEntity.status(retStatus).body(body);

@@ -4,15 +4,14 @@ class User {
   final String lastName;
   final String email;
   final DateTime dateOfBirth;
-  final String accountStatus;
 
-  User(
-      {required this.userID,
-      required this.firstName,
-      required this.lastName,
-      required this.email,
-      required this.dateOfBirth,
-      required this.accountStatus});
+  User({
+    required this.userID,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.dateOfBirth,
+  });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -21,7 +20,6 @@ class User {
       lastName: json['lastName'],
       email: json['email'],
       dateOfBirth: json['dateOfBirth'],
-      accountStatus: json['accountStatus'],
     );
   }
 
@@ -31,7 +29,6 @@ class User {
         'firstName: $firstName\n'
         'lastName: $lastName\n'
         'email: $email\n'
-        'dateOfBirth: $dateOfBirth\n'
-        'accountStatus: $accountStatus}';
+        'dateOfBirth: $dateOfBirth\n';
   }
 }
