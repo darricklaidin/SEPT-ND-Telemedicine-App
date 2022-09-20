@@ -21,6 +21,7 @@ import com.sept.authmicroservice.exception.ResourceAlreadyExistsException;
 import com.sept.authmicroservice.exception.ResourceNotFoundException;
 import com.sept.authmicroservice.model.*;
 import com.sept.authmicroservice.service.*;
+import org.springframework.data.domain.Page;
 
 
 import java.time.LocalDateTime;
@@ -49,8 +50,7 @@ class DoctorServiceTest {
         doctorRepository = Mockito.mock(DoctorRepository.class);
         doctorService = new DoctorService(doctorRepository);
         LocalDate dob = LocalDate.of(2000, Month.APRIL, 18);
-//        Role role1 = new Role(RoleName.PATIENT);
-//        Specialty specialty1 = new Specialty("Surgery");
+
 
         doctor = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com", "password", dob, null , null);
     }
@@ -58,11 +58,13 @@ class DoctorServiceTest {
     //public DoctorSignUp(String firstName, String lastName, String email, String password,
     //            String dateOfBirth, Integer specialtyId)
 
-    @Test
-    void getAllDoctors() {
-
-
-    }
+//    @Test
+//    void getAllDoctors() {
+//        Page<Doctor> doctorPage = doctorService.getAllDoctors(null);  // get doctor page
+//        List<Doctor> doctors = doctorPage.getContent();  // get list of doctors
+//        // do test
+//
+//    }
 
     @Test
     void getDoctorByID() {
@@ -80,10 +82,12 @@ class DoctorServiceTest {
 
     @Test
     void updateDoctor() {
+
         LocalDate dob2 = LocalDate.of(2002, Month.JULY, 16);
         Doctor doctor2 = new Doctor(2, "Darrick", "Hong", "update@gmail.com", "update", dob2 , null, null);
         Doctor doctor3 = new Doctor(2, "Nim", "Tong", "update@gmail.com", "update", dob2, null,null);
-        BDDMockito.given(doctorRepository.findByUserID(doctor.getUserID())).willReturn(Optional.of(doctor));
+
+        BDDMockito.given(doctorRepository.findByUserID(doctor.getUserID())).willReturn(Optional.of(doctor)); //1
 
         doctorService.updateDoctor(doctor.getUserID(), doctor2);
 

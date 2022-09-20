@@ -66,6 +66,7 @@ class SpecialtyServiceTest {
 
     @Test
     void getSpecialtyByID() {
+
         when(specialtyRepository.findBySpecialtyID(specialtyID)).thenReturn(Optional.of(specialty));
         Assertions.assertTrue(specialtyService.getSpecialtyByID(specialtyID).equals(specialty));
     }
@@ -90,16 +91,24 @@ class SpecialtyServiceTest {
         when(specialtyRepository.findBySpecialtyName(specialtyDTO.getSpecialtyName())).thenReturn(Optional.of(specialty));
         Assertions.assertThrows(ResourceAlreadyExistsException.class, () -> specialtyService.createSpecialty(specialtyDTO));
     }
-//
-//    @Test
-//    void updateSpecialty() {
-//
-//        Specialty specialty1 = new Specialty("Chemotherapy");
-//        SpecialtyDTO specialtyDTO1 = new SpecialtyDTO();
-//        specialtyDTO1.setSpecialtyName(specialty1.getSpecialtyName());
-//        Specialty specialty2 = new Specialty("Optometry");
-//
-//    }
+
+    @Test
+    void updateSpecialty() {
+
+        Specialty specialty1 = new Specialty("Surgery");
+        Specialty specialty2 = new Specialty("Optometry");
+
+        SpecialtyDTO specialtyDTO2 = new SpecialtyDTO();
+        specialtyDTO2.setSpecialtyName("Optometry");
+
+
+        BDDMockito.given(specialtyRepository.findBySpecialtyID(specialty.getSpecialtyID())).willReturn(Optional.of(specialty));
+
+        specialtyService.updateSpecialty(specialty.getSpecialtyID(), specialtyDTO2);
+
+        assertEquals(1, specialty.getSpecialtyID());
+        assertEquals("Optometry", specialty.getSpecialtyName());
+    }
 
     @Test
     void deleteSpecialty() {
