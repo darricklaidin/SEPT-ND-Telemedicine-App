@@ -20,7 +20,7 @@ class PatientServiceTest {
     }
 
     @Test
-    @void updatePatient() {
+    void updatePatient() {
 
     }
 
