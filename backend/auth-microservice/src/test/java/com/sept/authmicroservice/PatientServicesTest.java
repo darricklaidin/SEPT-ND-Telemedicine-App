@@ -1,4 +1,4 @@
-package org.superfive.telemedicine;
+package com.sept.authmicroservice;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
