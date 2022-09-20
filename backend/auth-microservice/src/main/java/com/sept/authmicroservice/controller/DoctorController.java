@@ -30,24 +30,6 @@ public class DoctorController {
         return ResponseEntity.ok(doctorService.getDoctorByID(doctorID));
     }
 
-    // Get a doctor's appointments
-    @GetMapping("/{doctorID}/appointments")
-    public ResponseEntity<List<Appointment>> getDoctorAppointments(
-            @PathVariable(value = "doctorID") int doctorID,
-            @RequestParam(value = "sort", required = false) String sortMethod
-    ) {
-        return ResponseEntity.ok(doctorService.getDoctorAppointments(doctorID, sortMethod));
-    }
-
-    // Get a doctor's availabilities
-    @GetMapping("/{doctorID}/availabilities")
-    public ResponseEntity<List<Availability>> getDoctorAvailabilities(
-            @PathVariable(value = "doctorID") int doctorID,
-            @RequestParam(value = "sort", required = false) String sortMethod
-    ) {
-        return ResponseEntity.ok(doctorService.getDoctorAvailabilities(doctorID, sortMethod));
-    }
-
     // Create doctors
     @PostMapping("")
     public ResponseEntity<Doctor> createDoctor(@RequestBody Doctor doctor) {

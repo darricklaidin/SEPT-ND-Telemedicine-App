@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.service.AppointmentService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
@@ -28,6 +30,15 @@ public class AppointmentController {
     @GetMapping("/{appointmentID}")
     public ResponseEntity<Appointment> getAppointmentByID(@PathVariable(value = "appointmentID") int appointmentID) {
         return ResponseEntity.ok(appointmentService.getAppointmentByID(appointmentID));
+    }
+
+    // Get a doctor's appointments
+    @GetMapping("/{doctorID}")
+    public ResponseEntity<List<Appointment>> getDoctorAppointments(
+            @PathVariable(value = "doctorID") int doctorID,
+            @RequestParam(value = "sort", required = false) String sortMethod
+    ) {
+        return ResponseEntity.ok(appointmentService.getDoctorAppointments(doctorID, sortMethod));
     }
 
     // Create a new appointment

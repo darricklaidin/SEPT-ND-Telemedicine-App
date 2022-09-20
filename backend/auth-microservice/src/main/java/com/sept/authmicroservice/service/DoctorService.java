@@ -31,20 +31,6 @@ public class DoctorService {
                 .orElseThrow(() -> new ResourceNotFoundException("Doctor", "userID", doctorID));
     }
 
-    // Get a doctor's appointments
-    public List<Appointment> getDoctorAppointments(int doctorID, String sortMethod) {
-        List<Appointment> appointments = new ArrayList<>(this.getDoctorByID(doctorID).getAppointments());
-        SortUtility.sortAppointments(sortMethod, appointments);
-        return appointments;
-    }
-
-    // Get a doctor's availabilities
-    public List<Availability> getDoctorAvailabilities(int doctorID, String sortMethod) {
-        List<Availability> availabilities = new ArrayList<>(this.getDoctorByID(doctorID).getAvailabilities());
-        SortUtility.sortAvailabilities(sortMethod, availabilities);
-        return availabilities;
-    }
-
     // Create a new doctor
     public Doctor createDoctor(Doctor newDoctor) throws ResourceAlreadyExistsException {
         // Ensure doctor ID does not already exist

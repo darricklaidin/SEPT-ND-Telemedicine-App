@@ -9,6 +9,10 @@ import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
+import org.superfive.telemedicine.utility.SortUtility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AvailabilityService {
@@ -26,6 +30,13 @@ public class AvailabilityService {
     public Availability getAvailabilityByID(int availabilityID) throws ResourceNotFoundException {
         return availabilityRepository.findByAvailabilityID(availabilityID)
                 .orElseThrow(() -> new ResourceNotFoundException("Availability", "availabilityID", availabilityID));
+    }
+
+    // Get a doctor's availabilities
+    public List<Availability> getDoctorAvailabilities(int doctorID, String sortMethod) {
+        List<Availability> availabilities = availabilityRepository.findByDoctorID(doctorID);
+        SortUtility.sortAvailabilities(sortMethod, availabilities);
+        return availabilities;
     }
 
     public Availability addAvailability(Availability availability) throws ResourceAlreadyExistsException,

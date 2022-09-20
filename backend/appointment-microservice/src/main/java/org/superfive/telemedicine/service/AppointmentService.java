@@ -10,6 +10,7 @@ import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.model.Patient;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
+import org.superfive.telemedicine.utility.SortUtility;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -42,6 +43,13 @@ public class AppointmentService {
     public Appointment getAppointmentByID(int appointmentID) throws ResourceNotFoundException {
         return appointmentRepository.findByAppointmentID(appointmentID)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", "appointmentID", appointmentID));
+    }
+
+    // Get a doctor's appointments
+    public List<Appointment> getDoctorAppointments(int doctorID, String sortMethod) {
+        List<Appointment> appointments = appointmentRepository.findByDoctorID(doctorID);
+        SortUtility.sortAppointments(sortMethod, appointments);
+        return appointments;
     }
 
     // Add a new appointment
