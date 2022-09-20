@@ -29,12 +29,6 @@ public class PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "userID", patientID));
     }
 
-    public List<Appointment> getPatientAppointments(int patientID, String sortMethod) {
-        List<Appointment> appointments = new ArrayList<>(this.getPatientByID(patientID).getAppointments());
-        SortUtility.sortAppointments(sortMethod, appointments);
-        return appointments;
-    }
-
     public Patient createPatient(Patient patient) throws ResourceAlreadyExistsException {
         // Ensure that patient id does not already exist
         try {

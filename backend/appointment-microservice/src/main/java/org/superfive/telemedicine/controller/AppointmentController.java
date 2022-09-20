@@ -33,12 +33,22 @@ public class AppointmentController {
     }
 
     // Get a doctor's appointments
-    @GetMapping("/{doctorID}")
+    @GetMapping("/doctor/{doctorID}")
     public ResponseEntity<List<Appointment>> getDoctorAppointments(
             @PathVariable(value = "doctorID") int doctorID,
             @RequestParam(value = "sort", required = false) String sortMethod
     ) {
         return ResponseEntity.ok(appointmentService.getDoctorAppointments(doctorID, sortMethod));
+    }
+
+    // Get a patient's appointments
+    // Sort by appointmentID, appointmentSchedule
+    @GetMapping("/patient/{patientID}")
+    public ResponseEntity<List<Appointment>> getPatientAppointments(
+            @PathVariable(value = "patientID") int patientID,
+            @RequestParam(value = "sort", required = false) String sortMethod
+    ) {
+        return ResponseEntity.ok(appointmentService.getPatientAppointments(patientID, sortMethod));
     }
 
     // Create a new appointment

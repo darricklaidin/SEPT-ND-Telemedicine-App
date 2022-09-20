@@ -32,16 +32,6 @@ public class PatientController {
         return ResponseEntity.ok(patientService.getPatientByID(patientID));
     }
 
-    // Get a patient's appointments
-    // Sort by appointmentID, appointmentSchedule
-    @GetMapping("/{patientID}/appointments")
-    public ResponseEntity<List<Appointment>> getPatientAppointments(
-            @PathVariable(value = "patientID") int patientID,
-            @RequestParam(value = "sort", required = false) String sortMethod
-    ) {
-        return ResponseEntity.ok(patientService.getPatientAppointments(patientID, sortMethod));
-    }
-
     // Create a new patient
     @PostMapping("")
     public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {

@@ -5,24 +5,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 public class Patient extends User {
-    // TODO: Prescribed medicines
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int patientID;
+    private String symptoms;
 
-    @NotNull
-    @Column(unique = true)
-    private int userID;
-
-    public Patient(int patientID, int userID) {
-        this.patientID = patientID;
-        this.userID = userID;
+    public Patient(int userID, String firstName, String lastName, String email, String password,
+                   LocalDate dateOfBirth, List<Role> roles, String symptoms) {
+        super(userID, firstName, lastName, email, password, dateOfBirth, roles);
+        this.symptoms = symptoms;
     }
 }

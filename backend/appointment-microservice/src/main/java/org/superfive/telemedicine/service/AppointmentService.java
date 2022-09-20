@@ -14,6 +14,7 @@ import org.superfive.telemedicine.utility.SortUtility;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +45,13 @@ public class AppointmentService {
     // Get a doctor's appointments
     public List<Appointment> getDoctorAppointments(int doctorID, String sortMethod) {
         List<Appointment> appointments = appointmentRepository.findByDoctorID(doctorID);
+        SortUtility.sortAppointments(sortMethod, appointments);
+        return appointments;
+    }
+
+    // Get a patient's appointments
+    public List<Appointment> getPatientAppointments(int patientID, String sortMethod) {
+        List<Appointment> appointments = appointmentRepository.findByPatientID(patientID);
         SortUtility.sortAppointments(sortMethod, appointments);
         return appointments;
     }
