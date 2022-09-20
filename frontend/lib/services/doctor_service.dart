@@ -9,7 +9,7 @@ import 'dart:convert';
 class DoctorService {
 
   static Future<List<Appointment>> fetchDoctorAppointments(int doctorID) async {
-    var response = await http.get(Uri.parse('$apiRootUrl/doctors/$doctorID/appointments?sort=datetime'));
+    var response = await http.get(Uri.parse('$apiAuthRootUrl/doctors/$doctorID/appointments?sort=datetime'));
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
@@ -21,7 +21,7 @@ class DoctorService {
   }
 
   static Future<List<Availability>> fetchDoctorAvailabilities(int doctorID) async {
-    var response = await http.get(Uri.parse('$apiRootUrl/doctors/$doctorID/availabilities'));
+    var response = await http.get(Uri.parse('$apiAuthRootUrl/doctors/$doctorID/availabilities'));
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);

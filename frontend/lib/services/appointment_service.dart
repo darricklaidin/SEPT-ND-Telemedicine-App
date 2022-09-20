@@ -7,17 +7,17 @@ import 'package:http/http.dart' as http;
 class AppointmentService {
 
   static Future deleteAppointment(int? appointmentID) async {
-    var response = await http.delete(Uri.parse('$apiRootUrl/appointments/$appointmentID'));
+    var response = await http
+        .delete(Uri.parse('$apiBookingRootUrl/appointments/$appointmentID'));
     if (response.statusCode == 200) {
       print("Deleted appointment $appointmentID");
-    }
-    else {
-      throw Exception('Failed to delete appointment with id: $appointmentID');
+    } else {
+      throw Exception('Failed to delete appointment $appointmentID');
     }
   }
 
   static Future bookAppointment(Appointment appointment) async {
-    var response = await http.post(Uri.parse('$apiRootUrl/appointments'),
+    var response = await http.post(Uri.parse('$apiBookingRootUrl/appointments'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -42,7 +42,7 @@ class AppointmentService {
   }
 
   static Future updateAppointment(int appointmentID, Appointment appointment) async {
-    var response = await http.put(Uri.parse('$apiRootUrl/appointments/$appointmentID'),
+    var response = await http.put(Uri.parse('$apiBookingRootUrl/appointments/$appointmentID'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -64,5 +64,4 @@ class AppointmentService {
       }
     }
   }
-
 }

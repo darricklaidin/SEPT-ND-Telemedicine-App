@@ -10,7 +10,7 @@ class PatientService {
 
   static Future<List<Appointment>> fetchPatientAppointments(int patientID) async {
 
-    var response = await http.get(Uri.parse('$apiRootUrl/patients/$patientID/appointments?sort=datetime'));
+    var response = await http.get(Uri.parse('$apiAuthRootUrl/patients/$patientID/appointments?sort=datetime'));
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);

@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/authorization/login_screen.dart';
+
+import '../../services/auth_service.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  Future<void> logout(context) async {
+    await logoutUser();
+    Navigator.of(context, rootNavigator: true).pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -9,12 +17,14 @@ class HomeScreen extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     Color color = Theme.of(context).colorScheme.primary;
 
-    return Scaffold(
-      body: _buildBody(color, height, width),
-    );
+    return Builder(builder: (context) {
+      return Scaffold(
+        body: _buildBody(context, color, height, width),
+      );
+    });
   }
 
-  Widget _buildBody(color, height, width) {
+  Widget _buildBody(BuildContext context, color, height, width) {
     return SizedBox(
       height: height,
       width: width,
@@ -32,6 +42,23 @@ class HomeScreen extends StatelessWidget {
             height: height - 100,
             child: _buildContent(height, width),
           ),
+          Positioned(
+              top: height / 2 - 50,
+              right: width / 2 - 50,
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()));
+                  },
+                  child: const Text("Login"))),
+          Positioned(
+              top: height / 2 + 50,
+              right: width / 2 - 50,
+              child: ElevatedButton(
+                  onPressed: () => logout(context),
+                  child: const Text("Logout"))),
         ],
       ),
     );
