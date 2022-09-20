@@ -1,14 +1,57 @@
 package com.sept.authmicroservice.service;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.sept.authmicroservice.repository.DoctorRepository;
+import com.sept.authmicroservice.repository.PatientRepository;
+import com.sept.authmicroservice.service.DoctorService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.BDDMockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.RepeatedTest;
+import com.sept.authmicroservice.exception.ResourceAlreadyExistsException;
+import com.sept.authmicroservice.exception.ResourceNotFoundException;
+import com.sept.authmicroservice.model.*;
+import com.sept.authmicroservice.service.*;
+
+
+import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.*;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class DoctorServiceTest {
 
+    private Doctor doctor;
+    private Doctor doctor2;
+    private DoctorRepository doctorRepository;
+    private DoctorService doctorService;
+    private AuthService authService;
+    LocalDate dob;
+
     @BeforeEach
     void setUp() {
+        doctorRepository = Mockito.mock(DoctorRepository.class);
+        doctorService = new DoctorService(doctorRepository);
+        LocalDate dob = LocalDate.of(2000, Month.APRIL, 18);
+        Role role1 = new Role(RoleName.PATIENT);
+        Specialty specialty1 = new Specialty("Surgery");
+
+        doctor = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com", "password", dob, role1 , specialty1);
     }
 
     @Test
@@ -19,8 +62,35 @@ class DoctorServiceTest {
     void getDoctorByID() {
     }
 
+    //public Doctor(int userID, String firstName, String lastName, String email, String password,
+    //                  LocalDate dateOfBirth, List<Role> roles, Specialty specialty
+
     @Test
     void updateDoctor() {
+        LocalDate dob2 = LocalDate.of(2002, Month.JULY, 16);
+        Doctor doctor2 = new Doctor(2, "Darrick", "Hong", "update@gmail.com", "update", dob2 , null, null);
+        Doctor doctor3 = new Doctor(2, "Nim", "Tong", "update@gmail.com", "update", dob2, null);
+        BDDMockito.given(patientRepository.findByUserID(patient.getUserID())).willReturn(Optional.of(patient));
+
+        patientService.updatePatient(patient.getUserID(), patient2);
+
+        assertEquals(1, patient.getUserID());
+        assertEquals("Darrick", patient.getFirstName());
+        assertEquals("Hong", patient.getLastName());
+        assertEquals("update@gmail.com", patient.getEmail());
+        assertEquals("update", patient.getPassword());
+        assertEquals(dob2,patient.getDateOfBirth());
+        assertEquals(null, patient.getRoles());
+
+        patientService.updatePatient(patient.getUserID(), patient3);
+
+        assertEquals(1, patient.getUserID());
+        assertEquals("Nim", patient.getFirstName());
+        assertEquals("Tong", patient.getLastName());
+        assertEquals("update@gmail.com", patient.getEmail());
+        assertEquals("update", patient.getPassword());
+        assertEquals(dob2,patient.getDateOfBirth());
+        assertEquals(null, patient.getRoles());
     }
 
     @Test
