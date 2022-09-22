@@ -22,6 +22,7 @@ import com.sept.authmicroservice.exception.ResourceNotFoundException;
 import com.sept.authmicroservice.model.*;
 import com.sept.authmicroservice.service.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 
 import java.time.LocalDateTime;
@@ -53,22 +54,33 @@ class DoctorServiceTest {
 
 
         doctor = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com", "password", dob, null , null);
+        doctor2 = new Doctor(2, "Debug", "Kid", "pc@fmail.com", "password", dob, null , null);
     }
 
     //public DoctorSignUp(String firstName, String lastName, String email, String password,
     //            String dateOfBirth, Integer specialtyId)
 
-//    @Test
-//    void getAllDoctors() {
-//        Page<Doctor> doctorPage = doctorService.getAllDoctors(null);  // get doctor page
-//        List<Doctor> doctors = doctorPage.getContent();  // get list of doctors
-//        // do test
-//
-//    }
+    @Test
+    void getAllDoctors() {
+        when(doctorRepository.findAllBy(null)).thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(doctor, doctor2))));
+
+        Page<Doctor> doctorPage = doctorService.getAllDoctors(null);  // get doctor page
+
+        List<Doctor> doctors = doctorPage.getContent();  // get list of doctors
+
+        // do more testing
+        // test doctor list length
+        assertEquals(2, doctors.size());
+        // test doctor 1 name match
+        assertEquals(doctor, doctors.get(0));
+        // test doctor 2 name match
+        assertEquals(doctor2, doctors.get(1));
+        // test doctor...
+
+    }
 
     @Test
     void getDoctorByID() {
-
         when(doctorRepository.findByUserID(doctor.getUserID())).thenReturn(Optional.of(doctor));
 
         Doctor test_doctor = doctorService.getDoctorByID(doctor.getUserID());
