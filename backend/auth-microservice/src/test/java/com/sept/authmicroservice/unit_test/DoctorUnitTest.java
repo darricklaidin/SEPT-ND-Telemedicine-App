@@ -1,6 +1,7 @@
-package com.sept.authmicroservice.service;
+package com.sept.authmicroservice.unit_test;
 
 import com.sept.authmicroservice.repository.DoctorRepository;
+import com.sept.authmicroservice.service.DoctorService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.BDDMockito;

@@ -1,4 +1,4 @@
-package com.sept.authmicroservice.service;
+package com.sept.authmicroservice.rename_as_required;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
