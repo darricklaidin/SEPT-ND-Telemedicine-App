@@ -28,6 +28,8 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   String? userRole;
 
   void loadAppointments() async {
+    isLoading = true;
+    timeUp = false;
     userRole = await getUserRoleFromStorage();
 
     try {
@@ -71,15 +73,23 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 icon: const Icon(CupertinoIcons.profile_circled),
                 onPressed: () {},
               )),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Appointments",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Appointments",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-            ),
+              const Spacer(),
+              ElevatedButton(onPressed: loadAppointments,
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amber)),
+                  child: const Text("Refresh",
+                    style: TextStyle(fontWeight: FontWeight.bold),)),
+            ],
           ),
           const SizedBox(height: 25),
           Builder(builder: (context) {
