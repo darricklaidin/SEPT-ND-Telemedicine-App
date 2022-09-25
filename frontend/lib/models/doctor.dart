@@ -3,9 +3,20 @@ import 'package:frontend/models/user.dart';
 class Doctor extends User {
   final String specialty;
 
-  Doctor({userID, firstName, lastName, email, dateOfBirth, accountStatus, required this.specialty})
-      : super(userID: userID, firstName: firstName, lastName: lastName, email: email,
-      dateOfBirth: dateOfBirth, accountStatus: accountStatus);
+  Doctor(
+      {userID,
+      firstName,
+      lastName,
+      email,
+      dateOfBirth,
+      required this.specialty})
+      : super(
+          userID: userID,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          dateOfBirth: dateOfBirth,
+        );
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
@@ -14,9 +25,7 @@ class Doctor extends User {
       lastName: json['lastName'],
       email: json['email'],
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
-      accountStatus: json['accountStatus'],
       specialty: json['specialty']['specialtyName'],
     );
   }
-
 }

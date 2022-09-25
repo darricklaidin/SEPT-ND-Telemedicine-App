@@ -5,7 +5,9 @@ class PatientJoinAppointment extends StatefulWidget {
   final Function delete;
   final String name;
 
-  const PatientJoinAppointment({Key? key, required this.delete, required this.name}) : super(key: key);
+  const PatientJoinAppointment(
+      {Key? key, required this.delete, required this.name})
+      : super(key: key);
 
   @override
   State<PatientJoinAppointment> createState() => _PatientJoinAppointmentState();
@@ -36,16 +38,19 @@ class _PatientJoinAppointmentState extends State<PatientJoinAppointment> {
             ElevatedButton(
               onPressed: () {
                 widget.delete();
-                },  // TODO: Cancel appointment
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+                Navigator.pop(context);
+              },
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
               child: const Text("Cancel"),
             ),
             ElevatedButton(
-              onPressed: () {},  // TODO: Join Chat Page
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.amber,
+              onPressed: () {
+                // Navigator.pushNamed(context, '/chat');
+              }, // FIXME: Join Chat Page
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
               child: const Text("Join Chat"),
             ),
