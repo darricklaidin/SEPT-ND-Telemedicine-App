@@ -19,15 +19,24 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController =
       TextEditingController(text: "nim@nim123");
 
+  bool isLoading = true;
+
   @override
   void initState() {
+    // super.initState();
     _getAuth();
-    super.initState();
   }
 
   _getAuth() async {
+    // Check if token already exists in storage
     if (await checkAuth() != null) {
-      Navigator.pushReplacementNamed(context, '/home');
+      await Navigator.pushReplacementNamed(context, '/home');
+    }
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -56,11 +65,13 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Center(child: Text("Login")),
-        ),
-        body: Form(
-          key: _formKey,
+      appBar: AppBar(
+        title: const Center(child: Text("Login")),
+      ),
+      body: Builder(
+        builder: (context) => isLoading ?
+        const Center(child: CircularProgressIndicator()) :
+        Form(key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Email cannot be empty';
                       } else if (!RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                           .hasMatch(value)) {
                         return 'Invalid email';
                       }
@@ -148,10 +159,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             content: Text('Register Text Clicked'),
                           ));
                         }),
-                ]),
-              ),
+                  ]),
+              )
             ],
           ),
-        ));
+        )
+      )
+    );
   }
+
 }
