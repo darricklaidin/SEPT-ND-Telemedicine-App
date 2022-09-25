@@ -10,6 +10,6 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 public class SpecialtyDTO {
     @NotBlank
-    @Length(max = 12)
+    @Length(max = 30)
     private String specialtyName;
 }
