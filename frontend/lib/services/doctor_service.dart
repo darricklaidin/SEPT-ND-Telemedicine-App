@@ -31,10 +31,10 @@ class DoctorService {
         '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'));
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body);
+      List<dynamic> jsonData = jsonDecode(response.body)['content'];
       List<Appointment> appointments = [];
-      for (dynamic a in jsonData) {
-        appointments.add(await getAppointmentFromJSON(a));
+      for (dynamic appointment in jsonData) {
+        appointments.add(await getAppointmentFromJSON(appointment));
       }
       return appointments;
     } else {
