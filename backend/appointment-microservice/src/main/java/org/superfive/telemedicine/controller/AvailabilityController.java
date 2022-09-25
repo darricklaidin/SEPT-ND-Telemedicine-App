@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.service.AvailabilityService;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/availabilities")
@@ -34,11 +33,11 @@ public class AvailabilityController {
 
     // Get a doctor's availabilities
     @GetMapping("/{doctorID}/availabilities")
-    public ResponseEntity<List<Availability>> getDoctorAvailabilities(
+    public ResponseEntity<Page<Availability>> getDoctorAvailabilities(
             @PathVariable(value = "doctorID") int doctorID,
-            @RequestParam(value = "sort", required = false) String sortMethod
+            Pageable pageable
     ) {
-        return ResponseEntity.ok(availabilityService.getDoctorAvailabilities(doctorID, sortMethod));
+        return ResponseEntity.ok(availabilityService.getDoctorAvailabilities(doctorID, pageable));
     }
 
     // Add availability

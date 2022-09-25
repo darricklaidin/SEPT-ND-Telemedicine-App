@@ -9,10 +9,6 @@ import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
 import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
-import org.superfive.telemedicine.utility.SortUtility;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class AvailabilityService {
@@ -33,14 +29,13 @@ public class AvailabilityService {
     }
 
     // Get a doctor's availabilities
-    public List<Availability> getDoctorAvailabilities(int doctorID, String sortMethod) {
-        List<Availability> availabilities = availabilityRepository.findByDoctorID(doctorID);
-        SortUtility.sortAvailabilities(sortMethod, availabilities);
-        return availabilities;
+    public Page<Availability> getDoctorAvailabilities(int doctorID, Pageable pageable) {
+        return availabilityRepository.findByDoctorID(doctorID, pageable);
     }
 
     public Availability addAvailability(Availability availability) throws ResourceAlreadyExistsException,
             InvalidTimeException {
+
         // Ensure no id conflict
         try {
             this.getAvailabilityByID(availability.getAvailabilityID());

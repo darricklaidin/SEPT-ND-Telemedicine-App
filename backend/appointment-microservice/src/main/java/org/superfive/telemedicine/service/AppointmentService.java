@@ -9,14 +9,11 @@ import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
-import org.superfive.telemedicine.utility.SortUtility;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 @Service
@@ -43,17 +40,13 @@ public class AppointmentService {
     }
 
     // Get a doctor's appointments
-    public List<Appointment> getDoctorAppointments(int doctorID, String sortMethod) {
-        List<Appointment> appointments = appointmentRepository.findByDoctorID(doctorID);
-        SortUtility.sortAppointments(sortMethod, appointments);
-        return appointments;
+    public Page<Appointment> getDoctorAppointments(int doctorID, Pageable pageable) {
+        return appointmentRepository.findByDoctorID(doctorID, pageable);
     }
 
     // Get a patient's appointments
-    public List<Appointment> getPatientAppointments(int patientID, String sortMethod) {
-        List<Appointment> appointments = appointmentRepository.findByPatientID(patientID);
-        SortUtility.sortAppointments(sortMethod, appointments);
-        return appointments;
+    public Page<Appointment> getPatientAppointments(int patientID, Pageable pageable) {
+        return appointmentRepository.findByPatientID(patientID, pageable);
     }
 
     // Add a new appointment
@@ -76,8 +69,8 @@ public class AppointmentService {
         }
 
         // Ensure appointment is made at a valid date and time
-        List<Availability> doctorAvailabilities = availabilityRepository.findByDoctorID(appointment.getDoctorID());
-        List<Appointment> patientAppointments = appointmentRepository.findByPatientID(appointment.getPatientID());
+        List<Availability> doctorAvailabilities = availabilityRepository.findByDoctorID(appointment.getDoctorID(), null).getContent();
+        List<Appointment> patientAppointments = appointmentRepository.findByPatientID(appointment.getPatientID(), null).getContent();
 
         LocalDate appointmentDate = appointment.getDate();
         DayOfWeek appointmentDayOfWeek = appointmentDate.getDayOfWeek();
@@ -103,7 +96,7 @@ public class AppointmentService {
                     // Check if doctor is already booked
 
                     // Get doctor's appointments
-                    List<Appointment> doctorAppointments = appointmentRepository.findByDoctorID(appointment.getDoctorID());
+                    List<Appointment> doctorAppointments = appointmentRepository.findByDoctorID(appointment.getDoctorID(), null).getContent();
                     // Search any of the doctor appointments that fall on the same date as the new appointment
                     for (Appointment doctorAppointment : doctorAppointments) {
                         if (doctorAppointment.getDate().equals(appointmentDate)) {

@@ -5,9 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.superfive.telemedicine.model.Appointment;
-import org.superfive.telemedicine.model.Availability;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,7 +14,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     Optional<Appointment> findByAppointmentID(int appointmentID);
 
-    List<Appointment> findByDoctorID(int doctorID);
+    Page<Appointment> findByDoctorID(int doctorID, Pageable pageable);
 
-    List<Appointment> findByPatientID(int patientID);
+    Page<Appointment> findByPatientID(int patientID, Pageable pageable);
 }

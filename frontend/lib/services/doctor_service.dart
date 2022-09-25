@@ -28,7 +28,7 @@ class DoctorService {
     int doctorID = await getUserIdFromStorage();
 
     var response = await http.get(Uri.parse(
-        '$apiBookingRootUrl/appointments/patient/$doctorID?sort=datetime'));
+        '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);

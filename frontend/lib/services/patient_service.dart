@@ -26,13 +26,13 @@ class PatientService {
     int patientID = await getUserIdFromStorage();
 
     var response = await http.get(Uri.parse(
-        '$apiBookingRootUrl/appointments/patient/$patientID?sort=datetime'));
+        '$apiBookingRootUrl/appointments/patient/$patientID?sort=date&sort=startTime'));
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body);
+      List<dynamic> jsonData = jsonDecode(response.body)['content'];  // list of appointments
       List<Appointment> appointments = [];
-      for (dynamic a in jsonData) {
-        appointments.add(await DoctorService.getAppointmentFromJSON(a));
+      for (dynamic appointment in jsonData) {
+        appointments.add(await DoctorService.getAppointmentFromJSON(appointment));
       }
       return appointments;
     } else {
