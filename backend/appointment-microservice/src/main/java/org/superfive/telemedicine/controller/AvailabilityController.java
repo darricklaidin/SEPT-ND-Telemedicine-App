@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.superfive.telemedicine.dto.AvailabilityDTO;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.service.AvailabilityService;
 
@@ -42,14 +43,14 @@ public class AvailabilityController {
 
     // Add availability
     @PostMapping("")
-    public ResponseEntity<Availability> addAvailability(@RequestBody Availability availability) {
+    public ResponseEntity<Availability> addAvailability(@RequestBody AvailabilityDTO availability) {
         return ResponseEntity.ok(availabilityService.addAvailability(availability));
     }
 
     // Update availability
     @PutMapping("/{availabilityID}")
     public ResponseEntity<Availability> rescheduleAvailability(
-            @RequestBody Availability availability,
+            @RequestBody AvailabilityDTO availability,
             @PathVariable(value = "availabilityID") int availabilityID
     ) {
         return ResponseEntity.ok(availabilityService.rescheduleAvailability(availability, availabilityID));
