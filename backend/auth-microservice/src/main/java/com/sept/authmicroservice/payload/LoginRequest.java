@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 public class LoginRequest {
     @NotBlank
-    @Length(max = 12)
+    @Length(max = 254)
     private String username;
 
     @NotBlank
