@@ -28,17 +28,17 @@ class DoctorService {
     int doctorID = await getUserIdFromStorage();
 
     var response = await http.get(Uri.parse(
-        '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'));
+        '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'))
+        .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body);
+      List<dynamic> jsonData = jsonDecode(response.body)['content'];
       List<Appointment> appointments = [];
-      for (dynamic a in jsonData) {
-        appointments.add(await getAppointmentFromJSON(a));
+      for (dynamic appointment in jsonData) {
+        appointments.add(await getAppointmentFromJSON(appointment));
       }
       return appointments;
     } else {
-      // TODO: display error message
       throw Exception("Failed to load doctor's appointments");
     }
   }
