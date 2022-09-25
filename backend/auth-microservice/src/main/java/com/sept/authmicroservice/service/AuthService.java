@@ -86,10 +86,10 @@ public class AuthService {
 
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
 
-        Doctor newUser = new Doctor(-1, signUpRequest.getFirstName(), signUpRequest.getLastName(), signUpRequest.getEmail(),
+        Doctor newDoctor = new Doctor(-1, signUpRequest.getFirstName(), signUpRequest.getLastName(), signUpRequest.getEmail(),
                 encodedPassword, parseDOB(signUpRequest.getDateOfBirth()), roles, specialty);
 
-        return userRepository.save(newUser);
+        return userRepository.save(newDoctor);
     }
 
     private void checkIfEmailAlreadyExists(String email) {
@@ -106,6 +106,9 @@ public class AuthService {
         }
     }
 
+    /**
+     * Gets a UserDTO from the JWT
+     */
     public UserDTO getUser(String token) {
         if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
             String jwt = token.substring(7);
