@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.superfive.telemedicine.model.Availability;
 
+import java.time.DayOfWeek;
 import java.util.Optional;
 
 @Repository
@@ -15,4 +16,6 @@ public interface AvailabilityRepository extends JpaRepository<Availability, Inte
     Optional<Availability> findByAvailabilityID(int availabilityID);
 
     Page<Availability> findByDoctorID(int doctorID, Pageable pageable);
+
+    Optional<Availability> findByDoctorIDAndDayOfWeek(int doctorID, DayOfWeek dayOfWeek);
 }

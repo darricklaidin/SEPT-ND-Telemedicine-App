@@ -16,6 +16,7 @@ import java.time.DayOfWeek;
 @Service
 public class AvailabilityService {
     private final AvailabilityRepository availabilityRepository;
+    private final String RESOURCE_NAME = "Availability";
 
     @Autowired
     public AvailabilityService(AvailabilityRepository availabilityRepository) {
@@ -28,7 +29,7 @@ public class AvailabilityService {
 
     public Availability getAvailabilityByID(int availabilityID) throws ResourceNotFoundException {
         return availabilityRepository.findByAvailabilityID(availabilityID)
-                .orElseThrow(() -> new ResourceNotFoundException("Availability", "availabilityID", availabilityID));
+                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "availabilityID", availabilityID));
     }
 
     // Get a doctor's availabilities
@@ -42,9 +43,16 @@ public class AvailabilityService {
         // Ensure no id conflict
         try {
             this.getAvailabilityByID(availability.getAvailabilityID());
-            throw new ResourceAlreadyExistsException("Availability", "availabilityID", availability.getAvailabilityID());
+            throw new ResourceAlreadyExistsException(RESOURCE_NAME, "availabilityID", availability.getAvailabilityID());
         } catch (ResourceNotFoundException exception) {
             // Id does not exist yet, continue...
+        }
+
+        // Ensure availability schedule does not already exist in the database for the particular doctor
+        if (availabilityRepository.findByDoctorIDAndDayOfWeek(availability.getDoctorID(), DayOfWeek.of(availability.getDayOfWeek()))
+                .isPresent()) {
+            throw new ResourceAlreadyExistsException(RESOURCE_NAME, "doctorID and dayOfWeek",
+                    availability.getDoctorID() + " and " + availability.getDayOfWeek());
         }
 
         // Ensure start time comes before end time
@@ -66,6 +74,7 @@ public class AvailabilityService {
     }
 
     public Availability rescheduleAvailability(AvailabilityDTO availability, int availabilityID) throws InvalidTimeException {
+
         Availability updatedAvailability = this.getAvailabilityByID(availabilityID);
 
         updatedAvailability.setDayOfWeek(DayOfWeek.of(availability.getDayOfWeek()));
