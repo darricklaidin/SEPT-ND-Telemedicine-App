@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (res.success) {
-      Navigator.pushNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(res.msg ?? 'Invalid Credentials'),
