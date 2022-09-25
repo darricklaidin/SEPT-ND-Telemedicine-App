@@ -101,9 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
-                    } else if (value.length < 8) {
-                      return 'Password should be atleast 8 characters';
                     }
+                    // FIXME: Uncomment when deploying
+                    // else if (value.length < 8) {
+                    //   return 'Password should be atleast 8 characters';
+                    // }
                     return null;
                   },
                 ),
