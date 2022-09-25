@@ -28,7 +28,8 @@ class DoctorService {
     int doctorID = await getUserIdFromStorage();
 
     var response = await http.get(Uri.parse(
-        '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'));
+        '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'))
+        .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body)['content'];
@@ -38,7 +39,6 @@ class DoctorService {
       }
       return appointments;
     } else {
-      // TODO: display error message
       throw Exception("Failed to load doctor's appointments");
     }
   }

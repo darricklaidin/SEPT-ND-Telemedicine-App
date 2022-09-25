@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,22 +24,28 @@ class ManageAppointmentsScreen extends StatefulWidget {
 class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   List<Appointment> appointments = List<Appointment>.empty(growable: true);
   bool isLoading = true;
+  bool timeUp = false;
   String? userRole;
 
   void loadAppointments() async {
     userRole = await getUserRoleFromStorage();
 
-    // If role is patient, then fetch patient appointments
-    if (userRole == "PATIENT") {
-      appointments = await PatientService.fetchPatientAppointments();
-    }
-    // If role is doctor, then fetch doctor appointments
-    else if (userRole == "DOCTOR") {
-      appointments = await DoctorService.fetchDoctorAppointments();
+    try {
+      // If role is patient, then fetch patient appointments
+      if (userRole == "PATIENT") {
+        appointments = await PatientService.fetchPatientAppointments();
+      }
+      // If role is doctor, then fetch doctor appointments
+      else if (userRole == "DOCTOR") {
+        appointments = await DoctorService.fetchDoctorAppointments();
+      }
+    } on TimeoutException catch (exception) {
+      timeUp = true;
+    } on Exception catch (exception) {
+      print("Exception caught");
     }
 
     setState(() {
-      appointments = appointments;
       isLoading = false;
     });
   }
@@ -80,6 +88,13 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
                 child: Center(
                   child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (timeUp) {
+              return const Padding(
+                padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                child: Center(
+                  child: Text("Timeout: Unable to fetch appointments"),
                 ),
               );
             } else {
