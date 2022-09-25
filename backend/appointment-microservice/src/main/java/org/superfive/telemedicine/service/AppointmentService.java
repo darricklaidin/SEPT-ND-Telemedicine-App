@@ -103,14 +103,14 @@ public class AppointmentService {
                             // Check for a time clash
 
                             // If newAppointment start time is before appointment start time, then newAppointment
-                            // end time must be before appointment start time
+                            // end time must be before or equal to appointment start time
                             if (appointmentStartTime.isBefore(doctorAppointment.getStartTime()) &&
-                                    appointmentEndTime.isBefore(doctorAppointment.getStartTime())) {
+                                    !appointmentEndTime.isAfter(doctorAppointment.getStartTime())) {
                                 continue;
                             }
-                            // Else If newAppointment start time is after appointment end time, then newAppointment
+                            // Else If newAppointment start time is after or equal to appointment end time, then newAppointment
                             // end time must be after appointment end time
-                            else if (appointmentStartTime.isAfter(doctorAppointment.getEndTime()) &&
+                            else if (!appointmentStartTime.isBefore(doctorAppointment.getEndTime()) &&
                                     appointmentEndTime.isAfter(doctorAppointment.getEndTime())) {
                                 continue;
                             } else {
@@ -129,14 +129,14 @@ public class AppointmentService {
                             // Check for a time clash
 
                             // If newAppointment start time is before appointment start time, then newAppointment
-                            // end time must be before appointment start time
+                            // end time must be before or equal to appointment start time
                             if (appointmentStartTime.isBefore(patientAppointment.getStartTime()) &&
-                                    appointmentEndTime.isBefore(patientAppointment.getStartTime())) {
+                                    !appointmentEndTime.isAfter(patientAppointment.getStartTime())) {
                                 continue;
                             }
-                            // Else If newAppointment start time is after appointment end time, then newAppointment
+                            // Else If newAppointment start time is after or equal to appointment end time, then newAppointment
                             // end time must be after appointment end time
-                            else if (appointmentStartTime.isAfter(patientAppointment.getEndTime()) &&
+                            else if (!appointmentStartTime.isBefore(patientAppointment.getEndTime()) &&
                                     appointmentEndTime.isAfter(patientAppointment.getEndTime())) {
                                 continue;
                             } else {
