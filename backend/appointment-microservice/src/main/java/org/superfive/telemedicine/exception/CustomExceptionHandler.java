@@ -20,7 +20,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public final ResponseEntity<Object> handleRecordNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        return handleException(ex, "Invalid Time Range", HttpStatus.NOT_FOUND);
+        return handleException(ex, "Resource Not Found", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InvalidTimeException.class)
@@ -32,7 +32,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     public final ResponseEntity<Object> handleIDAlreadyExistsException(ResourceAlreadyExistsException ex,
                                                                        WebRequest request) {
-        return handleException(ex, "Record Already Exists", HttpStatus.BAD_REQUEST);
+        return handleException(ex, "Resource Already Exists", HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(EntityTimeClashException.class)
@@ -46,7 +46,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return handleException(ex, "Doctor Unavailable", HttpStatus.BAD_REQUEST);
     }
 
-    private final ResponseEntity<Object> handleException(Exception ex, String msg, HttpStatus httpStatus) {
+    private ResponseEntity<Object> handleException(Exception ex, String msg, HttpStatus httpStatus) {
         List<String> details = new ArrayList<>();
         details.add(ex.getLocalizedMessage());
         ErrorResponse error = new ErrorResponse(msg, details);
