@@ -6,6 +6,7 @@ import '../appointment/manage_appointments_screen.dart';
 import '../chat/chat_screen.dart';
 import '../doctor/searched_doctor_profile_screen.dart';
 import 'home_screen.dart';
+import 'package:frontend/config/constants.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -72,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
     return [
       const HomeScreen(),
       const DoctorProfileScreen(),
-      ManageAppointmentsScreen(handleTabSelection: _handleTabSelection),
+      ManageAppointmentsScreen(handleTabSelection: _handleTabSelection, reload: true),
       const ChatScreen(),
     ];
   }
@@ -107,7 +108,13 @@ class _MainScreenState extends State<MainScreen> {
             routes: {
               '/chat': (context) => const ChatScreen(),
             },
-          )),
+          ),
+        onPressed: (context) {
+          setState(() {
+            _controller!.index = appointmentsPageIndex;
+          });
+        },
+      ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.chat_bubble),
         title: ("Chat"),

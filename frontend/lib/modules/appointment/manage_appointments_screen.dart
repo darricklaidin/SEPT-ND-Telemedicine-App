@@ -16,8 +16,13 @@ import 'package:frontend/services/auth_service.dart';
 
 class ManageAppointmentsScreen extends StatefulWidget {
   final Function handleTabSelection;
+  bool reload = true;
 
-  ManageAppointmentsScreen({Key? key, required this.handleTabSelection}) : super(key: key);
+  ManageAppointmentsScreen(
+      {Key? key,
+        required this.handleTabSelection,
+        required this.reload}
+      ) : super(key: key);
 
   @override
   _ManageAppointmentsScreenState createState() =>
@@ -58,11 +63,16 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   @override
   void initState() {
     super.initState();
-    loadAppointments();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.reload == true) {
+      loadAppointments();
+      setState(() {
+        widget.reload = false;
+      });
+    }
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
