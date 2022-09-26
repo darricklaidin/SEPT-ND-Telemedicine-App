@@ -19,9 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   PersistentTabController? _controller;
 
   void _handleTabSelection(int controllerIndex) {
-    setState(() {
-      _controller!.index = controllerIndex;
-    });
+    _controller!.index = controllerIndex;
   }
 
   @override
@@ -32,41 +30,39 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(builder: (BuildContext context) {
-      return PersistentTabView(
-        context,
-        controller: _controller,
-        screens: _buildScreens(),
-        items: _navBarsItems(),
-        confineInSafeArea: true,
-        backgroundColor: Colors.white, // Default is Colors.white.
-        handleAndroidBackButtonPress: true, // Default is true.
-        resizeToAvoidBottomInset:
-            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-        stateManagement: true, // Default is true.
-        hideNavigationBarWhenKeyboardShows:
-            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-        decoration: NavBarDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          colorBehindNavBar: Colors.white,
-        ),
-        popAllScreensOnTapOfSelectedTab: true,
-        popActionScreens: PopActionScreensType.all,
-        itemAnimationProperties: const ItemAnimationProperties(
-          // Navigation Bar's items animation properties.
-          duration: Duration(milliseconds: 200),
-          curve: Curves.ease,
-        ),
-        screenTransitionAnimation: const ScreenTransitionAnimation(
-          // Screen transition animation on change of selected tab.
-          animateTabTransition: true,
-          curve: Curves.ease,
-          duration: Duration(milliseconds: 200),
-        ),
-        navBarStyle:
-            NavBarStyle.style1, // Choose the nav bar style with this property.
-      );
-    });
+    return PersistentTabView(
+      context,
+      controller: _controller,
+      screens: _buildScreens(),
+      items: _navBarsItems(),
+      confineInSafeArea: true,
+      backgroundColor: Colors.white, // Default is Colors.white.
+      handleAndroidBackButtonPress: true, // Default is true.
+      resizeToAvoidBottomInset:
+          true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+      stateManagement: true, // Default is true.
+      hideNavigationBarWhenKeyboardShows:
+          true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+      decoration: NavBarDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        colorBehindNavBar: Colors.white,
+      ),
+      popAllScreensOnTapOfSelectedTab: true,
+      popActionScreens: PopActionScreensType.all,
+      itemAnimationProperties: const ItemAnimationProperties(
+        // Navigation Bar's items animation properties.
+        duration: Duration(milliseconds: 200),
+        curve: Curves.ease,
+      ),
+      screenTransitionAnimation: const ScreenTransitionAnimation(
+        // Screen transition animation on change of selected tab.
+        animateTabTransition: true,
+        curve: Curves.ease,
+        duration: Duration(milliseconds: 200),
+      ),
+      navBarStyle:
+          NavBarStyle.style1, // Choose the nav bar style with this property.
+    );
   }
 
   List<Widget> _buildScreens() {
@@ -103,23 +99,14 @@ class _MainScreenState extends State<MainScreen> {
           title: ("Appointments"),
           activeColorPrimary: CupertinoColors.activeBlue,
           inactiveColorPrimary: CupertinoColors.systemGrey,
-          routeAndNavigatorSettings: RouteAndNavigatorSettings(
+          routeAndNavigatorSettings: const RouteAndNavigatorSettings(
             initialRoute: '/appointments',
-            routes: {
-              '/chat': (context) => const ChatScreen(),
-            },
           ),
-        onPressed: (context) {
-            if (mounted) {
-              if (_controller!.index == appointmentsPageIndex) {
-                Navigator.of(context!).popUntil(ModalRoute.withName("/appointments"));
-              }
-              setState(() {
-                _controller!.index = appointmentsPageIndex;
-              });
-            }
-
-        },
+          onPressed: (context) {
+            setState(() {
+              _controller!.index = appointmentsPageIndex;
+            });
+          },
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.chat_bubble),
