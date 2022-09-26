@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/appointment/book_appointment_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
-import 'modules/doctor/searched_doctor_profile_screen.dart';
-import 'package:frontend/modules/appointment/manage_appointments_screen.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
 
