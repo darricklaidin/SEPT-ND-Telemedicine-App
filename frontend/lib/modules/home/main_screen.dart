@@ -110,9 +110,15 @@ class _MainScreenState extends State<MainScreen> {
             },
           ),
         onPressed: (context) {
-          setState(() {
-            _controller!.index = appointmentsPageIndex;
-          });
+            if (mounted) {
+              if (_controller!.index == appointmentsPageIndex) {
+                Navigator.of(context!).popUntil(ModalRoute.withName("/appointments"));
+              }
+              setState(() {
+                _controller!.index = appointmentsPageIndex;
+              });
+            }
+
         },
       ),
       PersistentBottomNavBarItem(
