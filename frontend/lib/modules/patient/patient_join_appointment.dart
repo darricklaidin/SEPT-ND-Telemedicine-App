@@ -50,7 +50,7 @@ class _PatientJoinAppointmentState extends State<PatientJoinAppointment> {
                 // Navigator.pushNamed(context, '/chat');
               }, // FIXME: Join Chat Page
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.amber),
+                backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
               child: const Text("Join Chat"),
             ),

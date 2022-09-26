@@ -37,16 +37,16 @@ public class AuthController {
             body = new ApiResponse(false, e.getMessage());
         } catch (Exception e) {
             retStatus = HttpStatus.UNAUTHORIZED;
-            body = new ApiResponse(false, e.getMessage());
+            body = new ApiResponse(false, "Invalid Credentials");
         }
 
         return ResponseEntity.status(retStatus).body(body);
     }
 
-    // register a new user
+    // register a new patient
     @PostMapping("/signup")
-    public ResponseEntity<User> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        User user = authService.registerUser(signUpRequest);
+    public ResponseEntity<User> registerPatient(@Valid @RequestBody SignUpRequest signUpRequest) {
+        User user = authService.registerPatient(signUpRequest);
         return ResponseEntity.ok().body(user);
     }
 

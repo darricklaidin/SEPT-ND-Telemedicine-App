@@ -23,8 +23,9 @@ public class SignUpRequest {
     @Length(max = 254, message = "must not be blank and length should be less than or equal to 255")
     private String email;
 
+    // FIXME: Changed min from 8 -> 1 for ease of testing
     @NotBlank
-    @Length(max = 45, min = 8, message = "must not be blank and length should be between 8 to 45")
+    @Length(max = 45, min = 1, message = "must not be blank and length should be between 8 to 45")
     private String password;
 
     @NotNull

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/authorization/login_screen.dart';
+import 'package:frontend/main.dart';
 
 import '../../services/auth_service.dart';
 
@@ -8,7 +8,10 @@ class HomeScreen extends StatelessWidget {
 
   Future<void> logout(context) async {
     await logoutUser();
-    Navigator.of(context, rootNavigator: true).pop(context);
+    // Pop screen and push login screen
+    Navigator.of(context, rootNavigator: true).pushReplacement(
+        MaterialPageRoute(builder: (context) => const MyApp())
+    );
   }
 
   @override
@@ -42,17 +45,6 @@ class HomeScreen extends StatelessWidget {
             height: height - 100,
             child: _buildContent(height, width),
           ),
-          Positioned(
-              top: height / 2 - 50,
-              right: width / 2 - 50,
-              child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()));
-                  },
-                  child: const Text("Login"))),
           Positioned(
               top: height / 2 + 50,
               right: width / 2 - 50,

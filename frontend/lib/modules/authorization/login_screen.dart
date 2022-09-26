@@ -19,42 +19,59 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController =
       TextEditingController(text: "nim@nim123");
 
+  bool isLoading = true;
+
   @override
   void initState() {
+    // super.initState();
     _getAuth();
-    super.initState();
   }
 
   _getAuth() async {
+    // Check if token already exists in storage
     if (await checkAuth() != null) {
-      Navigator.pushReplacementNamed(context, '/home');
+      await Navigator.pushReplacementNamed(context, '/home');
+    }
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
   Future<void> login(context) async {
-    if (_formKey.currentState!.validate()) {
-      var email = _emailController.text;
-      var password = _passwordController.text;
+    ApiResponse res = ApiResponse();
+    try {
+      if (_formKey.currentState!.validate()) {
+        var email = _emailController.text;
+        var password = _passwordController.text;
 
-      ApiResponse res = await loginUser(email, password);
-      if (res.success) {
-        Navigator.pushNamed(context, '/home');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(res.msg ?? 'Invalid Credentials'),
-            backgroundColor: LightPalette.error));
+        res = await loginUser(email, password);
       }
+    } catch (e) {
+      res.msg = "Error";
+    }
+
+    if (res.success) {
+      Navigator.pushReplacementNamed(context, '/home');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(res.msg ?? 'Invalid Credentials'),
+          backgroundColor: LightPalette.error));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Center(child: Text("Login")),
-        ),
-        body: Form(
-          key: _formKey,
+      appBar: AppBar(
+        title: const Center(child: Text("Login")),
+      ),
+      body: Builder(
+        builder: (context) => isLoading ?
+        const Center(child: CircularProgressIndicator()) :
+        Form(key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -73,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Email cannot be empty';
                       } else if (!RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                           .hasMatch(value)) {
                         return 'Invalid email';
                       }
@@ -95,9 +112,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
-                    } else if (value.length < 8) {
-                      return 'Password should be atleast 8 characters';
                     }
+                    // FIXME: Uncomment when deploying
+                    // else if (value.length < 8) {
+                    //   return 'Password should be atleast 8 characters';
+                    // }
                     return null;
                   },
                 ),
@@ -140,10 +159,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             content: Text('Register Text Clicked'),
                           ));
                         }),
-                ]),
-              ),
+                  ]),
+              )
             ],
           ),
-        ));
+        )
+      )
+    );
   }
+
 }

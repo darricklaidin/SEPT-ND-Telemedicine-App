@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/services/doctor_service.dart';
+import 'package:intl/intl.dart';
+
 import 'package:frontend/services/appointment_service.dart';
 import 'package:frontend/services/patient_service.dart';
 import 'package:frontend/utility.dart';
 import 'package:frontend/modules/appointment/appointment_card.dart';
 import 'package:frontend/models/appointment.dart';
-import 'package:intl/intl.dart';
+import 'package:frontend/services/auth_service.dart';
 
 class ManageAppointmentsScreen extends StatefulWidget {
   ManageAppointmentsScreen({Key? key}) : super(key: key);
@@ -19,15 +24,32 @@ class ManageAppointmentsScreen extends StatefulWidget {
 class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   List<Appointment> appointments = List<Appointment>.empty(growable: true);
   bool isLoading = true;
+  bool timeUp = false;
+  String? userRole;
 
   void loadAppointments() async {
-    print("Fetching appointments...");
-    appointments = await PatientService.fetchPatientAppointments(1); // TODO: Use authorization to get patient id
+    isLoading = true;
+    timeUp = false;
+    userRole = await getUserRoleFromStorage();
+
+    try {
+      // If role is patient, then fetch patient appointments
+      if (userRole == "PATIENT") {
+        appointments = await PatientService.fetchPatientAppointments();
+      }
+      // If role is doctor, then fetch doctor appointments
+      else if (userRole == "DOCTOR") {
+        appointments = await DoctorService.fetchDoctorAppointments();
+      }
+    } on TimeoutException catch (exception) {
+      timeUp = true;
+    } on Exception catch (exception) {
+      print("Exception caught");
+    }
+
     setState(() {
-      appointments = appointments;
       isLoading = false;
     });
-    print("Fetched appointments.");
   }
 
   @override
@@ -39,11 +61,11 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-        child: Column(
-          children: <Widget>[
-            Align(
+        body: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+      child: Column(
+        children: <Widget>[
+          Align(
               alignment: Alignment.centerRight,
               child: IconButton(
                 splashRadius: 20.0,
@@ -51,52 +73,60 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 icon: const Icon(CupertinoIcons.profile_circled),
                 onPressed: () {},
               )),
-            Row(
-              children: [
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Appointments",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+          Row(
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text("Appointments",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    isLoading = true;
-                    loadAppointments();
-                  },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                  child: Text("Refresh", style: TextStyle(color: Colors.white),),
+              ),
+              const Spacer(),
+              ElevatedButton(onPressed: loadAppointments,
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amber)),
+                  child: const Text("Refresh",
+                    style: TextStyle(fontWeight: FontWeight.bold),)),
+            ],
+          ),
+          const SizedBox(height: 25),
+          Builder(builder: (context) {
+            if (isLoading) {
+              return const Padding(
+                padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                child: Center(
+                  child: CircularProgressIndicator(),
                 ),
-              ],
-            ),
-            const SizedBox(height: 25),
-
-            Builder(builder: (context) {
-              if (isLoading) {
-                return const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              }
-              else {
-                return Expanded(
-                  child: ListView.builder(
+              );
+            } else if (timeUp) {
+              return const Padding(
+                padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                child: Center(
+                  child: Text("Timeout: Unable to fetch appointments"),
+                ),
+              );
+            } else {
+              return Expanded(
+                child: ListView.builder(
                     padding: const EdgeInsets.all(0),
                     itemCount: appointments.length,
                     itemBuilder: (context, index) {
+                      // Display appropriate info based on role
                       return AppointmentCard(
                         name:
-                            "${appointments[index].doctor.firstName} ${appointments[index].doctor.lastName}",
+                        userRole == "PATIENT" ?
+                        "${appointments[index].doctor.firstName} "
+                            "${appointments[index].doctor.lastName}" :
+                        "${appointments[index].patient.firstName} "
+                            "${appointments[index].patient.lastName}",
+
                         age: AgeCalculator.age(
-                                appointments[index].doctor.dateOfBirth)
-                            .years,
+                                userRole == "PATIENT" ?
+                                appointments[index].doctor.dateOfBirth :
+                                appointments[index].patient.dateOfBirth).years,
+
                         date: DateFormat('dd MMM yyyy')
                             .format(appointments[index].date),
                         startTime:
@@ -104,7 +134,8 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                         endTime:
                             Utility.timeToString(appointments[index].endTime),
                         delete: () async {
-                          await AppointmentService.deleteAppointment(appointments[index].appointmentID);
+                          await AppointmentService.deleteAppointment(
+                              appointments[index].appointmentID);
                           setState(() {
                             appointments.removeAt(index);
                           });
@@ -122,12 +153,11 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                         },
                       );
                     }),
-                );
-              }
+              );
+            }
           }),
         ],
       ),
     ));
   }
-
 }

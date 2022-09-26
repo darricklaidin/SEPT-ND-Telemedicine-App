@@ -43,7 +43,7 @@ jobs:
       - name: Build and Test Authentication with Maven
         run: mvn -B package --file backend/auth-microservice/pom.xml
       - name: Build and Test Application with Maven
-        run: mvn -B package --file backend/backend-monolith/pom.xml
+        run: mvn -B package --file backend/appointment-microservice/pom.xml
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v1

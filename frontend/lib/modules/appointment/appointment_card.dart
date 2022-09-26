@@ -86,8 +86,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                           builder: (context) => PatientJoinAppointment(
                                 delete: widget.delete,
                                 name: widget.name,
-                          )
-                      ),
+                              )),
                     );
                   },
                   icon: const Icon(CupertinoIcons.right_chevron),

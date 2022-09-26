@@ -68,6 +68,7 @@ public class JwtTokenProvider {
     }
 
     public UserDTO getUserDtoFromToken(String token) {
+        // Uses the SECRET key to convert JWT token to a Claims object which contains the body of the JWT
         Claims claims = Jwts.parser().setSigningKey(SecurityConstant.SECRET).parseClaimsJws(token).getBody();
         String id = (String) claims.get("id");
 
