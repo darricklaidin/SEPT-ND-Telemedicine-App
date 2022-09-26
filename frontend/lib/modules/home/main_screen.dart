@@ -17,6 +17,12 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   PersistentTabController? _controller;
 
+  void _handleTabSelection(int controllerIndex) {
+    setState(() {
+      _controller!.index = controllerIndex;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
     return [
       const HomeScreen(),
       const DoctorProfileScreen(),
-      ManageAppointmentsScreen(),
+      ManageAppointmentsScreen(handleTabSelection: _handleTabSelection),
       const ChatScreen(),
     ];
   }
@@ -96,8 +102,11 @@ class _MainScreenState extends State<MainScreen> {
           title: ("Appointments"),
           activeColorPrimary: CupertinoColors.activeBlue,
           inactiveColorPrimary: CupertinoColors.systemGrey,
-          routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          routeAndNavigatorSettings: RouteAndNavigatorSettings(
             initialRoute: '/appointments',
+            routes: {
+              '/chat': (context) => const ChatScreen(),
+            },
           )),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.chat_bubble),

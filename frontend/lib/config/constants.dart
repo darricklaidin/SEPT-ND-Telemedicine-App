@@ -8,3 +8,9 @@ const String bookingApiPort = '8081';
 const String localhost = androidLocalHost;
 const String apiAuthRootUrl = 'http://$localhost:$authPort/api';
 const String apiBookingRootUrl = 'http://$localhost:$bookingApiPort/api';
+
+// Persistent Bottom Navigation Bar Page Indexes
+const int homePageIndex = 0;
+const int searchPageIndex = 1;
+const int appointmentsPageIndex = 2;
+const int chatPageIndex = 3;

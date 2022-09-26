@@ -11,14 +11,18 @@ class AppointmentCard extends StatefulWidget {
 
   final Function delete;
 
+  final Function handleTabSelection;
+
   const AppointmentCard(
-      {Key? key,
-      required this.name,
-      required this.age,
-      required this.date,
-      required this.startTime,
-      required this.endTime,
-      required this.delete})
+      {
+        Key? key,
+        required this.name,
+        required this.age,
+        required this.date,
+        required this.startTime,
+        required this.endTime,
+        required this.delete,
+        required this.handleTabSelection})
       : super(key: key);
 
   @override
@@ -85,6 +89,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                       MaterialPageRoute(
                           builder: (context) => PatientJoinAppointment(
                                 delete: widget.delete,
+                                handleTabSelection: widget.handleTabSelection,
                                 name: widget.name,
                               )),
                     );

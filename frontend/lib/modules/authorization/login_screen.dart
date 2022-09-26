@@ -23,8 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    // super.initState();
     _getAuth();
+    super.initState();
   }
 
   _getAuth() async {

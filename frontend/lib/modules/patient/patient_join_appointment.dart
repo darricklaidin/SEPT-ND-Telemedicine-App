@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:frontend/config/constants.dart';
+
+
 class PatientJoinAppointment extends StatefulWidget {
   final Function delete;
+  final Function handleTabSelection;
   final String name;
 
   const PatientJoinAppointment(
-      {Key? key, required this.delete, required this.name})
+      {Key? key, required this.delete, required this.name, required this.handleTabSelection})
       : super(key: key);
 
   @override
@@ -47,8 +51,12 @@ class _PatientJoinAppointmentState extends State<PatientJoinAppointment> {
             ),
             ElevatedButton(
               onPressed: () {
-                // Navigator.pushNamed(context, '/chat');
-              }, // FIXME: Join Chat Page
+                // This method pushes a new screen to the stack but does not update the bottom nav bar
+                // pushNewScreen(context, screen: new ChatScreen());
+
+                // This method moves the nav bar controller to the chat screen
+                widget.handleTabSelection(chatPageIndex);
+              },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red),
               ),

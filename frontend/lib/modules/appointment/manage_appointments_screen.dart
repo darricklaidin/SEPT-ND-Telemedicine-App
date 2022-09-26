@@ -13,8 +13,11 @@ import 'package:frontend/modules/appointment/appointment_card.dart';
 import 'package:frontend/models/appointment.dart';
 import 'package:frontend/services/auth_service.dart';
 
+
 class ManageAppointmentsScreen extends StatefulWidget {
-  ManageAppointmentsScreen({Key? key}) : super(key: key);
+  final Function handleTabSelection;
+
+  ManageAppointmentsScreen({Key? key, required this.handleTabSelection}) : super(key: key);
 
   @override
   _ManageAppointmentsScreenState createState() =>
@@ -61,99 +64,100 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-      child: Column(
-        children: <Widget>[
-          Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                splashRadius: 20.0,
-                iconSize: 35.0,
-                icon: const Icon(CupertinoIcons.profile_circled),
-                onPressed: () {},
-              )),
-          Row(
-            children: [
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Appointments",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+        child: Column(
+          children: <Widget>[
+            Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  splashRadius: 20.0,
+                  iconSize: 35.0,
+                  icon: const Icon(CupertinoIcons.profile_circled),
+                  onPressed: () {},
+                )),
+            Row(
+              children: [
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Appointments",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              ElevatedButton(onPressed: loadAppointments,
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amber)),
-                  child: const Text("Refresh",
-                    style: TextStyle(fontWeight: FontWeight.bold),)),
-            ],
-          ),
-          const SizedBox(height: 25),
-          Builder(builder: (context) {
-            if (isLoading) {
-              return const Padding(
-                padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            } else if (timeUp) {
-              return const Padding(
-                padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                child: Center(
-                  child: Text("Timeout: Unable to fetch appointments"),
-                ),
-              );
-            } else {
-              return Expanded(
-                child: ListView.builder(
-                    padding: const EdgeInsets.all(0),
-                    itemCount: appointments.length,
-                    itemBuilder: (context, index) {
-                      // Display appropriate info based on role
-                      return AppointmentCard(
-                        name:
-                        userRole == "PATIENT" ?
-                        "${appointments[index].doctor.firstName} "
-                            "${appointments[index].doctor.lastName}" :
-                        "${appointments[index].patient.firstName} "
-                            "${appointments[index].patient.lastName}",
+                const Spacer(),
+                ElevatedButton(onPressed: loadAppointments,
+                    style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.amber)),
+                    child: const Text("Refresh",
+                      style: TextStyle(fontWeight: FontWeight.bold),)),
+              ],
+            ),
+            const SizedBox(height: 25),
+            Builder(builder: (context) {
+              if (isLoading) {
+                return const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              } else if (timeUp) {
+                return const Padding(
+                  padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                  child: Center(
+                    child: Text("Timeout: Unable to fetch appointments"),
+                  ),
+                );
+              } else {
+                return Expanded(
+                  child: ListView.builder(
+                      padding: const EdgeInsets.all(0),
+                      itemCount: appointments.length,
+                      itemBuilder: (context, index) {
+                        // Display appropriate info based on role
+                        return AppointmentCard(
+                          name:
+                          userRole == "PATIENT" ?
+                          "${appointments[index].doctor.firstName} "
+                              "${appointments[index].doctor.lastName}" :
+                          "${appointments[index].patient.firstName} "
+                              "${appointments[index].patient.lastName}",
 
-                        age: AgeCalculator.age(
-                                userRole == "PATIENT" ?
-                                appointments[index].doctor.dateOfBirth :
-                                appointments[index].patient.dateOfBirth).years,
+                          age: AgeCalculator.age(
+                                  userRole == "PATIENT" ?
+                                  appointments[index].doctor.dateOfBirth :
+                                  appointments[index].patient.dateOfBirth).years,
 
-                        date: DateFormat('dd MMM yyyy')
-                            .format(appointments[index].date),
-                        startTime:
-                            Utility.timeToString(appointments[index].startTime),
-                        endTime:
-                            Utility.timeToString(appointments[index].endTime),
-                        delete: () async {
-                          await AppointmentService.deleteAppointment(
-                              appointments[index].appointmentID);
-                          setState(() {
-                            appointments.removeAt(index);
-                          });
-                          if (!mounted) {
-                            return;
-                          }
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              behavior: SnackBarBehavior.floating,
-                              margin: EdgeInsets.only(bottom: 10.0),
-                              content: Text("Appointment deleted"),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        },
-                      );
-                    }),
-              );
+                          date: DateFormat('dd MMM yyyy')
+                              .format(appointments[index].date),
+                          startTime:
+                              Utility.timeToString(appointments[index].startTime),
+                          endTime:
+                              Utility.timeToString(appointments[index].endTime),
+                          delete: () async {
+                            await AppointmentService.deleteAppointment(
+                                appointments[index].appointmentID);
+                            setState(() {
+                              appointments.removeAt(index);
+                            });
+                            if (!mounted) {
+                              return;
+                            }
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                behavior: SnackBarBehavior.floating,
+                                margin: EdgeInsets.only(bottom: 10.0),
+                                content: Text("Appointment deleted"),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          handleTabSelection: widget.handleTabSelection,
+                        );
+                      }),
+                );
             }
           }),
         ],
