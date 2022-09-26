@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/patient/patient_join_appointment.dart';
+import 'package:frontend/modules/patient/user_join_appointment.dart';
 
 class AppointmentCard extends StatefulWidget {
   final String name;
@@ -87,7 +87,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => PatientJoinAppointment(
+                          builder: (context) => UserJoinAppointment(
                                 delete: widget.delete,
                                 handleTabSelection: widget.handleTabSelection,
                                 name: widget.name,

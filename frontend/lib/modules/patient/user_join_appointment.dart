@@ -4,20 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:frontend/config/constants.dart';
 
 
-class PatientJoinAppointment extends StatefulWidget {
+class UserJoinAppointment extends StatefulWidget {
   final Function delete;
   final Function handleTabSelection;
   final String name;
 
-  const PatientJoinAppointment(
+  const UserJoinAppointment(
       {Key? key, required this.delete, required this.name, required this.handleTabSelection})
       : super(key: key);
 
   @override
-  State<PatientJoinAppointment> createState() => _PatientJoinAppointmentState();
+  State<UserJoinAppointment> createState() => _UserJoinAppointmentState();
 }
 
-class _PatientJoinAppointmentState extends State<PatientJoinAppointment> {
+class _UserJoinAppointmentState extends State<UserJoinAppointment> {
   @override
   void initState() {
     super.initState();
