@@ -19,7 +19,7 @@ class User {
       firstName: json['firstName'],
       lastName: json['lastName'],
       email: json['email'],
-      dateOfBirth: json['dateOfBirth'],
+      dateOfBirth: DateTime.parse(json['dateOfBirth']),
     );
   }
 
