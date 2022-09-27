@@ -11,6 +11,7 @@ import 'auth_service.dart';
 import 'doctor_service.dart';
 
 class PatientService {
+
   static Future<Patient> fetchPatient(int patientID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/patients/$patientID'), headers: {
@@ -41,9 +42,6 @@ class PatientService {
     } else {
       throw Exception("Failed to load patient's appointments");
     }
-
-
-
-
   }
+
 }

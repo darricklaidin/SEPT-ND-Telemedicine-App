@@ -105,7 +105,6 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      print("Refresh");
                       loadAppointments();
                     },
                     child: ListView.builder(
@@ -114,6 +113,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                         itemBuilder: (context, index) {
                           // Display appropriate info based on role
                           return AppointmentCard(
+                            appointmentID: appointments[index].appointmentID,
                             name:
                             userRole == "PATIENT" ?
                             "${appointments[index].doctor.firstName} "
@@ -151,6 +151,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                               );
                             },
                             handleTabSelection: widget.handleTabSelection,
+                            reload: loadAppointments,
                           );
                         }),
                   ),

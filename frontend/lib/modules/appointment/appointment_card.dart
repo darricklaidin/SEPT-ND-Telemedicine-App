@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:frontend/modules/patient/user_join_appointment.dart';
+import 'package:frontend/services/appointment_service.dart';
 
 class AppointmentCard extends StatefulWidget {
+  final int appointmentID;
   final String name;
   final int age;
   final String date;
@@ -10,19 +13,21 @@ class AppointmentCard extends StatefulWidget {
   final String endTime;
 
   final Function delete;
-
   final Function handleTabSelection;
+  final Function reload;
 
   const AppointmentCard(
       {
         Key? key,
+        required this.appointmentID,
         required this.name,
         required this.age,
         required this.date,
         required this.startTime,
         required this.endTime,
         required this.delete,
-        required this.handleTabSelection})
+        required this.handleTabSelection,
+        required this.reload,})
       : super(key: key);
 
   @override
@@ -83,16 +88,32 @@ class _AppointmentCardState extends State<AppointmentCard> {
                 ),
                 const SizedBox(width: 20),
                 IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => UserJoinAppointment(
-                                delete: widget.delete,
-                                handleTabSelection: widget.handleTabSelection,
-                                name: widget.name,
-                              )),
-                    );
+                  onPressed: () async {
+                    // Before navigating to the join appointment screen, check
+                    // if the appointment still exists in the database
+                    widget.reload();
+                    if (await AppointmentService.findAppointmentByID(widget.appointmentID) == "Resource Not Found") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Appointment no longer exists"),
+                              behavior: SnackBarBehavior.floating,
+                              margin: EdgeInsets.only(bottom: 10.0),
+                              duration: Duration(seconds: 2),
+                          ));
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserJoinAppointment(
+                              delete: widget.delete,
+                              handleTabSelection: widget.handleTabSelection,
+                              name: widget.name,
+                            )),
+                      );
+                    }
+
+
+
                   },
                   icon: const Icon(CupertinoIcons.right_chevron),
                   color: Colors.white,

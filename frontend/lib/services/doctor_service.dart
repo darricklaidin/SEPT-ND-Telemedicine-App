@@ -50,4 +50,5 @@ class DoctorService {
 
     return Appointment.fromJson(appointment, doctor, patient);
   }
+
 }
