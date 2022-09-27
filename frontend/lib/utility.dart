@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
+  }
+}
+
 class Utility {
   static String timeToString(TimeOfDay timeOfDay) {
     return "${timeOfDay.hour}:${timeOfDay.minute == 0 ? "00" : timeOfDay.minute} ${timeOfDay.period == DayPeriod.am ? "AM" : "PM"}";
