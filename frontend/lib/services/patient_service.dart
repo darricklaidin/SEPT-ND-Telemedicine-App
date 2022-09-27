@@ -22,6 +22,26 @@ class PatientService {
     }
   }
 
+    //BRYAN ATTEMPTING TO DO ADMIN PATIENTS LIST
+  static Future<List<Patient>> fetchPatientList() async {
+    int patientID = await getUserIdFromStorage();
+
+    var response = await http.get(Uri.parse(
+        '$apiBookingRootUrl/appointments/patient'));
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body)['content'];  // list of patients
+      List<Patient> patients = [];
+      for (dynamic patient in jsonData) {
+        // patients.add(await PatientService.);
+      }
+      return patients;
+    } else {
+      // TODO: display error message
+      throw Exception("Failed to load patient's appointments");
+    }
+  }
+
   static Future<List<Appointment>> fetchPatientAppointments() async {
     int patientID = await getUserIdFromStorage();
 

@@ -24,6 +24,22 @@ class DoctorService {
     }
   }
 
+  //BRYAN ATTEMPTING DOCTOR ADMIN LIST
+  static Future<Doctor> fetchDoctorList() async {
+    final response = await http
+        .get(Uri.parse('$apiAuthRootUrl/doctors'), headers: {
+      'Authorization': 'Bearer ${await getJWT()}',
+    });
+
+    if (response.statusCode == 200) {
+      return Doctor.fromJson(jsonDecode(response.body));
+    } else {
+      // return Doctor();
+      throw Exception('Failed to load doctor profile');
+    }
+  }
+
+
   static Future<List<Appointment>> fetchDoctorAppointments() async {
     int doctorID = await getUserIdFromStorage();
 

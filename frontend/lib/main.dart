@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/admin/admin_set_up_doctor_account.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
+import 'modules/admin/admin_home.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
 
@@ -35,7 +37,8 @@ class _MyAppState extends State<MyApp> {
         ),
         initialRoute: '/',
         routes: {
-          "/": (context) => const LoginScreen(),
+          // "/": (context) => const LoginScreen(),
+          "/": (context) => const AdminHomeScreen(),
           "/home": (context) => const MainScreen()
         });
   }
