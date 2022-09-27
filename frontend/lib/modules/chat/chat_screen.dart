@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/home/empty_home_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:talkjs_flutter/talkjs_flutter.dart';
 
@@ -58,7 +59,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       size: 20, color: Colors.black),
                   onPressed: () => pushNewScreen(
                     context,
-                    screen: const HomeScreen(),
+                    screen: const EmptyHomeScreen(),
                   ),
                 )),
             body: body,
