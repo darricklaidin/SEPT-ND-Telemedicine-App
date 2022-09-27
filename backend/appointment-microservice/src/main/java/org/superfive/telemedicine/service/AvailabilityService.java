@@ -11,6 +11,7 @@ import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
 
+import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 
 @Service
@@ -37,6 +38,7 @@ public class AvailabilityService {
         return availabilityRepository.findByDoctorID(doctorID, pageable);
     }
 
+    @Transactional
     public Availability addAvailability(AvailabilityDTO availability) throws ResourceAlreadyExistsException,
             InvalidTimeException {
 
@@ -73,6 +75,7 @@ public class AvailabilityService {
         return temp;
     }
 
+    @Transactional
     public Availability rescheduleAvailability(AvailabilityDTO availability, int availabilityID) throws InvalidTimeException {
 
         Availability updatedAvailability = this.getAvailabilityByID(availabilityID);
@@ -91,6 +94,7 @@ public class AvailabilityService {
         return updatedAvailability;
     }
 
+    @Transactional
     public Availability deleteAvailability(int availabilityID) {
         Availability deletedAvailability = this.getAvailabilityByID(availabilityID);
 

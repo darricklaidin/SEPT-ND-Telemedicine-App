@@ -10,6 +10,7 @@ import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
 
+import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,6 +50,7 @@ public class AppointmentService {
         return appointmentRepository.findByPatientID(patientID, pageable);
     }
 
+    @Transactional
     // Add a new appointment
     public Appointment addAppointment(Appointment appointment) throws ResourceAlreadyExistsException,
             InvalidTimeException, EntityTimeClashException {
@@ -169,6 +171,7 @@ public class AppointmentService {
         return appointment;
     }
 
+    @Transactional
     // Cancel an existing appointment by ID
     public Appointment cancelAppointment(int appointmentID) {
         Appointment deletedAppointment = this.getAppointmentByID(appointmentID);

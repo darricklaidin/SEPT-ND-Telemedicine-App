@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class PatientService {
     private final PatientRepository patientRepository;
@@ -27,33 +29,10 @@ public class PatientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "userID", patientID));
     }
 
+    @Transactional
     public Patient updatePatient(int patientID, Patient patient) throws ResourceAlreadyExistsException {
         // Check that patient exists
         Patient oldPatient = this.getPatientByID(patientID);
-
-        if (patient.getFirstName() != null) {
-            oldPatient.setFirstName(patient.getFirstName());
-        }
-
-        if (patient.getLastName() != null) {
-            oldPatient.setLastName(patient.getLastName());
-        }
-
-        if (patient.getEmail() != null) {
-            oldPatient.setEmail(patient.getEmail());
-        }
-
-        if (patient.getPassword() != null) {
-            oldPatient.setPassword(patient.getPassword());
-        }
-
-        if (patient.getDateOfBirth() != null) {
-            oldPatient.setDateOfBirth(patient.getDateOfBirth());
-        }
-
-        if (patient.getRoles() != null) {
-            oldPatient.setRoles(patient.getRoles());
-        }
 
         oldPatient.setSymptoms(patient.getSymptoms());
 
