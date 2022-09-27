@@ -34,12 +34,18 @@ public class PatientService {
         // Check that patient exists
         Patient oldPatient = this.getPatientByID(patientID);
 
+        oldPatient.setFirstName(patient.getFirstName());
+        oldPatient.setLastName(patient.getLastName());
+        oldPatient.setEmail(patient.getEmail());
+        oldPatient.setPassword(patient.getPassword());
+        oldPatient.setDateOfBirth(patient.getDateOfBirth());
         oldPatient.setSymptoms(patient.getSymptoms());
 
         patientRepository.save(oldPatient);
 
         return oldPatient;
     }
+
     public Patient deletePatient(int patientID) {
         Patient deletedPatient = this.getPatientByID(patientID);
 

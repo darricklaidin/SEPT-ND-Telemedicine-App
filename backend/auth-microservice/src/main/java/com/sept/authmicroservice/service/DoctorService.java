@@ -35,6 +35,13 @@ public class DoctorService {
     public Doctor updateDoctor(int doctorID, Doctor doctor) {
         // Ensure doctor exists
         Doctor updatedDoctor = this.getDoctorByID(doctorID);
+        updatedDoctor.setFirstName(doctor.getFirstName());
+        updatedDoctor.setLastName(doctor.getLastName());
+        updatedDoctor.setEmail(doctor.getEmail());
+        updatedDoctor.setPassword(doctor.getPassword());
+        updatedDoctor.setDateOfBirth(doctor.getDateOfBirth());
+        updatedDoctor.setSpecialty(doctor.getSpecialty());
+
         doctorRepository.save(updatedDoctor);
         return updatedDoctor;
     }

@@ -76,7 +76,7 @@ class PatientServiceTest {
         assertEquals("update@gmail.com", patient.getEmail());
         assertEquals("update", patient.getPassword());
         assertEquals(dob2,patient.getDateOfBirth());
-        assertEquals(null, patient.getRoles());
+        assertNull(patient.getRoles());
 
         patientService.updatePatient(patient.getUserID(), patient3);
 
@@ -86,7 +86,7 @@ class PatientServiceTest {
         assertEquals("update@gmail.com", patient.getEmail());
         assertEquals("update", patient.getPassword());
         assertEquals(dob2,patient.getDateOfBirth());
-        assertEquals(null, patient.getRoles());
+        assertNull(patient.getRoles());
     }
 
     @Test
