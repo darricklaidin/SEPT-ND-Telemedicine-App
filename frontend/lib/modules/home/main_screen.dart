@@ -5,7 +5,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import '../appointment/manage_appointments_screen.dart';
 import '../chat/chat_screen.dart';
 import '../doctor/searched_doctor_profile_screen.dart';
-import 'home_screen.dart';
+import 'empty_home_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> _buildScreens() {
     return [
-      const HomeScreen(),
+      const EmptyHomeScreen(),
       const DoctorProfileScreen(),
       ManageAppointmentsScreen(handleTabSelection: _handleTabSelection),
       const ChatScreen(),
