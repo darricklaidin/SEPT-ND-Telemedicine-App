@@ -16,13 +16,8 @@ import 'package:frontend/services/auth_service.dart';
 
 class ManageAppointmentsScreen extends StatefulWidget {
   final Function handleTabSelection;
-  bool reload = true;
 
-  ManageAppointmentsScreen(
-      {Key? key,
-        required this.handleTabSelection,
-        required this.reload}
-      ) : super(key: key);
+  ManageAppointmentsScreen({Key? key, required this.handleTabSelection,}) : super(key: key);
 
   @override
   _ManageAppointmentsScreenState createState() =>
@@ -63,16 +58,11 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   @override
   void initState() {
     super.initState();
+    loadAppointments();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.reload == true) {
-      loadAppointments();
-      setState(() {
-        widget.reload = false;
-      });
-    }
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
@@ -113,51 +103,57 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 );
               } else {
                 return Expanded(
-                  child: ListView.builder(
-                      padding: const EdgeInsets.all(0),
-                      itemCount: appointments.length,
-                      itemBuilder: (context, index) {
-                        // Display appropriate info based on role
-                        return AppointmentCard(
-                          name:
-                          userRole == "PATIENT" ?
-                          "${appointments[index].doctor.firstName} "
-                              "${appointments[index].doctor.lastName}" :
-                          "${appointments[index].patient.firstName} "
-                              "${appointments[index].patient.lastName}",
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      print("Refresh");
+                      loadAppointments();
+                    },
+                    child: ListView.builder(
+                        padding: const EdgeInsets.all(0),
+                        itemCount: appointments.length,
+                        itemBuilder: (context, index) {
+                          // Display appropriate info based on role
+                          return AppointmentCard(
+                            name:
+                            userRole == "PATIENT" ?
+                            "${appointments[index].doctor.firstName} "
+                                "${appointments[index].doctor.lastName}" :
+                            "${appointments[index].patient.firstName} "
+                                "${appointments[index].patient.lastName}",
 
-                          age: AgeCalculator.age(
-                                  userRole == "PATIENT" ?
-                                  appointments[index].doctor.dateOfBirth :
-                                  appointments[index].patient.dateOfBirth).years,
+                            age: AgeCalculator.age(
+                                    userRole == "PATIENT" ?
+                                    appointments[index].doctor.dateOfBirth :
+                                    appointments[index].patient.dateOfBirth).years,
 
-                          date: DateFormat('dd MMM yyyy')
-                              .format(appointments[index].date),
-                          startTime:
-                              Utility.timeToString(appointments[index].startTime),
-                          endTime:
-                              Utility.timeToString(appointments[index].endTime),
-                          delete: () async {
-                            await AppointmentService.deleteAppointment(
-                                appointments[index].appointmentID);
-                            setState(() {
-                              appointments.removeAt(index);
-                            });
-                            if (!mounted) {
-                              return;
-                            }
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                behavior: SnackBarBehavior.floating,
-                                margin: EdgeInsets.only(bottom: 10.0),
-                                content: Text("Appointment deleted"),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          },
-                          handleTabSelection: widget.handleTabSelection,
-                        );
-                      }),
+                            date: DateFormat('dd MMM yyyy')
+                                .format(appointments[index].date),
+                            startTime:
+                                Utility.timeToString(appointments[index].startTime),
+                            endTime:
+                                Utility.timeToString(appointments[index].endTime),
+                            delete: () async {
+                              await AppointmentService.deleteAppointment(
+                                  appointments[index].appointmentID);
+                              setState(() {
+                                appointments.removeAt(index);
+                              });
+                              if (!mounted) {
+                                return;
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.only(bottom: 10.0),
+                                  content: Text("Appointment deleted"),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                            handleTabSelection: widget.handleTabSelection,
+                          );
+                        }),
+                  ),
                 );
             }
           }),
