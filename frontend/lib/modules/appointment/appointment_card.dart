@@ -37,8 +37,10 @@ class AppointmentCard extends StatefulWidget {
 class _AppointmentCardState extends State<AppointmentCard> {
   @override
   Widget build(BuildContext context) {
+    Color themeColor = Theme.of(context).colorScheme.primary;
+
     return Card(
-      color: Colors.deepPurple[200],
+      color: themeColor,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(

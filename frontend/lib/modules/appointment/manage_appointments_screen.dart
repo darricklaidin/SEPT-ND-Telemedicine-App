@@ -13,6 +13,8 @@ import 'package:frontend/modules/appointment/appointment_card.dart';
 import 'package:frontend/models/appointment.dart';
 import 'package:frontend/services/auth_service.dart';
 
+import '../profile/profile_button.dart';
+
 
 class ManageAppointmentsScreen extends StatefulWidget {
   final Function handleTabSelection;
@@ -30,7 +32,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   bool timeUp = false;
   String? userRole;
 
-  void loadAppointments() async {
+  Future loadAppointments() async {
     isLoading = true;
     timeUp = false;
     userRole = await getUserRoleFromStorage();
@@ -44,10 +46,10 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
       else if (userRole == "DOCTOR") {
         appointments = await DoctorService.fetchDoctorAppointments();
       }
-    } on TimeoutException catch (exception) {
+    } on TimeoutException {
       timeUp = true;
     } on Exception catch (exception) {
-      print("Exception caught");
+      print(exception);
     }
 
     setState(() {
@@ -68,14 +70,9 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
         child: Column(
           children: <Widget>[
-            Align(
+            const Align(
                 alignment: Alignment.centerRight,
-                child: IconButton(
-                  splashRadius: 20.0,
-                  iconSize: 35.0,
-                  icon: const Icon(CupertinoIcons.profile_circled),
-                  onPressed: () {},
-                )),
+                child: ProfileButton()),
             const Align(
               alignment: Alignment.centerLeft,
               child: Text("Appointments",
@@ -105,7 +102,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      loadAppointments();
+                      await loadAppointments();
                     },
                     child: ListView.builder(
                         padding: const EdgeInsets.all(0),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/models/user.dart';
 import '../../services/auth_service.dart';
+import '../profile/profile_button.dart';
 
 class EmptyHomeScreen extends StatefulWidget {
   const EmptyHomeScreen({Key? key}) : super(key: key);
@@ -54,7 +55,12 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
               Container(
                 height: height,
                 width: width,
-                color: Colors.white,
+                color: Colors.transparent,
+              ),
+              Positioned(
+                top: 0,
+                right: width * 0.05,
+                child: const ProfileButton(),
               ),
               Positioned(
                 child: Text("Hello ${user?.firstName}"),

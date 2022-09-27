@@ -10,6 +10,22 @@ import 'auth_service.dart';
 import 'patient_service.dart';
 
 class DoctorService {
+
+  static Future<List<Doctor>> fetchAllDoctors() async {
+    final response = await http.get(Uri.parse('$apiAuthRootUrl/doctors?sort=firstName'),
+        headers: {
+          'Authorization': 'Bearer ${await getJWT()}',
+        }).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['content']
+          .map<Doctor>((doctor) => Doctor.fromJson(doctor))
+          .toList();
+    } else {
+      throw Exception('Failed to load doctors');
+    }
+  }
+
   static Future<Doctor> fetchDoctor(int doctorID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/doctors/$doctorID'), headers: {

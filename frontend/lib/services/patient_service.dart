@@ -12,6 +12,22 @@ import 'doctor_service.dart';
 
 class PatientService {
 
+  static Future<List<Patient>> fetchAllPatients() async {
+    final response = await http.get(Uri.parse('$apiAuthRootUrl/patients?sort=firstName'),
+        headers: {
+          'Authorization': 'Bearer ${await getJWT()}',
+        }).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['content']
+          .map<Patient>((patient) => Patient.fromJson(patient))
+          .toList();
+    } else {
+      throw Exception('Failed to load patients');
+    }
+  }
+
+
   static Future<Patient> fetchPatient(int patientID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/patients/$patientID'), headers: {
@@ -43,5 +59,6 @@ class PatientService {
       throw Exception("Failed to load patient's appointments");
     }
   }
+
 
 }
