@@ -25,17 +25,25 @@ class DoctorService {
   }
 
   //BRYAN ATTEMPTING DOCTOR ADMIN LIST
-  static Future<Doctor> fetchDoctorList() async {
-    final response = await http
-        .get(Uri.parse('$apiAuthRootUrl/doctors'), headers: {
-      'Authorization': 'Bearer ${await getJWT()}',
-    });
+  static Future<List<Doctor>> fetchDoctorList() async {
+
+    //initialize list of patients;
+    List<Doctor> doctors = [];
+
+    //fetching the data
+    var response = await http.get(Uri.parse('$apiAuthRootUrl/doctors'), headers: {
+      'Authorization': 'Bearer ${await getJWT()}'});
 
     if (response.statusCode == 200) {
-      return Doctor.fromJson(jsonDecode(response.body));
+      List<dynamic> jsonData = jsonDecode(response.body)["content"];  // list of patients //response.body
+
+      for (dynamic doctor in jsonData) {
+        doctors.add(Doctor.fromJson(doctor)); //give Doctor Object
+      }
+      return doctors;
+
     } else {
-      // return Doctor();
-      throw Exception('Failed to load doctor profile');
+      throw Exception("Failed to load patient's appointments");
     }
   }
 

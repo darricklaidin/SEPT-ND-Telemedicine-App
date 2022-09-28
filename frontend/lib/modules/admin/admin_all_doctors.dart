@@ -24,10 +24,7 @@ class _AdminAllDoctorsScreen extends State<AdminAllDoctorsScreen> {
 
   void loadDoctors() async {
     doctors = await DoctorService.fetchDoctorList();
-    setState(() {
-      doctors = doctors;
-      isLoading = false;
-    });
+    setState(() {isLoading = false;});
   }
 
   @override
@@ -54,7 +51,7 @@ class _AdminAllDoctorsScreen extends State<AdminAllDoctorsScreen> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Appointments",
+                  "All Doctors",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -63,7 +60,8 @@ class _AdminAllDoctorsScreen extends State<AdminAllDoctorsScreen> {
               ),
               const SizedBox(height: 25),
               Builder(builder: (context) {
-                if (isLoading) {
+                if (false) {
+
                   return const Padding(
                     padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
                     child: Center(
@@ -74,11 +72,11 @@ class _AdminAllDoctorsScreen extends State<AdminAllDoctorsScreen> {
                   return Expanded(
                     child: ListView.builder(
                         padding: const EdgeInsets.all(0),
-                        itemCount: patients.length,
+                        itemCount: doctors.length,
                         itemBuilder: (context, index) {
-                          return Container(
+                          return SizedBox(
                             height: 40,
-                            child: Center(child:Text('${patients[index]}')),
+                            child: Center(child:Text('${doctors[index]}')),
                           );
 
                         }),
