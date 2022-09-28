@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _getAuth() async {
     // Check if token already exists in storage
     try {
-      if (await checkAuth().timeout(Duration(seconds: 5)) != null) {
+      if (await checkAuth().timeout(const Duration(seconds: 1)) != null) {
         await Navigator.pushReplacementNamed(context, '/home');
       }
     } on TimeoutException{
@@ -42,6 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Timeout: Unable to authenticate"),
           backgroundColor: LightPalette.error));
+      return;
     }
 
     if (mounted) {
@@ -175,9 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('Register Text Clicked'),
-                          ));
+                              .showSnackBar(const SnackBar(content: Text('Register Text Clicked'),));
                         }),
                   ]),
               )

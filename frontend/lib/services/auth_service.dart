@@ -45,7 +45,7 @@ Future<ApiResponse> loginUser(String email, String password) async {
 
   final response = await http.post(url,
       headers: {"Content-Type": "application/json"}, body: body)
-      .timeout(const Duration(seconds: 5));
+      .timeout(const Duration(seconds: 1));
   Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
   ApiResponse res = ApiResponse();
