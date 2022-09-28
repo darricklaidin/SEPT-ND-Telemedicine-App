@@ -11,6 +11,7 @@ class ProfileButton extends StatelessWidget {
       iconSize: 35.0,
       icon: const Icon(CupertinoIcons.profile_circled),
       onPressed: () {},
+      color: Colors.black,
     );
   }
 
