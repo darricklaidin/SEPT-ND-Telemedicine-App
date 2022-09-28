@@ -19,11 +19,13 @@ public class DoctorService {
         this.doctorRepository = doctorRepository;
     }
 
+    @Transactional
     // Get all doctors
     public Page<Doctor> getAllDoctors(Pageable pageable) {
         return doctorRepository.findAllBy(pageable);
     }
 
+    @Transactional
     // Get a doctor by ID
     public Doctor getDoctorByID(int doctorID) throws ResourceNotFoundException {
         return doctorRepository.findByUserID(doctorID)

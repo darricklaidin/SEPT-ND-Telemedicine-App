@@ -20,10 +20,12 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
+    @Transactional
     public Page<Patient> getAllPatients(Pageable pageable) {
         return patientRepository.findAllBy(pageable);
     }
 
+    @Transactional
     public Patient getPatientByID(int patientID) throws ResourceNotFoundException {
         return patientRepository.findByUserID(patientID)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "userID", patientID));
@@ -46,11 +48,10 @@ public class PatientService {
         return oldPatient;
     }
 
+    @Transactional
     public Patient deletePatient(int patientID) {
         Patient deletedPatient = this.getPatientByID(patientID);
-
         patientRepository.deleteById(patientID);
-
         return deletedPatient;
     }
 }

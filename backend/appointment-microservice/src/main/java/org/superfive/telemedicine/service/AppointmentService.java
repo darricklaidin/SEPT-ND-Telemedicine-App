@@ -29,22 +29,26 @@ public class AppointmentService {
         this.availabilityRepository = availabilityRepository;
     }
 
+    @Transactional
     // Get all appointments
     public Page<Appointment> getAllAppointments(Pageable pageable) {
         return appointmentRepository.findAllBy(pageable);
     }
 
+    @Transactional
     // Get an appointment by ID
     public Appointment getAppointmentByID(int appointmentID) throws ResourceNotFoundException {
         return appointmentRepository.findByAppointmentID(appointmentID)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment", "appointmentID", appointmentID));
     }
 
+    @Transactional
     // Get a doctor's appointments
     public Page<Appointment> getDoctorAppointments(int doctorID, Pageable pageable) {
         return appointmentRepository.findByDoctorID(doctorID, pageable);
     }
 
+    @Transactional
     // Get a patient's appointments
     public Page<Appointment> getPatientAppointments(int patientID, Pageable pageable) {
         return appointmentRepository.findByPatientID(patientID, pageable);
@@ -175,9 +179,7 @@ public class AppointmentService {
     // Cancel an existing appointment by ID
     public Appointment cancelAppointment(int appointmentID) {
         Appointment deletedAppointment = this.getAppointmentByID(appointmentID);
-
         appointmentRepository.deleteById(appointmentID);
-
         return deletedAppointment;
     }
 }

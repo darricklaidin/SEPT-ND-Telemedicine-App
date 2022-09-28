@@ -10,6 +10,8 @@ import com.sept.authmicroservice.payload.SpecialtyDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import javax.transaction.Transactional;
+
 @Service
 public class SpecialtyService {
     private final SpecialtyRepository specialtyRepository;
@@ -20,21 +22,25 @@ public class SpecialtyService {
         this.specialtyRepository = specialityRepository;
     }
 
+    @Transactional
     // Get all specialities
     public Page<Specialty> getAllSpecialties(Pageable pageable) {
         return specialtyRepository.findAllBy(pageable);
     }
 
+    @Transactional
     public Specialty getSpecialtyByID(int specialtyID) throws ResourceNotFoundException {
         return specialtyRepository.findBySpecialtyID(specialtyID)
                 .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "specialtyID", specialtyID));
     }
 
+    @Transactional
     public Specialty getSpecialtyByName(String name) throws ResourceNotFoundException {
         return specialtyRepository.findBySpecialtyName(name)
                 .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "specialtyName", name));
     }
 
+    @Transactional
     public Specialty createSpecialty(SpecialtyDTO newSpecialty) throws ResourceAlreadyExistsException {
         // Ensure specialty name does not already exist
         try {
@@ -48,13 +54,14 @@ public class SpecialtyService {
         return temp;
     }
 
+    @Transactional
     public Specialty updateSpecialty(int specialtyID, SpecialtyDTO specialtyDTO) {
         Specialty updatedSpecialty = this.getSpecialtyByID(specialtyID); //Also checks if specialtyID exists
         updatedSpecialty.setSpecialtyName(specialtyDTO.getSpecialtyName());
-
         return specialtyRepository.save(updatedSpecialty);
     }
 
+    @Transactional
     public Specialty deleteSpecialty(int specialtyID) {
         Specialty deletedSpecialty = this.getSpecialtyByID(specialtyID);
         specialtyRepository.deleteById(specialtyID);
