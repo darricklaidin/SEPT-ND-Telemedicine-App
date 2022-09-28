@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/services/auth_service.dart';
@@ -29,8 +31,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _getAuth() async {
     // Check if token already exists in storage
-    if (await checkAuth() != null) {
-      await Navigator.pushReplacementNamed(context, '/home');
+    try {
+      if (await checkAuth().timeout(Duration(seconds: 5)) != null) {
+        await Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on TimeoutException{
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Timeout: Unable to authenticate"),
+          backgroundColor: LightPalette.error));
     }
 
     if (mounted) {
@@ -49,7 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
         res = await loginUser(email, password);
       }
-    } catch (e) {
+    } on TimeoutException {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Timeout: Unable to authenticate"),
+          backgroundColor: LightPalette.error));
+      return;
+    } on Exception {
       res.msg = "Error";
     }
 
