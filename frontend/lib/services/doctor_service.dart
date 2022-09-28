@@ -26,7 +26,7 @@ class DoctorService {
     }
   }
 
-  static Future<Doctor> fetchDoctor(int doctorID) async {
+  static Future fetchDoctor(int doctorID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/doctors/$doctorID'), headers: {
       'Authorization': 'Bearer ${await getJWT()}',
@@ -34,8 +34,9 @@ class DoctorService {
 
     if (response.statusCode == 200) {
       return Doctor.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      return jsonDecode(response.body)['message'];
     } else {
-      // return Doctor();
       throw Exception('Failed to load doctor profile');
     }
   }
