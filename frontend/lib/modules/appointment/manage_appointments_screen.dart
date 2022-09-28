@@ -13,6 +13,8 @@ import 'package:frontend/modules/appointment/appointment_card.dart';
 import 'package:frontend/models/appointment.dart';
 import 'package:frontend/services/auth_service.dart';
 
+import '../profile/profile_button.dart';
+
 
 class ManageAppointmentsScreen extends StatefulWidget {
   final Function handleTabSelection;
@@ -30,7 +32,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   bool timeUp = false;
   String? userRole;
 
-  void loadAppointments() async {
+  Future loadAppointments() async {
     isLoading = true;
     timeUp = false;
     userRole = await getUserRoleFromStorage();
@@ -44,10 +46,15 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
       else if (userRole == "DOCTOR") {
         appointments = await DoctorService.fetchDoctorAppointments();
       }
-    } on TimeoutException catch (exception) {
-      timeUp = true;
+    } on TimeoutException {
+      setState(() {
+        timeUp = true;
+        isLoading = false;
+      });
+      return;
     } on Exception catch (exception) {
-      print("Exception caught");
+      print(exception);
+      return;
     }
 
     setState(() {
@@ -63,19 +70,31 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
+    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
+    Color errorThemeColor = Theme.of(context).colorScheme.error;
+
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            ProfileButton(),
+            SizedBox(
+              width: 20,
+            )
+          ],
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
         child: Column(
           children: <Widget>[
-            Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  splashRadius: 20.0,
-                  iconSize: 35.0,
-                  icon: const Icon(CupertinoIcons.profile_circled),
-                  onPressed: () {},
-                )),
             const Align(
               alignment: Alignment.centerLeft,
               child: Text("Appointments",
@@ -95,69 +114,93 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                   ),
                 );
               } else if (timeUp) {
-                return const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                  child: Center(
-                    child: Text("Timeout: Unable to fetch appointments"),
-                  ),
-                );
-              } else {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      loadAppointments();
+                      await loadAppointments();
                     },
-                    child: ListView.builder(
-                        padding: const EdgeInsets.all(0),
-                        itemCount: appointments.length,
-                        itemBuilder: (context, index) {
-                          // Display appropriate info based on role
-                          return AppointmentCard(
-                            appointmentID: appointments[index].appointmentID,
-                            name:
-                            userRole == "PATIENT" ?
-                            "${appointments[index].doctor.firstName} "
-                                "${appointments[index].doctor.lastName}" :
-                            "${appointments[index].patient.firstName} "
-                                "${appointments[index].patient.lastName}",
-
-                            age: AgeCalculator.age(
-                                    userRole == "PATIENT" ?
-                                    appointments[index].doctor.dateOfBirth :
-                                    appointments[index].patient.dateOfBirth).years,
-
-                            date: DateFormat('dd MMM yyyy')
-                                .format(appointments[index].date),
-                            startTime:
-                                Utility.timeToString(appointments[index].startTime),
-                            endTime:
-                                Utility.timeToString(appointments[index].endTime),
-                            delete: () async {
-                              await AppointmentService.deleteAppointment(
-                                  appointments[index].appointmentID);
-                              setState(() {
-                                appointments.removeAt(index);
-                              });
-                              if (!mounted) {
-                                return;
-                              }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: EdgeInsets.only(bottom: 10.0),
-                                  content: Text("Appointment deleted"),
-                                  duration: Duration(seconds: 2),
-                                ),
-                              );
-                            },
-                            handleTabSelection: widget.handleTabSelection,
-                            reload: loadAppointments,
-                          );
-                        }),
+                    child: ListView(
+                      children: const [
+                        Center(
+                          child: Text("Timeout: Unable to fetch appointments"),
+                        ),
+                      ]
+                    ),
                   ),
                 );
-            }
-          }),
+              } else if (appointments.isEmpty) {
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await loadAppointments();
+                    },
+                    child: ListView(
+                        children: const [
+                          Center(
+                            child: Text("No appointments found"),
+                          ),
+                        ]
+                    ),
+                  ),
+                );
+              } else {
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await loadAppointments();
+                      },
+                      child: ListView.builder(
+                          padding: const EdgeInsets.all(0),
+                          itemCount: appointments.length,
+                          itemBuilder: (context, index) {
+                            // Display appropriate info based on role
+                            return AppointmentCard(
+                              appointmentID: appointments[index].appointmentID,
+                              name:
+                              userRole == "PATIENT" ?
+                              "${appointments[index].doctor.firstName} "
+                                  "${appointments[index].doctor.lastName}" :
+                              "${appointments[index].patient.firstName} "
+                                  "${appointments[index].patient.lastName}",
+
+                              age: AgeCalculator.age(
+                                      userRole == "PATIENT" ?
+                                      appointments[index].doctor.dateOfBirth :
+                                      appointments[index].patient.dateOfBirth).years,
+
+                              date: DateFormat('dd MMM yyyy')
+                                  .format(appointments[index].date),
+                              startTime:
+                                  Utility.timeToString(appointments[index].startTime),
+                              endTime:
+                                  Utility.timeToString(appointments[index].endTime),
+                              delete: () async {
+                                await AppointmentService.deleteAppointment(
+                                    appointments[index].appointmentID);
+                                setState(() {
+                                  appointments.removeAt(index);
+                                });
+                                if (!mounted) {
+                                  return;
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    behavior: SnackBarBehavior.floating,
+                                    margin: const EdgeInsets.only(bottom: 10.0),
+                                    content: const Text("Appointment deleted"),
+                                    duration: const Duration(seconds: 2),
+                                    backgroundColor: errorThemeColor,
+                                  ),
+                                );
+                              },
+                              handleTabSelection: widget.handleTabSelection,
+                              reload: loadAppointments,
+                            );
+                          }),
+                    ),
+                  );
+              }
+            }),
         ],
       ),
     ));

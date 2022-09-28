@@ -11,32 +11,37 @@ import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
 
+import javax.transaction.Transactional;
 import java.time.DayOfWeek;
 
 @Service
 public class AvailabilityService {
     private final AvailabilityRepository availabilityRepository;
-    private final String RESOURCE_NAME = "Availability";
+    private static final String RESOURCE_NAME = "Availability";
 
     @Autowired
     public AvailabilityService(AvailabilityRepository availabilityRepository) {
         this.availabilityRepository = availabilityRepository;
     }
 
+    @Transactional
     public Page<Availability> getAllAvailabilities(Pageable pageable) {
         return availabilityRepository.findAllBy(pageable);
     }
 
+    @Transactional
     public Availability getAvailabilityByID(int availabilityID) throws ResourceNotFoundException {
         return availabilityRepository.findByAvailabilityID(availabilityID)
                 .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "availabilityID", availabilityID));
     }
 
+    @Transactional
     // Get a doctor's availabilities
     public Page<Availability> getDoctorAvailabilities(int doctorID, Pageable pageable) {
         return availabilityRepository.findByDoctorID(doctorID, pageable);
     }
 
+    @Transactional
     public Availability addAvailability(AvailabilityDTO availability) throws ResourceAlreadyExistsException,
             InvalidTimeException {
 
@@ -73,6 +78,7 @@ public class AvailabilityService {
         return temp;
     }
 
+    @Transactional
     public Availability rescheduleAvailability(AvailabilityDTO availability, int availabilityID) throws InvalidTimeException {
 
         Availability updatedAvailability = this.getAvailabilityByID(availabilityID);
@@ -91,11 +97,10 @@ public class AvailabilityService {
         return updatedAvailability;
     }
 
+    @Transactional
     public Availability deleteAvailability(int availabilityID) {
         Availability deletedAvailability = this.getAvailabilityByID(availabilityID);
-
         availabilityRepository.deleteById(availabilityID);
-
         return deletedAvailability;
     }
 }

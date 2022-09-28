@@ -46,7 +46,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private LocalDate dateOfBirth;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable
     private List<Role> roles;
 

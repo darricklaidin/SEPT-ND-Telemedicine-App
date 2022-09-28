@@ -12,7 +12,23 @@ import 'doctor_service.dart';
 
 class PatientService {
 
-  static Future<Patient> fetchPatient(int patientID) async {
+  static Future<List<Patient>> fetchAllPatients() async {
+    final response = await http.get(Uri.parse('$apiAuthRootUrl/patients?sort=firstName'),
+        headers: {
+          'Authorization': 'Bearer ${await getJWT()}',
+        }).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['content']
+          .map<Patient>((patient) => Patient.fromJson(patient))
+          .toList();
+    } else {
+      throw Exception('Failed to load patients');
+    }
+  }
+
+
+  static Future fetchPatient(int patientID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/patients/$patientID'), headers: {
       'Authorization': 'Bearer ${await getJWT()}',
@@ -20,6 +36,8 @@ class PatientService {
 
     if (response.statusCode == 200) {
       return Patient.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 404) {
+      return jsonDecode(response.body)['message'];
     } else {
       throw Exception('Failed to load patient profile');
     }
@@ -43,5 +61,6 @@ class PatientService {
       throw Exception("Failed to load patient's appointments");
     }
   }
+
 
 }

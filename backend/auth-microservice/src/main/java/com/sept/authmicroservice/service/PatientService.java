@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class PatientService {
     private final PatientRepository patientRepository;
@@ -18,54 +20,38 @@ public class PatientService {
         this.patientRepository = patientRepository;
     }
 
+    @Transactional
     public Page<Patient> getAllPatients(Pageable pageable) {
         return patientRepository.findAllBy(pageable);
     }
 
+    @Transactional
     public Patient getPatientByID(int patientID) throws ResourceNotFoundException {
         return patientRepository.findByUserID(patientID)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient", "userID", patientID));
     }
 
+    @Transactional
     public Patient updatePatient(int patientID, Patient patient) throws ResourceAlreadyExistsException {
         // Check that patient exists
         Patient oldPatient = this.getPatientByID(patientID);
 
-        if (patient.getFirstName() != null) {
-            oldPatient.setFirstName(patient.getFirstName());
-        }
-
-        if (patient.getLastName() != null) {
-            oldPatient.setLastName(patient.getLastName());
-        }
-
-        if (patient.getEmail() != null) {
-            oldPatient.setEmail(patient.getEmail());
-        }
-
-        if (patient.getPassword() != null) {
-            oldPatient.setPassword(patient.getPassword());
-        }
-
-        if (patient.getDateOfBirth() != null) {
-            oldPatient.setDateOfBirth(patient.getDateOfBirth());
-        }
-
-        if (patient.getRoles() != null) {
-            oldPatient.setRoles(patient.getRoles());
-        }
-
+        oldPatient.setFirstName(patient.getFirstName());
+        oldPatient.setLastName(patient.getLastName());
+        oldPatient.setEmail(patient.getEmail());
+        oldPatient.setPassword(patient.getPassword());
+        oldPatient.setDateOfBirth(patient.getDateOfBirth());
         oldPatient.setSymptoms(patient.getSymptoms());
 
         patientRepository.save(oldPatient);
 
         return oldPatient;
     }
+
+    @Transactional
     public Patient deletePatient(int patientID) {
         Patient deletedPatient = this.getPatientByID(patientID);
-
         patientRepository.deleteById(patientID);
-
         return deletedPatient;
     }
 }

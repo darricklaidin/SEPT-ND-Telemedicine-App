@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/services/auth_service.dart';
@@ -29,8 +31,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _getAuth() async {
     // Check if token already exists in storage
-    if (await checkAuth() != null) {
-      await Navigator.pushReplacementNamed(context, '/home');
+    try {
+      if (await checkAuth() != null) {
+        await Navigator.pushReplacementNamed(context, '/home');
+      }
+    } on TimeoutException{
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Timeout: Unable to authenticate"),
+          backgroundColor: LightPalette.error));
+      return;
     }
 
     if (mounted) {
@@ -49,7 +61,15 @@ class _LoginScreenState extends State<LoginScreen> {
 
         res = await loginUser(email, password);
       }
-    } catch (e) {
+    } on TimeoutException {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Timeout: Unable to authenticate"),
+          backgroundColor: LightPalette.error));
+      return;
+    } on Exception {
       res.msg = "Error";
     }
 
@@ -64,6 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text("Login")),
@@ -124,12 +147,10 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
+                  backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
                 ),
                 onPressed: () => login(context),
-                child: const Text(
-                  "Login",
-                ),
+                child: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 20),
               const Text(
@@ -155,9 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text('Register Text Clicked'),
-                          ));
+                              .showSnackBar(const SnackBar(content: Text('Register Text Clicked'),));
                         }),
                   ]),
               )

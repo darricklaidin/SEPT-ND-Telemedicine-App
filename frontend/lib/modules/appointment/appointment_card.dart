@@ -37,8 +37,12 @@ class AppointmentCard extends StatefulWidget {
 class _AppointmentCardState extends State<AppointmentCard> {
   @override
   Widget build(BuildContext context) {
+    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
+    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
+    Color errorThemeColor = Theme.of(context).colorScheme.error;
+
     return Card(
-      color: Colors.deepPurple[200],
+      color: primaryThemeColor,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -51,7 +55,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   size: 40,
                 ),
                 const SizedBox(width: 10),
-                Container(
+                SizedBox(
                   width: 100,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,15 +95,17 @@ class _AppointmentCardState extends State<AppointmentCard> {
                   onPressed: () async {
                     // Before navigating to the join appointment screen, check
                     // if the appointment still exists in the database
-                    widget.reload();
                     if (await AppointmentService.findAppointmentByID(widget.appointmentID) == "Resource Not Found") {
                       ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text("Appointment no longer exists"),
-                              behavior: SnackBarBehavior.floating,
-                              margin: EdgeInsets.only(bottom: 10.0),
-                              duration: Duration(seconds: 2),
+                          SnackBar(
+                            content: const Text("Appointment no longer exists"),
+                            behavior: SnackBarBehavior.floating,
+                            margin: const EdgeInsets.only(bottom: 10.0),
+                            duration: const Duration(seconds: 2),
+                            backgroundColor: errorThemeColor,
+
                           ));
+                      widget.reload();
                     } else {
                       Navigator.push(
                         context,
