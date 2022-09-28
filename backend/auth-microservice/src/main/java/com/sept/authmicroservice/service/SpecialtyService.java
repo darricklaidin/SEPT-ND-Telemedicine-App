@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 @Service
 public class SpecialtyService {
     private final SpecialtyRepository specialtyRepository;
+    private static final String RESOURCE_NAME = "Specialty";
 
     @Autowired
     public SpecialtyService(SpecialtyRepository specialityRepository) {
@@ -26,21 +27,21 @@ public class SpecialtyService {
 
     public Specialty getSpecialtyByID(int specialtyID) throws ResourceNotFoundException {
         return specialtyRepository.findBySpecialtyID(specialtyID)
-                .orElseThrow(() -> new ResourceNotFoundException("Specialty", "specialtyID", specialtyID));
+                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "specialtyID", specialtyID));
     }
 
     public Specialty getSpecialtyByName(String name) throws ResourceNotFoundException {
         return specialtyRepository.findBySpecialtyName(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Specialty", "specialtyName", name));
+                .orElseThrow(() -> new ResourceNotFoundException(RESOURCE_NAME, "specialtyName", name));
     }
 
     public Specialty createSpecialty(SpecialtyDTO newSpecialty) throws ResourceAlreadyExistsException {
-        // Ensure specialty ID does not already exist
+        // Ensure specialty name does not already exist
         try {
             this.getSpecialtyByName(newSpecialty.getSpecialtyName());
-            throw new ResourceAlreadyExistsException("Specialty", "specialtyName", newSpecialty.getSpecialtyName());
+            throw new ResourceAlreadyExistsException(RESOURCE_NAME, "specialtyName", newSpecialty.getSpecialtyName());
         } catch (ResourceNotFoundException exception) {
-            // Specialty id does not exist, continue...
+            // Specialty name does not exist, continue...
         }
         Specialty temp = new Specialty(newSpecialty.getSpecialtyName());
         specialtyRepository.save(temp);
