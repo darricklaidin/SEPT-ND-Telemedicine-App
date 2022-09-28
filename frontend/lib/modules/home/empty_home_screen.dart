@@ -42,43 +42,56 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    Color themeColor = Theme.of(context).colorScheme.primary;
+    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
+    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
 
-    return Builder(builder: (context) {
-      if (isLoading) {
-        return const Center(child: CircularProgressIndicator());
-      } else {
-        return Scaffold(
-          body: Stack(
-            alignment: Alignment.center,
-            children: [
-              Container(
-                height: height,
-                width: width,
-                color: Colors.transparent,
-              ),
-              Positioned(
-                top: 0,
-                right: width * 0.05,
-                child: const ProfileButton(),
-              ),
-              Positioned(
-                child: Text("Hello ${user?.firstName}"),
-              ),
-              Positioned(
-                bottom: height * 0.35,
-                child: ElevatedButton(
-                  onPressed: () => logout(context),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.amber),
-                    ),
-                  child: const Text("Logout"),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            ProfileButton(),
+            SizedBox(
+              width: 20,
+            )
+          ],
+        ),
+        automaticallyImplyLeading: false,
+      ),
+      body: Builder(builder: (context) {
+        if (isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else {
+          return Scaffold(
+            body: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  height: height,
+                  width: width,
+                  color: Colors.transparent,
                 ),
-              ),
-            ],
-          ),
-        );
-      }
-    });
+                Positioned(
+                  top: height * 0.35,
+                  child: Text("Hello ${user?.firstName}"),
+                ),
+                Positioned(
+                  bottom: height * 0.35,
+                  child: ElevatedButton(
+                    onPressed: () => logout(context),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
+                      ),
+                    child: const Text("Logout", style: TextStyle(fontWeight: FontWeight.bold),),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      }),
+    );
   }
 }
