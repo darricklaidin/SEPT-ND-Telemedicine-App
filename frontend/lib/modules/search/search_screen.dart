@@ -25,8 +25,9 @@ class _SearchScreenState extends State<SearchScreen> {
   bool timeUp = false;
 
   Future loadUsers() async {
+    isLoading = true;
+    timeUp = false;
     userRole = await getUserRoleFromStorage();
-
     List? users;
 
     try {
@@ -36,9 +37,14 @@ class _SearchScreenState extends State<SearchScreen> {
         users = await PatientService.fetchAllPatients();
       }
     } on TimeoutException {
-      timeUp = true;
+      setState(() {
+        timeUp = true;
+        isLoading = false;
+      });
+      return;
     } on Exception catch (exception) {
       print(exception);
+      return;
     }
 
     setState(() {
@@ -114,18 +120,41 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: CircularProgressIndicator()
                   );
                 } else if (timeUp) {
-                  return const Center(
-                    child: Text('Connection timed out'),
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        loadUsers();
+                      },
+                      child: ListView(
+                        children: [
+                          Center(
+                          child: Text("Timeout: Unable to fetch "
+                              "${userRole == 'PATIENT' ? 'doctors' : 'patients'}"),
+                          ),
+                        ]
+                      ),
+                    ),
                   );
                 } else if (suggestions.isEmpty) {
-                  return const Center(
-                    child: Text('No results found'),
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        loadUsers();
+                      },
+                      child: ListView(
+                        children: const [
+                          Center(
+                            child: Text('No results found'),
+                          ),
+                        ]
+                      ),
+                    ),
                   );
                 }
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      await loadUsers();
+                      loadUsers();
                       filter(searchText);
                     },
                     child: ListView.separated(
