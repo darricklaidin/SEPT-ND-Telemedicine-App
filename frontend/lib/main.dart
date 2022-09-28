@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/modules/admin/admin_set_up_doctor_account.dart';
+import 'package:frontend/modules/settings/edit_personal_details_doctor_screen.dart';
+import 'package:frontend/modules/settings/settings_patient_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
 import 'modules/admin/admin_home.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
+import 'modules/settings/settings_doctor_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,7 +41,7 @@ class _MyAppState extends State<MyApp> {
         initialRoute: '/',
         routes: {
           // "/": (context) => const LoginScreen(),
-          "/": (context) => const AdminHomeScreen(),
+          "/": (context) => const EditPersonalDetailsDoctorScreen(),
           "/home": (context) => const MainScreen()
         });
   }
