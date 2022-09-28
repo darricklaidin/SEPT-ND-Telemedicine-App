@@ -31,127 +31,131 @@ class _EditPersonalDetailsPatientScreen extends State<EditPersonalDetailsPatient
         ),
         body: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: 300,
-                  child: TextFormField(
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'First Name',
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: 300,
+                      child: TextFormField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'First Name',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email cannot be empty';
+                          } else if (!RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value)) {
+                            return 'Invalid email';
+                          }
+                          return null;
+                        },
+                      ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Email cannot be empty';
-                      } else if (!RegExp(
-                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(value)) {
-                        return 'Invalid email';
-                      }
-                      return null;
-                    },
                   ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 300,
-                child: TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Last Name',
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Last Name',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password cannot be empty';
+                        }
+                        // FIXME: Uncomment when deploying
+                        // else if (value.length < 8) {
+                        //   return 'Password should be atleast 8 characters';
+                        // }
+                        return null;
+                      },
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password cannot be empty';
-                    }
-                    // FIXME: Uncomment when deploying
-                    // else if (value.length < 8) {
-                    //   return 'Password should be atleast 8 characters';
-                    // }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 300,
-                child: TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Mobile No.',
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Mobile No.',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password cannot be empty';
+                        }
+                        // FIXME: Uncomment when deploying
+                        // else if (value.length < 8) {
+                        //   return 'Password should be atleast 8 characters';
+                        // }
+                        return null;
+                      },
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password cannot be empty';
-                    }
-                    // FIXME: Uncomment when deploying
-                    // else if (value.length < 8) {
-                    //   return 'Password should be atleast 8 characters';
-                    // }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 300,
-                child: TextFormField(
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Username',
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Username',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password cannot be empty';
+                        }
+                        // FIXME: Uncomment when deploying
+                        // else if (value.length < 8) {
+                        //   return 'Password should be atleast 8 characters';
+                        // }
+                        return null;
+                      },
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password cannot be empty';
-                    }
-                    // FIXME: Uncomment when deploying
-                    // else if (value.length < 8) {
-                    //   return 'Password should be atleast 8 characters';
-                    // }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 300,
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Email',
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Email',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email cannot be empty';
+                        } else if (!RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                          return 'Invalid email';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email cannot be empty';
-                    } else if (!RegExp(
-                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value)) {
-                      return 'Invalid email';
-                    }
-                    return null;
-                  },
-                ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.red),
+                    ),
+                    onPressed: () => {},
+                    child: const Text(
+                      "Save",
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.red),
-                ),
-                onPressed: () => {},
-                child: const Text(
-                  "Save",
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
         ));
   }
