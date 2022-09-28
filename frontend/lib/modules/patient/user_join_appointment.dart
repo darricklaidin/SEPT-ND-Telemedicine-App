@@ -25,9 +25,15 @@ class _UserJoinAppointmentState extends State<UserJoinAppointment> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
+    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
+    Color errorThemeColor = Theme.of(context).colorScheme.error;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Join Appointment'),
+        title: const Text('Appointment'),
       ),
       body: Center(
         child: Column(
@@ -47,7 +53,7 @@ class _UserJoinAppointmentState extends State<UserJoinAppointment> {
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
-              child: const Text("Cancel"),
+              child: const Text("Cancel", style: TextStyle(fontWeight: FontWeight.bold),),
             ),
             ElevatedButton(
               onPressed: () {
@@ -58,9 +64,9 @@ class _UserJoinAppointmentState extends State<UserJoinAppointment> {
                 widget.handleTabSelection(chatPageIndex);
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red),
+                backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
               ),
-              child: const Text("Join Chat"),
+              child: const Text("Join Chat", style: TextStyle(fontWeight: FontWeight.bold),),
             ),
           ],
         ),

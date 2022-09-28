@@ -70,14 +70,31 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
+    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
+    Color errorThemeColor = Theme.of(context).colorScheme.error;
+
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: const [
+            ProfileButton(),
+            SizedBox(
+              width: 20,
+            )
+          ],
+        ),
+        automaticallyImplyLeading: false,
+      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
         child: Column(
           children: <Widget>[
-            const Align(
-                alignment: Alignment.centerRight,
-                child: ProfileButton()),
             const Align(
               alignment: Alignment.centerLeft,
               child: Text("Appointments",
@@ -100,7 +117,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      loadAppointments();
+                      await loadAppointments();
                     },
                     child: ListView(
                       children: const [
@@ -115,7 +132,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
-                      loadAppointments();
+                      await loadAppointments();
                     },
                     child: ListView(
                         children: const [
@@ -130,7 +147,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                   return Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
-                        loadAppointments();
+                        await loadAppointments();
                       },
                       child: ListView.builder(
                           padding: const EdgeInsets.all(0),
@@ -167,11 +184,12 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                                   return;
                                 }
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
+                                  SnackBar(
                                     behavior: SnackBarBehavior.floating,
-                                    margin: EdgeInsets.only(bottom: 10.0),
-                                    content: Text("Appointment deleted"),
-                                    duration: Duration(seconds: 2),
+                                    margin: const EdgeInsets.only(bottom: 10.0),
+                                    content: const Text("Appointment deleted"),
+                                    duration: const Duration(seconds: 2),
+                                    backgroundColor: errorThemeColor,
                                   ),
                                 );
                               },
