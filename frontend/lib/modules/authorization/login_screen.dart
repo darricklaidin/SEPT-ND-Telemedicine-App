@@ -32,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _getAuth() async {
     // Check if token already exists in storage
     try {
-      if (await checkAuth().timeout(const Duration(seconds: 1)) != null) {
+      if (await checkAuth() != null) {
         await Navigator.pushReplacementNamed(context, '/home');
       }
     } on TimeoutException{

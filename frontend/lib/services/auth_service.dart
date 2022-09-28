@@ -30,7 +30,7 @@ Future<UserDTO?> validateJWT(String token) async {
   Uri url = Uri.parse('$apiAuthRootUrl/auth/validate');
   final response = await http.get(url, headers: {
     'Authorization': 'Bearer $token',
-  });
+  }).timeout(Duration(seconds: 3));
   if (response.statusCode == 200) {
     res = UserDTO.fromJson(jsonDecode(response.body));
   }
@@ -45,7 +45,7 @@ Future<ApiResponse> loginUser(String email, String password) async {
 
   final response = await http.post(url,
       headers: {"Content-Type": "application/json"}, body: body)
-      .timeout(const Duration(seconds: 1));
+      .timeout(const Duration(seconds: 3));
   Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
   ApiResponse res = ApiResponse();
