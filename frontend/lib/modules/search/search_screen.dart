@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/doctor/profile_screen.dart';
+import 'package:frontend/modules/profile/profile_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../profile/profile_button.dart';
