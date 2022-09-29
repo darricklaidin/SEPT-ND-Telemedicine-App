@@ -7,8 +7,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../models/patient.dart';
+import 'appointment_service.dart';
 import 'auth_service.dart';
-import 'doctor_service.dart';
 
 class PatientService {
 
@@ -54,7 +54,10 @@ class PatientService {
       List<dynamic> jsonData = jsonDecode(response.body)['content'];  // list of appointments
       List<Appointment> appointments = [];
       for (dynamic appointment in jsonData) {
-        appointments.add(await DoctorService.getAppointmentFromJSON(appointment));
+        Appointment? temp = await AppointmentService.getAppointmentFromJSON(appointment);
+        if (temp != null) {
+          appointments.add(temp);
+        }
       }
       return appointments;
     } else {

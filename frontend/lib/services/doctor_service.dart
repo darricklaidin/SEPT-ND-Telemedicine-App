@@ -1,3 +1,7 @@
+import 'package:frontend/models/availability.dart';
+import 'package:frontend/services/appointment_service.dart';
+import 'package:frontend/services/availability_service.dart';
+
 import '../models/appointment.dart';
 import 'package:frontend/config/constants.dart';
 
@@ -5,9 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../models/doctor.dart';
-import '../models/patient.dart';
 import 'auth_service.dart';
-import 'patient_service.dart';
 
 class DoctorService {
 
@@ -52,7 +54,7 @@ class DoctorService {
       List<dynamic> jsonData = jsonDecode(response.body)['content'];
       List<Appointment> appointments = [];
       for (dynamic appointment in jsonData) {
-        appointments.add(await getAppointmentFromJSON(appointment));
+        appointments.add(await AppointmentService.getAppointmentFromJSON(appointment));
       }
       return appointments;
     } else {
@@ -60,12 +62,24 @@ class DoctorService {
     }
   }
 
-  static Future<Appointment> getAppointmentFromJSON(appointment) async {
-    Doctor doctor = await fetchDoctor(appointment['doctorID']);
-    Patient patient =
-        await PatientService.fetchPatient(appointment['patientID']);
+  static Future<List<Availability>> fetchDoctorAvailabilities(int doctorID) async {
+    final response = await http.get(Uri.parse('$apiBookingRootUrl/availabilities/doctor/$doctorID?sort=dayOfWeek'))
+        .timeout(const Duration(seconds: 3));
 
-    return Appointment.fromJson(appointment, doctor, patient);
+    if (response.statusCode == 200) {
+      List jsonData = jsonDecode(response.body)['content'];
+
+      List<Availability> availabilities = [];
+      for (dynamic availability in jsonData) {
+        availabilities.add(await AvailabilityService.getAvailabilityFromJSON(availability));
+      }
+
+      return availabilities;
+    } else {
+      throw Exception('Failed to load availabilities');
+    }
   }
+
+
 
 }
