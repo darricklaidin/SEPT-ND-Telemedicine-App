@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:frontend/modules/patient/user_join_appointment.dart';
+import 'package:frontend/modules/appointment/user_join_appointment_screen.dart';
 import 'package:frontend/services/appointment_service.dart';
 
 class AppointmentCard extends StatefulWidget {
