@@ -33,7 +33,7 @@ public class AvailabilityController {
     }
 
     // Get a doctor's availabilities
-    @GetMapping("/{doctorID}/availabilities")
+    @GetMapping("/doctor/{doctorID}")
     public ResponseEntity<Page<Availability>> getDoctorAvailabilities(
             @PathVariable(value = "doctorID") int doctorID,
             Pageable pageable
