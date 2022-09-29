@@ -34,19 +34,15 @@ class AppointmentService {
 
   static Future getAppointmentFromJSON(appointment) async {
     dynamic tempDoctor = await DoctorService.fetchDoctor(appointment['doctorID']);
-
     if (tempDoctor == "Resource Not Found") {
       return null;
     }
-
     Doctor doctor = tempDoctor;
 
     dynamic tempPatient = await PatientService.fetchPatient(appointment['patientID']);
-
     if (tempPatient == "Resource Not Found") {
       return null;
     }
-
     Patient patient = tempPatient;
 
     return Appointment.fromJson(appointment, doctor, patient);
