@@ -3,7 +3,6 @@ import 'package:frontend/modules/home/empty_home_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:talkjs_flutter/talkjs_flutter.dart';
 
-import '../home/home_screen.dart';
 import '../../services/doctor_service.dart';
 import '../../services/patient_service.dart';
 
