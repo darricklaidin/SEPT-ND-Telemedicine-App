@@ -24,14 +24,14 @@ Services to be tested in this microservice include (and excluding any appointmen
 We will be mocking this entire microservice application and testing each endpoint through the use of
 **Mockito**, Spring annotations **`@WebMvcTest`** and `@MockBean`, and `MockMvc` object. `MockMvc` is used to simulate
 HTTP requests (GET, POST, etc.) to our API endpoints. In this test, we will still be using **Mockito** to mock 
-the repository, as well as the service this time.
+the service this time.
 
-The main focus is to test the controller endpoints with mock services and repositories.
+The main focus is to test the controller endpoints with mock services.
 
 ### Acceptance Tests
-This is very similar to integration tests, however we will no longer mock the service. We will still mock the repository
-as I have not found any other way to do it with a real repository. Therefore, the main focus here is still to
-test the controller endpoints now with the actual services and mock repositories.
+This is very similar to integration tests, however we will no longer mock the service. We will mock the repository. 
+Therefore, the main focus here is still to test the controller endpoints now with the actual services and 
+mock repositories.
 
 This section will involve a lot of referencing to the Acceptance Criterias that we have formulated and posted on
 Jira.
