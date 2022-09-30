@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:booking_calendar/booking_calendar.dart';
 import 'package:date_generator/date_generator.dart';
+import 'package:frontend/config/themes/light_palette.dart';
+import 'package:frontend/services/appointment_service.dart';
 import 'package:frontend/services/auth_service.dart';
 
 import '../../models/appointment.dart';
@@ -101,8 +103,43 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
     convertedBookedSlots.add(DateTimeRange(
         start: newBooking.bookingStart, end: newBooking.bookingEnd));
 
-    print('$newAppointment has been uploaded');
-    // print('${newAppointment.toJson()} has been uploaded');
+    dynamic response = await AppointmentService.createAppointment(newAppointment);
+
+    // Check if response is successful; show snackbar
+
+    if (!mounted) return;
+
+    if (response == "Time Clash") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Failed to create appointment. Time clash detected."),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
+    } else if (response == "Failed to create appointment") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Failed to create appointment. Server Error."),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Appointment created successfully."),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
+    }
 
 
   }
@@ -142,7 +179,6 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
     for (Availability availability in doctorAvailabilities) {
       daysOfWeekAvailable.add(availability.dayOfWeek);
     }
-    print("Days of week available $daysOfWeekAvailable");
 
     for (int year = DateTime.now().year; year < DateTime.now().year + 1; year++) {
       for (int month = 1; month <= 12; month++) {

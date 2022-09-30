@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontend/models/doctor.dart';
 import 'package:frontend/models/patient.dart';
 
+import '../utility.dart';
+
 class Appointment {
   final int appointmentID;
   final DateTime date;
@@ -37,6 +39,18 @@ class Appointment {
         patient: patient);
   }
 
+  toJson() {
+    return {
+      'appointmentID': appointmentID,
+      'date': Utility.dateToStringJSON(date),
+      'startTime': Utility.timeToStringJSON(startTime),
+      'endTime': Utility.timeToStringJSON(endTime),
+      'appointmentStatus': appointmentStatus,
+      'doctorID': doctor.userID,
+      'patientID': patient.userID,
+    };
+  }
+
   @override
   String toString() {
     return 'Appointment{appointmentID: $appointmentID\n'
@@ -47,4 +61,5 @@ class Appointment {
         'doctor: $doctor\n'
         'patient: $patient}';
   }
+
 }
