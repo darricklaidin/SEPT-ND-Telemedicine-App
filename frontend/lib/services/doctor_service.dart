@@ -53,7 +53,12 @@ class DoctorService {
       List<dynamic> jsonData = jsonDecode(response.body)['content'];
       List<Appointment> appointments = [];
       for (dynamic appointment in jsonData) {
-        appointments.add(await AppointmentService.getAppointmentFromJSON(appointment));
+        Appointment? tempAppointment = await AppointmentService.getAppointmentFromJSON(appointment);
+        if (tempAppointment != null) {
+          appointments.add(tempAppointment);
+        } else {
+          // TODO: Appointment should be deleted from database
+        }
       }
       return appointments;
     } else {

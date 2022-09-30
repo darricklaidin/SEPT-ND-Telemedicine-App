@@ -14,7 +14,9 @@ class AppointmentService {
     var response = await http
         .get(Uri.parse('$apiBookingRootUrl/appointments/$appointmentID'));
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      if (await getAppointmentFromJSON(jsonDecode(response.body)) == null) {
+        // TODO: When one of the users gets deleted, Delete appointment with this appointment id from database
+      }
     } else if (response.statusCode == 404) {
       return jsonDecode(response.body)['message'];
     } else {
