@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:booking_calendar/booking_calendar.dart';
 import 'package:date_generator/date_generator.dart';
+
 import 'package:frontend/config/themes/light_palette.dart';
+import 'package:frontend/main.dart';
 import 'package:frontend/services/appointment_service.dart';
 import 'package:frontend/services/auth_service.dart';
-
 import '../../models/appointment.dart';
 import '../../models/doctor.dart';
 import '../../models/patient.dart';
@@ -56,16 +57,41 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   Future<dynamic> uploadBookingMock(
       {required BookingService newBooking}) async {
 
+    print(newBooking.bookingStart);
+
     // This will be where we upload the booking to the database
     await Future.delayed(const Duration(seconds: 1));
 
-    // appointment id
-
     // current patient user
-    Patient patient = await getUserFromStorage();
+    Patient? patient = await getUserFromStorage();
 
     // doctor who the appointment is made for
     Doctor doctor = widget.doctor;
+
+    // Check that users exist
+    if (patient == null) {
+      await logoutUser();
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => MyApp()), (route) => route.isFirst);
+      return;
+    }
+
+    if (await DoctorService.fetchDoctor(doctor.userID) == "Resource Not Found") {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Failed to create appointment. Doctor no longer exists."),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
+
+      return;
+    }
 
     // date
     DateTime date = DateTime(newBooking.bookingStart.year, newBooking.bookingStart.month, newBooking.bookingStart.day);
@@ -227,6 +253,21 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
     });
     await loadDoctorAppointments();
     await loadDoctorAvailabilities();
+
+    if (!mounted) return;
+    if (doctorAvailabilities.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Doctor has no availability."),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
+      Navigator.pop(context);
+    }
+
     setState(() {
       isLoading = false;
     });
