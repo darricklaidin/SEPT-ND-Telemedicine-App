@@ -73,7 +73,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
       await logoutUser();
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => MyApp()), (route) => route.isFirst);
+          MaterialPageRoute(builder: (context) => const MyApp()), (route) => route.isFirst);
       return;
     }
 

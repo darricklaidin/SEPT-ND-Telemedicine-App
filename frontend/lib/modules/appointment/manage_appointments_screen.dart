@@ -47,6 +47,8 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
         appointments = await DoctorService.fetchDoctorAppointments(await getUserIdFromStorage());
       }
     } on TimeoutException {
+      if (!mounted) return;
+
       setState(() {
         timeUp = true;
         isLoading = false;
