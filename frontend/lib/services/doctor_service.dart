@@ -43,8 +43,7 @@ class DoctorService {
     }
   }
 
-  static Future<List<Appointment>> fetchDoctorAppointments() async {
-    int doctorID = await getUserIdFromStorage();
+  static Future<List<Appointment>> fetchDoctorAppointments(int doctorID) async {
 
     var response = await http.get(Uri.parse(
         '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'))
@@ -54,7 +53,12 @@ class DoctorService {
       List<dynamic> jsonData = jsonDecode(response.body)['content'];
       List<Appointment> appointments = [];
       for (dynamic appointment in jsonData) {
-        appointments.add(await AppointmentService.getAppointmentFromJSON(appointment));
+        Appointment? tempAppointment = await AppointmentService.getAppointmentFromJSON(appointment);
+        if (tempAppointment != null) {
+          appointments.add(tempAppointment);
+        } else {
+          // TODO: Appointment should be deleted from database
+        }
       }
       return appointments;
     } else {
@@ -63,6 +67,7 @@ class DoctorService {
   }
 
   static Future<List<Availability>> fetchDoctorAvailabilities(int doctorID) async {
+
     final response = await http.get(Uri.parse('$apiBookingRootUrl/availabilities/doctor/$doctorID?sort=dayOfWeek'))
         .timeout(const Duration(seconds: 3));
 

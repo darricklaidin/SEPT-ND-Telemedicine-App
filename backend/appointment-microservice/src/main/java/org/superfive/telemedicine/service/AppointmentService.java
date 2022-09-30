@@ -58,6 +58,7 @@ public class AppointmentService {
     // Add a new appointment
     public Appointment addAppointment(Appointment appointment) throws ResourceAlreadyExistsException,
             InvalidTimeException, EntityTimeClashException {
+
         // Ensure appointment ID does not already exist
         try {
             this.getAppointmentByID(appointment.getAppointmentID());

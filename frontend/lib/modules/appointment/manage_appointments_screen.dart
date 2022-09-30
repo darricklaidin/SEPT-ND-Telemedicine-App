@@ -40,11 +40,11 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
     try {
       // If role is patient, then fetch patient appointments
       if (userRole == "PATIENT") {
-        appointments = await PatientService.fetchPatientAppointments();
+        appointments = await PatientService.fetchPatientAppointments(await getUserIdFromStorage());
       }
       // If role is doctor, then fetch doctor appointments
       else if (userRole == "DOCTOR") {
-        appointments = await DoctorService.fetchDoctorAppointments();
+        appointments = await DoctorService.fetchDoctorAppointments(await getUserIdFromStorage());
       }
     } on TimeoutException {
       setState(() {
