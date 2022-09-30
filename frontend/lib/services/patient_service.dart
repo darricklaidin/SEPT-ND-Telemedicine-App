@@ -43,9 +43,7 @@ class PatientService {
     }
   }
 
-  static Future<List<Appointment>> fetchPatientAppointments() async {
-    int patientID = await getUserIdFromStorage();
-
+  static Future<List<Appointment>> fetchPatientAppointments(int patientID) async {
     var response = await http.get(Uri.parse(
         '$apiBookingRootUrl/appointments/patient/$patientID?sort=date&sort=startTime'))
         .timeout(const Duration(seconds: 5));

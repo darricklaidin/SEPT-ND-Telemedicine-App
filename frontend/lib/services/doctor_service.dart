@@ -43,8 +43,7 @@ class DoctorService {
     }
   }
 
-  static Future<List<Appointment>> fetchDoctorAppointments() async {
-    int doctorID = await getUserIdFromStorage();
+  static Future<List<Appointment>> fetchDoctorAppointments(int doctorID) async {
 
     var response = await http.get(Uri.parse(
         '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'))
@@ -63,6 +62,7 @@ class DoctorService {
   }
 
   static Future<List<Availability>> fetchDoctorAvailabilities(int doctorID) async {
+
     final response = await http.get(Uri.parse('$apiBookingRootUrl/availabilities/doctor/$doctorID?sort=dayOfWeek'))
         .timeout(const Duration(seconds: 3));
 
