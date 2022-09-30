@@ -11,6 +11,16 @@ class Utility {
     return "${timeOfDay.hour == 12 ? timeOfDay.hour : timeOfDay.hour % 12}:${timeOfDay.minute == 0 ? "00" : timeOfDay.minute} ${timeOfDay.period == DayPeriod.am ? "AM" : "PM"}";
   }
 
+  static String timeToStringJSON(TimeOfDay timeOfDay) {
+    return "${timeOfDay.hour < 10 ? '0${timeOfDay.hour}' : timeOfDay.hour}:${timeOfDay.minute < 10 ? '0${timeOfDay.minute}' : timeOfDay.minute}";
+  }
+
+  static String dateToStringJSON(DateTime date) {
+    return "${date.year <= 999 ? '0${date.year}' : date.year}-"
+        "${date.month < 10 ? '0${date.month}' : date.month}-"
+        "${date.day < 10 ? '0${date.day}' : date.day}";
+  }
+
   static int convertDayOfWeekToInt(String dayOfWeek) {
     switch (dayOfWeek.toUpperCase()) {
       case "MONDAY":
