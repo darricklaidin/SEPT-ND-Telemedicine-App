@@ -3,10 +3,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import 'package:frontend/models/user.dart';
 import '../config/constants.dart';
 import '../models/api_response.dart';
 import '../models/auth/user_dto.dart';
+import '../models/doctor.dart';
+import '../models/patient.dart';
 
 const storage = FlutterSecureStorage();
 
@@ -77,7 +78,7 @@ Future<String> getUserRoleFromStorage() async {
   return await storage.read(key: "role") ?? "NO ROLE";
 }
 
-Future<User?> getUserFromStorage() async {
+Future getUserFromStorage() async {
   int userID = await getUserIdFromStorage();
   String userRole = await getUserRoleFromStorage();
   String userRolePath;
@@ -105,7 +106,13 @@ Future<User?> getUserFromStorage() async {
       });
 
   if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
+    if (userRole == "PATIENT") {
+      return Patient.fromJson(jsonDecode(response.body));
+    } else if (userRole == "DOCTOR") {
+      return Doctor.fromJson(jsonDecode(response.body));
+    } else if (userRole == "ADMIN") {
+      // return Admin.fromJson(jsonDecode(response.body));
+    }
   } else {
     return null;
   }
