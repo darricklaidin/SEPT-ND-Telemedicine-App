@@ -117,9 +117,6 @@ class _AppointmentCardState extends State<AppointmentCard> {
                             )),
                       );
                     }
-
-
-
                   },
                   icon: const Icon(CupertinoIcons.right_chevron),
                   color: Colors.white,
