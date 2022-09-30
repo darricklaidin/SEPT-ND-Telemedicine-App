@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../setting/setting_screen.dart';
+
 class ProfileButton extends StatelessWidget {
   const ProfileButton({Key? key}) : super(key: key);
 
@@ -10,7 +12,9 @@ class ProfileButton extends StatelessWidget {
       splashRadius: 20.0,
       iconSize: 35.0,
       icon: const Icon(CupertinoIcons.profile_circled),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
+      },
       color: Colors.black,
     );
   }
