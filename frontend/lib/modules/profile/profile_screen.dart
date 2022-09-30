@@ -227,6 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               if (await checkIfUserExists(errorThemeColor)) {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => BookAppointmentScreen(doctor: widget.user)));
               }
+              await loadAvailabilities();
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
