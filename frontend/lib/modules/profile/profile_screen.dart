@@ -225,7 +225,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Navigate to make appointment page
             onPressed: () async {
               if (await checkIfUserExists(errorThemeColor)) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const BookAppointmentScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => BookAppointmentScreen(doctor: widget.user)));
               }
             },
             style: ButtonStyle(
