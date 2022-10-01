@@ -30,4 +30,15 @@ class Availability {
     );
   }
 
+  toJson() {
+    return {
+      'availabilityID': availabilityID,
+      'dayOfWeek': dayOfWeek,
+      'startTime': Utility.timeToStringJSON(startTime),
+      'endTime': Utility.timeToStringJSON(endTime),
+      'doctorID': doctor.userID,
+    };
+  }
+
+
 }
