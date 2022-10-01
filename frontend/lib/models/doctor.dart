@@ -1,4 +1,5 @@
 import 'package:frontend/models/user.dart';
+import 'package:frontend/utility.dart';
 
 class Doctor extends User {
   final String specialty;
@@ -27,5 +28,16 @@ class Doctor extends User {
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
       specialty: json['specialty']['specialtyName'],
     );
+  }
+
+  toJson() {
+    return {
+      'userID': userID,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'dateOfBirth': Utility.dateToStringJSON(dateOfBirth),
+      'specialty': specialty,
+    };
   }
 }

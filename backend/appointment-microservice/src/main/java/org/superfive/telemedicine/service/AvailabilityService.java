@@ -53,6 +53,11 @@ public class AvailabilityService {
             // Id does not exist yet, continue...
         }
 
+        // Ensure start time comes before end time
+        if (availability.getStartTime().isAfter(availability.getEndTime())) {
+            throw new InvalidTimeException(availability.getStartTime(), availability.getEndTime());
+        }
+
         // Ensure availability schedule does not already exist in the database for the particular doctor
         if (availabilityRepository.findByDoctorIDAndDayOfWeek(availability.getDoctorID(), DayOfWeek.of(availability.getDayOfWeek()))
                 .isPresent()) {
@@ -60,10 +65,7 @@ public class AvailabilityService {
                     availability.getDoctorID() + " and " + availability.getDayOfWeek());
         }
 
-        // Ensure start time comes before end time
-        if (availability.getStartTime().isAfter(availability.getEndTime())) {
-            throw new InvalidTimeException(availability.getStartTime(), availability.getEndTime());
-        }
+
 
         Availability temp = new Availability(
                 availability.getAvailabilityID(),
