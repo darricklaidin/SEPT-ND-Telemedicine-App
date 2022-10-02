@@ -16,6 +16,8 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
 
   String healthStatus = "";
 
+  TextEditingController healthStatusController = TextEditingController(text: "");
+
   Future updateHealthStatus() async {
     Patient oldPatient = await getUserFromStorage();
 
@@ -58,6 +60,7 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
     setState(() {
       if (currentPatient.symptoms != null) {
         healthStatus = currentPatient.symptoms!;
+        healthStatusController.text = healthStatus;
       }
     });
   }
@@ -91,7 +94,7 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
                   height: height * 0.6,
                   width: width * 0.8,
                   child: TextField(
-                    controller: TextEditingController()..text = healthStatus,
+                    controller: healthStatusController,
                     textInputAction: TextInputAction.newline,
                     keyboardType: TextInputType.multiline,
                     minLines: null,
