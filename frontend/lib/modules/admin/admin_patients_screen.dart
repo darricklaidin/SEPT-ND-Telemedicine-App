@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'package:frontend/services/patient_service.dart';
-import 'package:frontend/modules/admin/AdminViewUserProfileScreen.dart';
+import 'package:frontend/modules/admin/admin_view_user_profile_screen.dart';
 
 class AdminPatientsScreen extends StatefulWidget {
   const AdminPatientsScreen({Key? key}) : super(key: key);
