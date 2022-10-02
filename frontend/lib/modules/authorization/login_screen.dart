@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/authorization/register_screen.dart';
 import 'package:frontend/services/auth_service.dart';
 
 import '../../config/themes/light_palette.dart';
@@ -33,6 +34,15 @@ class _LoginScreenState extends State<LoginScreen> {
     // Check if token already exists in storage
     try {
       if (await checkAuth() != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.only(bottom: 10.0),
+            content: Text("Login Successful"),
+            duration: Duration(seconds: 2),
+            backgroundColor: LightPalette.success,
+          ),
+        );
         await Navigator.pushReplacementNamed(context, '/home');
       }
     } on TimeoutException{
@@ -74,6 +84,15 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     if (res.success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Login Successful"),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.success,
+        ),
+      );
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -175,8 +194,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(content: Text('Register Text Clicked'),));
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const RegisterScreen())
+                          );
                         }),
                   ]),
               )
