@@ -4,6 +4,7 @@ import 'package:frontend/services/auth_service.dart';
 
 import '../../main.dart';
 import '../doctor/edit_availabilities_screen.dart';
+import 'edit_patient_personal_details_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -71,7 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         secondaryThemeColor),
                     SizedBox(height: height * 0.05),
                     ..._buildEditPersonalDetailsBtn(
-                        context, width, height, primaryThemeColor, secondaryThemeColor),
+                        context, user.userID, userRole, width, height, primaryThemeColor, secondaryThemeColor),
                     SizedBox(height: height * 0.05),
                     ..._buildNotificationSettingsBtn(
                         context, width, height, primaryThemeColor, secondaryThemeColor),
@@ -137,14 +138,20 @@ Widget _buildEditMyAvailabilitiesBtn(BuildContext context, double width, double 
   );
 }
 
-List<Widget> _buildEditPersonalDetailsBtn(BuildContext context, double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+List<Widget> _buildEditPersonalDetailsBtn(BuildContext context, int userID, String userRole, double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
   return [
     SizedBox(
       width: width * 0.5,
       height: height * 0.07,
       child: ElevatedButton(
         onPressed: () {
-
+          if (userRole == "PATIENT") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) =>
+                EditPatientPersonalDetailsScreen(patientID: userID,)));
+          } else if (userRole == "DOCTOR") {
+            // Navigator.pushNamed(context, "/editDoctorDetails");
+          }
         },
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
