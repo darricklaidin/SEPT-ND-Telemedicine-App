@@ -38,8 +38,6 @@ class SpecialtyService {
 
     Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
-    print(decodedResponse);
-
     if (response.statusCode == 200) {
       return Specialty.fromJson(decodedResponse);
     } else if (decodedResponse['message'] == "Resource Already Exists") {
