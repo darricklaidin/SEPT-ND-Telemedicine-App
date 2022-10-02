@@ -85,6 +85,27 @@ class DoctorService {
     }
   }
 
+  static Future updateDoctor(int doctorID, Doctor doctor, String? newPassword, int specialtyID) async {
 
+    // if new password is null, use old password
+    var response = await http.put(Uri.parse('$apiAuthRootUrl/doctors/$doctorID'),
+        headers: {
+          'Authorization': 'Bearer ${await getJWT()}',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(doctor.toJson(newPassword, specialtyID)));
+
+    Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+    print(decodedResponse);
+
+    if (response.statusCode == 200) {
+      return "Success";
+    } else if (decodedResponse['message'] == "Resource Already Exists") {
+      throw Exception("A user with that email already exists");
+    } else {
+      throw Exception('Failed to update doctor profile');
+    }
+
+  }
 
 }
