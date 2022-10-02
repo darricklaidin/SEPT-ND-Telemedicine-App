@@ -43,7 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: LightPalette.success,
           ),
         );
-        await Navigator.pushReplacementNamed(context, '/home');
+        if (await getUserRoleFromStorage() == "ADMIN") {
+          Navigator.pushReplacementNamed(context, '/admin');
+        } else {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       }
     } on TimeoutException{
       setState(() {
