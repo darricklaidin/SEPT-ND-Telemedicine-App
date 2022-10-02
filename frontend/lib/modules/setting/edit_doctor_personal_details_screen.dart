@@ -20,13 +20,13 @@ class EditDoctorPersonalDetailsScreen extends StatefulWidget {
 class _EditDoctorPersonalDetailsScreenState extends State<EditDoctorPersonalDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fnameController =
-  TextEditingController(text: 'Make');
+  TextEditingController(text: '');
   final TextEditingController _lnameController =
-  TextEditingController(text: 'Dog');
+  TextEditingController(text: '');
   final TextEditingController _emailController =
-  TextEditingController(text: 'mk@g.com');
+  TextEditingController(text: '');
   final TextEditingController _specialtyController =
-  TextEditingController(text: 'Surgery');
+  TextEditingController(text: '');
 
   String? dateInput;
 
@@ -132,7 +132,7 @@ class _EditDoctorPersonalDetailsScreenState extends State<EditDoctorPersonalDeta
 
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("Update Patient Personal Details")),
+          title: const Center(child: Text("Update Personal Details")),
         ),
         body: Form(
           key: _formKey,

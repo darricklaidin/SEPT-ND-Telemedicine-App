@@ -100,7 +100,7 @@ class _EditPatientPersonalDetailsScreenState extends State<EditPatientPersonalDe
 
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("Update Patient Personal Details")),
+          title: const Center(child: Text("Update Personal Details")),
         ),
         body: Form(
           key: _formKey,
