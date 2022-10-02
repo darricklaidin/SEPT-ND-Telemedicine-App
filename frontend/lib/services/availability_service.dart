@@ -17,8 +17,6 @@ class AvailabilityService {
         },
         body: jsonEncode(availability.toJson()));
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       return Availability.fromJson(jsonDecode(response.body), availability.doctor);
     } else if (jsonDecode(response.body)['message'] == "Resource Already Exists") {
