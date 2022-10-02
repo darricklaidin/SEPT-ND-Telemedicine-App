@@ -24,6 +24,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
 
   List availabilitySchedule = [];
+  String healthStatus = "No health status to display.";
   bool isLoading = true;
   bool timeUp = false;
 
@@ -77,6 +78,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     if (widget.userRole == "PATIENT") {
       loadAvailabilities();
+    } else if (widget.userRole == "DOCTOR") {
+      setState(() {
+        healthStatus = widget.user.symptoms ?? healthStatus;
+        isLoading = false;
+      });
+    } else {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -123,6 +133,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       ..._buildProfileHeader(width, height, primaryThemeColor, secondaryThemeColor),
                       SizedBox(height: height * 0.01),
+                      ..._buildHealthStatus(width, height, primaryThemeColor, secondaryThemeColor),
                       ..._buildAvailabilitySchedule(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
                       SizedBox(height: height * 0.05),
                       ..._buildBookAppointmentBtn(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
@@ -164,6 +175,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       Text(
         widget.userRole == "PATIENT" ? '${widget.user.specialty}' : 'Age: ${AgeCalculator.age(widget.user.dateOfBirth).years}',
+        style: const TextStyle(fontSize: 14, color: Colors.grey),
+        textAlign: TextAlign.center,
+      ),
+    ];
+  }
+
+  List<Widget> _buildHealthStatus(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+    if (widget.userRole == "PATIENT") return [SizedBox(height: height * 0.05)];
+    return [
+      SizedBox(
+        height: height * 0.05,
+      ),
+      const Text(
+        'Health Status',
+        style: TextStyle(fontSize: 21),
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(
+        height: height * 0.05,
+      ),
+      Text(
+        healthStatus,
         style: const TextStyle(fontSize: 14, color: Colors.grey),
         textAlign: TextAlign.center,
       ),
