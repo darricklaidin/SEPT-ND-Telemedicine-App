@@ -27,7 +27,6 @@ class PatientService {
     }
   }
 
-
   static Future fetchPatient(int patientID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/patients/$patientID'), headers: {
@@ -65,5 +64,26 @@ class PatientService {
     }
   }
 
+  static Future updatePatient(int patientID, Patient patient, String? newPassword) async {
+
+    // if new password is null, use old password
+    var response = await http.put(Uri.parse('$apiAuthRootUrl/patients/$patientID'),
+        headers: {
+          'Authorization': 'Bearer ${await getJWT()}',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(patient.toJson(newPassword)));
+
+    Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return "Success";
+    } else if (response.statusCode == 500) {
+      throw Exception("A user with that email already exists");
+    } else {
+      throw Exception('Failed to update patient profile');
+    }
+
+  }
 
 }
