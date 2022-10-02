@@ -31,7 +31,7 @@ Future<UserDTO?> validateJWT(String token) async {
   Uri url = Uri.parse('$apiAuthRootUrl/auth/validate');
   final response = await http.get(url, headers: {
     'Authorization': 'Bearer $token',
-  }).timeout(Duration(seconds: 3));
+  }).timeout(const Duration(seconds: 3));
   if (response.statusCode == 200) {
     res = UserDTO.fromJson(jsonDecode(response.body));
   }
@@ -79,6 +79,29 @@ Future<ApiResponse> registerUser(String firstName, String lastName, String email
   ApiResponse res = ApiResponse();
   if (response.statusCode == 200) {
     await loginUser(decodedResponse['email'], password);
+    res.success = true;
+  } else {
+    // get error message
+    res.msg = "A user with that email already exists.";
+  }
+  return res;
+
+}
+
+Future<ApiResponse> registerDoctor(String firstName, String lastName, String email, String password, String dateOfBirth, int specialtyID) async {
+
+  Uri url = Uri.parse('$apiAuthRootUrl/auth/signup-doctor');
+  Map data = {'firstName': firstName, 'lastName': lastName, 'email': email, 'password': password, 'dateOfBirth': dateOfBirth,
+    'specialtyID': specialtyID};
+
+  var body = json.encode(data);
+
+  final response = await http.post(url,
+      headers: {"Content-Type": "application/json"}, body: body);
+  Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+  ApiResponse res = ApiResponse();
+  if (response.statusCode == 200) {
     res.success = true;
   } else {
     // get error message

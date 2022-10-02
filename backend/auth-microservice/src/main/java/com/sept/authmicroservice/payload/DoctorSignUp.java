@@ -9,11 +9,11 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class DoctorSignUp extends SignUpRequest {
     @NotNull
-    private Integer specialtyId;
+    private Integer specialtyID;
 
     public DoctorSignUp(String firstName, String lastName, String email, String password,
-            String dateOfBirth, Integer specialtyId) {
+            String dateOfBirth, Integer specialtyID) {
         super(firstName, lastName, email, password, dateOfBirth);
-        this.specialtyId = specialtyId;
+        this.specialtyID = specialtyID;
     }
 }

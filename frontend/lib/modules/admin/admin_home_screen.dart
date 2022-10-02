@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../config/themes/light_palette.dart';
 import '../../main.dart';
 import '../../services/auth_service.dart';
+import 'admin_create_new_doctor_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
@@ -37,7 +38,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             const Text('Welcome Admin', style: TextStyle(fontWeight: FontWeight.bold),),
             SizedBox(height: height * 0.05,),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateNewDoctorScreen()));
+              },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(LightPalette.primary),
               ),

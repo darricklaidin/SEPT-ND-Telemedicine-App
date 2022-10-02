@@ -76,8 +76,8 @@ public class AuthService {
         checkIfEmailAlreadyExists(signUpRequest.getEmail());
 
         // get specialty if exists
-        Specialty specialty = specialtyRepository.findBySpecialtyID(signUpRequest.getSpecialtyId())
-                .orElseThrow(() -> new ResourceNotFoundException("Specialty", "specialtyID", signUpRequest.getSpecialtyId()));
+        Specialty specialty = specialtyRepository.findBySpecialtyID(signUpRequest.getSpecialtyID())
+                .orElseThrow(() -> new ResourceNotFoundException("Specialty", "specialtyID", signUpRequest.getSpecialtyID()));
 
         // set roles
         List<Role> roles = new ArrayList<>();

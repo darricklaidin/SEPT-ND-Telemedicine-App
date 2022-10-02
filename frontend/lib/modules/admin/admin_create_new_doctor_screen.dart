@@ -1,20 +1,20 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:intl/intl.dart';
 
 import '../../config/themes/light_palette.dart';
 import '../../models/api_response.dart';
-import '../../modules/authorization/login_screen.dart';
+import '../../models/specialty.dart';
+import '../../services/specialty_service.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class AdminCreateNewDoctorScreen extends StatefulWidget {
+  const AdminCreateNewDoctorScreen({Key? key}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<AdminCreateNewDoctorScreen> createState() => _AdminCreateNewDoctorScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fnameController =
   TextEditingController(text: '');
@@ -25,6 +25,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _passwordController =
   TextEditingController(text: '');
   final TextEditingController _cpasswordController =
+  TextEditingController(text: '');
+  final TextEditingController _specialtyController =
   TextEditingController(text: '');
 
   String? dateInput;
@@ -39,9 +41,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (dateInput == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(res.msg ?? 'Invalid Date of Birth'),
-              backgroundColor: LightPalette.error));
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Invalid Date of Birth"),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
       return;
     }
 
@@ -51,8 +58,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
         var lastName = _lnameController.text;
         var email = _emailController.text;
         var password = _passwordController.text;
+        var specialty = _specialtyController.text;
 
-        res = await registerUser(firstName, lastName, email, password, dateInput!);
+        List existingSpecialties = await SpecialtyService.getSpecialties();
+
+        bool specialtyExists = false;
+        int specialtyID = -1;
+
+        for (var existingSpecialty in existingSpecialties) {
+          if (specialty.toLowerCase() == existingSpecialty.specialtyName.toLowerCase()) {
+            specialtyExists = true;
+            // Get the id of the existing specialty
+            // Update the doctor's specialty with this id
+            specialtyID = existingSpecialty.specialtyID;
+          }
+        }
+
+        // If specialty with that name does not exist
+        if (!specialtyExists) {
+          // Create new specialty
+          Specialty newSpecialty = await SpecialtyService.createSpecialty(Specialty(specialtyID: -1, specialtyName: specialty));
+          specialtyID = newSpecialty.specialtyID;
+        }
+
+        res = await registerDoctor(firstName, lastName, email, password, dateInput!, specialtyID);
+
       }
     } catch (e) {
       res.msg = e.toString();
@@ -68,12 +98,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
           backgroundColor: LightPalette.success,
         ),
       );
-      Navigator.pushNamed(context, '/home');
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(res.msg ?? 'Invalid Fields'),
-              backgroundColor: LightPalette.error));
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(bottom: 10.0),
+          content: Text(res.msg ?? 'Invalid Fields'),
+          duration: const Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
     }
   }
 
@@ -86,7 +121,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("Registration")),
+          title: const Center(child: Text("Register New Doctor")),
         ),
         body: Form(
           key: _formKey,
@@ -237,43 +272,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.center,
+                    child: SizedBox(
+                      width: 300,
+                      child: TextFormField(
+                        controller: _specialtyController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Specialty',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Specialty cannot be empty';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
                     ),
                     onPressed: () => registration(context),
                     child: const Text("Register",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      )
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        )
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  RichText(
-                    text: TextSpan(children: [
-                      const TextSpan(
-                        text: "Already have an account? ",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: "Raleway",
-                        ),
-                      ),
-                      TextSpan(
-                          text: 'Login now',
-                          style: TextStyle(
-                            color: Colors.deepPurple[300],
-                            fontFamily: "Raleway",
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                              );
-                            }),
-                    ]),
-                  ),
+
                 ],
               ),
             ),
