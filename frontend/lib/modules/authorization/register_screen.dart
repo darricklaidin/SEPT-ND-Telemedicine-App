@@ -139,6 +139,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20),
                   Align(
                     alignment: Alignment.center,
+                    child: Container(
+                        width: 300,
+                        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                        child: Row(
+                          children: [
+                            const Text("Date of Birth:"),
+                            SizedBox(width: width * 0.15,),
+                            ElevatedButton(
+                              onPressed: () async {
+                                DateTime? pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  //DateTime.now() - not to allow to choose before today.
+                                  lastDate: DateTime.now(),
+                                );
+
+                                if (pickedDate != null) {
+                                  String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                  setState(() {
+                                    dateInput = formattedDate; //set output date to TextField value.
+                                  });
+                                }
+                              },
+                              child: Text(dateInput ?? "Select Date",
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        )
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.center,
                     child: SizedBox(
                       width: 300,
                       child: TextFormField(
@@ -158,41 +193,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: 300,
-                      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                      child: Row(
-                        children: [
-                          const Text("Date of Birth:"),
-                          SizedBox(width: width * 0.15,),
-                          ElevatedButton(
-                            onPressed: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  //DateTime.now() - not to allow to choose before today.
-                                  lastDate: DateTime.now(),
-                              );
-
-                              if (pickedDate != null) {
-                                String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                setState(() {
-                                  dateInput = formattedDate; //set output date to TextField value.
-                                });
-                              }
-                            },
-                            child: Text(dateInput ?? "Select Date",
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      )
                     ),
                   ),
                   const SizedBox(height: 20),
