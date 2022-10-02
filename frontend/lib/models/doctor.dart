@@ -30,14 +30,17 @@ class Doctor extends User {
     );
   }
 
-  toJson() {
+  toJson(String? newPassword, int specialtyID) {
     return {
       'userID': userID,
       'firstName': firstName,
       'lastName': lastName,
       'email': email,
+      'password': newPassword,
       'dateOfBirth': Utility.dateToStringJSON(dateOfBirth),
-      'specialty': specialty,
+      'specialty': {
+        'specialtyID': specialtyID,
+      },
     };
   }
 }

@@ -26,7 +26,16 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
   }
 
   Future loadUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
     user = await getUserFromStorage();
+
+    if (user == null) {
+      await logoutUser();
+    }
+
     setState(() {
       isLoading = false;
     });
@@ -45,6 +54,9 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
     Color primaryThemeColor = Theme.of(context).colorScheme.primary;
     Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
 
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -61,36 +73,38 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
         automaticallyImplyLeading: false,
       ),
       body: Builder(builder: (context) {
-        if (isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else {
-          return Scaffold(
-            body: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  height: height,
-                  width: width,
-                  color: Colors.transparent,
+        return Scaffold(
+          body: RefreshIndicator(
+            onRefresh: () async {
+              await loadUser();
+            },
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                width: width,
+                height: height * 0.8,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Column(
+                      children: [
+                        Text("Hello ${user?.firstName ?? 'User'}"),
+                        SizedBox(height: height * 0.05,),
+                        ElevatedButton(
+                          onPressed: () => logout(context),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
+                            ),
+                          child: const Text("Logout", style: TextStyle(fontWeight: FontWeight.bold),),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                Positioned(
-                  top: height * 0.35,
-                  child: Text("Hello ${user?.firstName}"),
-                ),
-                Positioned(
-                  bottom: height * 0.35,
-                  child: ElevatedButton(
-                    onPressed: () => logout(context),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
-                      ),
-                    child: const Text("Logout", style: TextStyle(fontWeight: FontWeight.bold),),
-                  ),
-                ),
-              ],
+              ),
             ),
-          );
-        }
+          )
+        );
       }),
     );
   }

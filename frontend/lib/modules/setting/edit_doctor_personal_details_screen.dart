@@ -1,31 +1,32 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/services/auth_service.dart';
+import 'package:frontend/services/specialty_service.dart';
 import 'package:intl/intl.dart';
 
 import '../../config/themes/light_palette.dart';
 import '../../models/api_response.dart';
-import '../../modules/authorization/login_screen.dart';
+import '../../models/doctor.dart';
+import '../../models/specialty.dart';
+import '../../services/doctor_service.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class EditDoctorPersonalDetailsScreen extends StatefulWidget {
+  final int doctorID;
+
+  const EditDoctorPersonalDetailsScreen({Key? key, required this.doctorID,}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<EditDoctorPersonalDetailsScreen> createState() => _EditDoctorPersonalDetailsScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _EditDoctorPersonalDetailsScreenState extends State<EditDoctorPersonalDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fnameController =
-  TextEditingController(text: 'Nimesh');
+  TextEditingController(text: '');
   final TextEditingController _lnameController =
-  TextEditingController(text: 'God');
+  TextEditingController(text: '');
   final TextEditingController _emailController =
-  TextEditingController(text: 'n@g.com');
-  final TextEditingController _passwordController =
-  TextEditingController(text: "nim@nim123");
-  final TextEditingController _cpasswordController =
-  TextEditingController(text: "nim@nim123");
+  TextEditingController(text: '');
+  final TextEditingController _specialtyController =
+  TextEditingController(text: '');
 
   String? dateInput;
 
@@ -34,14 +35,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.initState();
   }
 
-  Future<void> registration(context) async {
+  Future<void> updateDetails(context) async {
     ApiResponse res = ApiResponse();
+    res.msg = "Error";
 
     if (dateInput == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(res.msg ?? 'Invalid Date of Birth'),
-              backgroundColor: LightPalette.error));
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Invalid Date of Birth"),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
       return;
     }
 
@@ -50,9 +57,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
         var firstName = _fnameController.text;
         var lastName = _lnameController.text;
         var email = _emailController.text;
-        var password = _passwordController.text;
+        var specialty = _specialtyController.text;
 
-        res = await registerUser(firstName, lastName, email, password, dateInput!);
+        List existingSpecialties = await SpecialtyService.getSpecialties();
+
+        bool specialtyExists = false;
+        int specialtyID = -1;
+
+        for (var existingSpecialty in existingSpecialties) {
+          if (specialty.toLowerCase() == existingSpecialty.specialtyName.toLowerCase()) {
+            specialtyExists = true;
+            // Get the id of the existing specialty
+            // Update the doctor's specialty with this id
+            specialtyID = existingSpecialty.specialtyID;
+          }
+        }
+
+        // If specialty with that name does not exist
+        if (!specialtyExists) {
+          // Create new specialty
+          Specialty newSpecialty = await SpecialtyService.createSpecialty(Specialty(specialtyID: -1, specialtyName: specialty));
+          specialtyID = newSpecialty.specialtyID;
+        }
+
+        Doctor updatedDoctor = Doctor(
+          userID: widget.doctorID,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          dateOfBirth: DateFormat('yyyy-MM-dd').parse(dateInput!),
+          specialty: specialty,
+        );
+
+        res.msg = await DoctorService.updateDoctor(widget.doctorID, updatedDoctor, null, specialtyID);
+        if (res.msg == "Success") {
+          res.success = true;
+        }
+
       }
     } catch (e) {
       res.msg = e.toString();
@@ -63,17 +104,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SnackBar(
           behavior: SnackBarBehavior.floating,
           margin: EdgeInsets.only(bottom: 10.0),
-          content: Text("Registration Successful"),
+          content: Text("Personal details updated successfully."),
           duration: Duration(seconds: 2),
           backgroundColor: LightPalette.success,
         ),
       );
-      Navigator.pushNamed(context, '/home');
+      Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(res.msg ?? 'Invalid Fields'),
-              backgroundColor: LightPalette.error));
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(bottom: 10.0),
+          content: Text(res.msg!),
+          duration: const Duration(seconds: 2),
+          backgroundColor: LightPalette.error,
+        ),
+      );
     }
   }
 
@@ -86,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("Registration")),
+          title: const Center(child: Text("Update Personal Details")),
         ),
         body: Form(
           key: _formKey,
@@ -139,6 +185,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 20),
                   Align(
                     alignment: Alignment.center,
+                    child: SizedBox(
+                      width: 300,
+                      child: TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'E-mail',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email cannot be empty';
+                          } else if (!RegExp(
+                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                              .hasMatch(value)) {
+                            return 'Invalid email';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Align(
+                    alignment: Alignment.center,
                     child: Container(
                         width: 300,
                         padding: EdgeInsets.symmetric(horizontal: width * 0.05),
@@ -177,18 +247,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: SizedBox(
                       width: 300,
                       child: TextFormField(
-                        controller: _emailController,
+                        controller: _specialtyController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'E-mail',
+                          labelText: 'Specialty',
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Email cannot be empty';
-                          } else if (!RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(value)) {
-                            return 'Invalid email';
+                            return 'Specialty cannot be empty';
                           }
                           return null;
                         },
@@ -196,84 +262,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  SizedBox(
-                    width: 300,
-                    child: TextFormField(
-                      controller: _passwordController,
-                      // key: passKey,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Password',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Password cannot be empty';
-                        }
-                        else if (value.length < 8) {
-                          return 'Password should be at least 8 characters';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    width: 300,
-                    child: TextFormField(
-                      controller: _cpasswordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Confirm Password',
-                      ),
-                      validator: (value) {
-                        // var password = passKey.currentState.value;
-                        if (value != _passwordController.text) {
-                          return 'Passwords must match';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 20),
                   ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
                     ),
-                    onPressed: () => registration(context),
-                    child: const Text("Register",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      )
+                    onPressed: () => updateDetails(context),
+                    child: const Text("Update",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        )
                     ),
                   ),
                   const SizedBox(height: 20),
-                  RichText(
-                    text: TextSpan(children: [
-                      const TextSpan(
-                        text: "Already have an account? ",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: "Raleway",
-                        ),
-                      ),
-                      TextSpan(
-                          text: 'Login now',
-                          style: TextStyle(
-                            color: Colors.deepPurple[300],
-                            fontFamily: "Raleway",
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                              );
-                            }),
-                    ]),
-                  ),
                 ],
               ),
             ),

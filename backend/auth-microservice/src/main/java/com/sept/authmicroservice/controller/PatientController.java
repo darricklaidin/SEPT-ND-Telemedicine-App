@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/patients")
@@ -30,6 +29,12 @@ public class PatientController {
     @GetMapping("/{patientID}")
     public ResponseEntity<Patient> getPatientByID(@PathVariable(value = "patientID") int patientID) {
         return ResponseEntity.ok(patientService.getPatientByID(patientID));
+    }
+
+    // Update patient
+    @PutMapping("/{patientID}")
+    public ResponseEntity<Patient> updatePatient(@PathVariable(value = "patientID") int patientID, @RequestBody Patient patient) {
+        return ResponseEntity.ok(patientService.updatePatient(patientID, patient));
     }
 
     // Delete patient by id
