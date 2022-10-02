@@ -42,10 +42,12 @@ public class PatientService {
         oldPatient.setFirstName(patient.getFirstName());
         oldPatient.setLastName(patient.getLastName());
 
-        if (Boolean.TRUE.equals(userRepository.existsByEmail(patient.getEmail()))) {
-            throw new ResourceAlreadyExistsException("User", "email", patient.getEmail());
+        if (!oldPatient.getEmail().equals(patient.getEmail())) {
+            if (Boolean.TRUE.equals(userRepository.existsByEmail(patient.getEmail()))) {
+                throw new ResourceAlreadyExistsException("User", "email", patient.getEmail());
+            }
+            oldPatient.setEmail(patient.getEmail());
         }
-        oldPatient.setEmail(patient.getEmail());
 
         if (patient.getPassword() != null) {
             oldPatient.setPassword(patient.getPassword());
