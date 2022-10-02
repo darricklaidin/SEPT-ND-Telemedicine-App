@@ -79,9 +79,6 @@ class PatientService {
 
     Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
-    print(response.statusCode);
-    print(decodedResponse);
-
     if (response.statusCode == 200) {
       return "Success";
     } else if (decodedResponse['message'] == "Resource Already Exists") {
