@@ -31,9 +31,28 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _getAuth() async {
-    // Check if token already exists in storage
     try {
+      // Check if token already exists in storage
       if (await checkAuth() != null) {
+        // Check that user account is active
+        var user = await getUserFromStorage();
+
+        if (user != "ADMIN") {
+          if (!mounted) return;
+
+          if (user.accountStatus == false) {
+            setState(() {
+              isLoading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text(
+                    "Account has been deactivated. Please contact admin for assistance."),
+                backgroundColor: LightPalette.error));
+            await logoutUser();
+            return;
+          }
+        }
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             behavior: SnackBarBehavior.floating,
@@ -85,6 +104,18 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     } on Exception {
       res.msg = "Error";
+    }
+
+    if (res.msg == "User is disabled") {
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Account has been deactivated. Please contact admin for assistance."),
+          backgroundColor: LightPalette.error));
+      return;
     }
 
     if (res.success) {
@@ -165,10 +196,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
                     }
-                    // FIXME: Uncomment when deploying
-                    // else if (value.length < 8) {
-                    //   return 'Password should be atleast 8 characters';
-                    // }
+                    else if (value.length < 8) {
+                      return 'Password should be atleast 8 characters';
+                    }
                     return null;
                   },
                 ),
