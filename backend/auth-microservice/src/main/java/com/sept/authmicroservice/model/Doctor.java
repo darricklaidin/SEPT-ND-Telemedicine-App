@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,9 +20,14 @@ public class Doctor extends User {
     @JoinColumn(name = "specialtyID", referencedColumnName = "specialtyID", nullable = false)
     private Specialty specialty;
 
+    @OneToOne()
+    @JoinColumn(name = "prescriptionID", referencedColumnName = "prescriptionID", nullable = true)
+    private Prescription prescription;
+
     public Doctor(int userID, String firstName, String lastName, String email, String password,
-                  LocalDate dateOfBirth, List<Role> roles, Specialty specialty) {
+                  LocalDate dateOfBirth, List<Role> roles, Specialty specialty, Prescription prescription) {
         super(userID, firstName, lastName, email, password, dateOfBirth, roles);
         this.specialty = specialty;
+        this.prescription = prescription;
     }
 }
