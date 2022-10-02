@@ -85,6 +85,9 @@ class DoctorService {
     }
   }
 
+  /// Update the doctor with the specified [doctorID].
+  /// Returns the updated [doctor] if successful, otherwise returns the error message.
+  /// Leave [newPassword] as [null] if you don't want to change the password.
   static Future updateDoctor(int doctorID, Doctor doctor, String? newPassword, int specialtyID) async {
 
     // if new password is null, use old password
@@ -96,7 +99,6 @@ class DoctorService {
         body: jsonEncode(doctor.toJson(newPassword, specialtyID)));
 
     Map<String, dynamic> decodedResponse = jsonDecode(response.body);
-    print(decodedResponse);
 
     if (response.statusCode == 200) {
       return "Success";

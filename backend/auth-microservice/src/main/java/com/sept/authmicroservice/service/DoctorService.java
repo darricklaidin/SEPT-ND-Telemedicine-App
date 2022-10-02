@@ -57,6 +57,7 @@ public class DoctorService {
         }
 
         updatedDoctor.setDateOfBirth(doctor.getDateOfBirth());
+        updatedDoctor.setAccountStatus(doctor.isAccountStatus());
         updatedDoctor.setSpecialty(doctor.getSpecialty());
 
         doctorRepository.save(updatedDoctor);

@@ -52,6 +52,23 @@ public class User implements UserDetails {
     @JoinTable
     private List<Role> roles;
 
+    @NotNull
+    @Column(nullable = false)
+    private boolean accountStatus = true;
+
+    // Initialize patient/doctor
+    public User(int userID, String firstName, String lastName, String email, String password, LocalDate dateOfBirth,
+                List<Role> roles) {
+        this.userID = userID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.roles = roles;
+    }
+
+    // To initialize admin
     public User(int userID, List<Role> roles) {
         this.userID = userID;
         this.firstName = "Admin";
@@ -101,6 +118,6 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return true;
+        return this.accountStatus;
     }
 }

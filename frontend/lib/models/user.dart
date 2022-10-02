@@ -4,6 +4,7 @@ class User {
   final String lastName;
   final String email;
   final DateTime dateOfBirth;
+  bool accountStatus = true;
 
   User({
     required this.userID,
@@ -11,6 +12,7 @@ class User {
     required this.lastName,
     required this.email,
     required this.dateOfBirth,
+    required this.accountStatus,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class User {
       lastName: json['lastName'],
       email: json['email'],
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
+      accountStatus: json['accountStatus'],
     );
   }
 
@@ -29,6 +32,7 @@ class User {
         'firstName: $firstName\n'
         'lastName: $lastName\n'
         'email: $email\n'
-        'dateOfBirth: $dateOfBirth\n';
+        'dateOfBirth: $dateOfBirth\n'
+        'accountStatus: $accountStatus}';
   }
 }

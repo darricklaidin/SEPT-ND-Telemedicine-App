@@ -54,6 +54,7 @@ public class PatientService {
         }
 
         oldPatient.setDateOfBirth(patient.getDateOfBirth());
+        oldPatient.setAccountStatus(patient.isAccountStatus());
         oldPatient.setSymptoms(patient.getSymptoms());
 
         patientRepository.save(oldPatient);
