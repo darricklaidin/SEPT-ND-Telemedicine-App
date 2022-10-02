@@ -37,6 +37,20 @@ class _LoginScreenState extends State<LoginScreen> {
         // Check that user account is active
         var user = await getUserFromStorage();
 
+        if (user == null) {
+          setState(() {
+            isLoading = false;
+          });
+
+          if (!mounted) return;
+
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("User no longer exists."),
+              backgroundColor: LightPalette.error));
+
+          return;
+        }
+
         if (user != "ADMIN") {
           if (!mounted) return;
 
@@ -63,8 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
         if (await getUserRoleFromStorage() == "ADMIN") {
+          if (!mounted) return;
           Navigator.pushReplacementNamed(context, '/admin');
         } else {
+          if (!mounted) return;
           Navigator.pushReplacementNamed(context, '/home');
         }
       }
@@ -78,11 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> login(context) async {
