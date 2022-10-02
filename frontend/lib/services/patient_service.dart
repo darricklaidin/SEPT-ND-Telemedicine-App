@@ -78,7 +78,7 @@ class PatientService {
 
     if (response.statusCode == 200) {
       return "Success";
-    } else if (response.statusCode == 500) {
+    } else if (decodedResponse['message'] == "Resource Already Exists") {
       throw Exception("A user with that email already exists");
     } else {
       throw Exception('Failed to update patient profile');
