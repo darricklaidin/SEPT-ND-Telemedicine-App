@@ -8,6 +8,8 @@ import com.sept.authmicroservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -49,13 +51,17 @@ public class PatientService {
             oldPatient.setEmail(patient.getEmail());
         }
 
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         if (patient.getPassword() != null) {
-            oldPatient.setPassword(patient.getPassword());
+            oldPatient.setPassword(passwordEncoder.encode(patient.getPassword()));
         }
 
         oldPatient.setDateOfBirth(patient.getDateOfBirth());
         oldPatient.setAccountStatus(patient.isAccountStatus());
-        oldPatient.setSymptoms(patient.getSymptoms());
+
+        if (patient.getSymptoms() != null) {
+            oldPatient.setSymptoms(patient.getSymptoms());
+        }
 
         patientRepository.save(oldPatient);
 
