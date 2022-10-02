@@ -43,7 +43,11 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: LightPalette.success,
           ),
         );
-        await Navigator.pushReplacementNamed(context, '/home');
+        if (await getUserRoleFromStorage() == "ADMIN") {
+          Navigator.pushReplacementNamed(context, '/admin');
+        } else {
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       }
     } on TimeoutException{
       setState(() {
@@ -93,7 +97,13 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: LightPalette.success,
         ),
       );
-      Navigator.pushReplacementNamed(context, '/home');
+
+      if (await getUserRoleFromStorage() == "ADMIN") {
+        await Navigator.pushReplacementNamed(context, '/admin');
+      } else {
+        await Navigator.pushReplacementNamed(context, '/home');
+      }
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(res.msg ?? 'Invalid Credentials'),
