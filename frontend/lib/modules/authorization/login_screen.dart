@@ -226,11 +226,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               const SizedBox(height: 20),
-              const Text(
-                "Forgot Password?",
-                style: TextStyle(decoration: TextDecoration.underline),
-              ),
-              const SizedBox(height: 20),
               RichText(
                 text: TextSpan(children: [
                   const TextSpan(
