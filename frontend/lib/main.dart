@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
+import 'modules/admin/admin_main_screen.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
 
@@ -36,7 +37,8 @@ class _MyAppState extends State<MyApp> {
         initialRoute: '/',
         routes: {
           "/": (context) => const LoginScreen(),
-          "/home": (context) => const MainScreen()
+          "/home": (context) => const MainScreen(),
+          "/admin": (context) => const AdminMainScreen(),
         });
   }
 }

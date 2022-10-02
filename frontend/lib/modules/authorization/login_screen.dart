@@ -93,7 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: LightPalette.success,
         ),
       );
-      Navigator.pushReplacementNamed(context, '/home');
+
+      if (await getUserRoleFromStorage() == "ADMIN") {
+        await Navigator.pushReplacementNamed(context, '/admin');
+      } else {
+        await Navigator.pushReplacementNamed(context, '/home');
+      }
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(res.msg ?? 'Invalid Credentials'),
