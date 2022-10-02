@@ -128,10 +128,11 @@ Future getUserFromStorage() async {
   String userRole = await getUserRoleFromStorage();
   String userRolePath;
 
+  if (userRole == "ADMIN") {
+    return "ADMIN";
+  }
+
   switch (userRole) {
-    case "ADMIN":
-      userRolePath = "admins";
-      break;
     case "PATIENT":
       userRolePath = "patients";
       break;
@@ -140,6 +141,10 @@ Future getUserFromStorage() async {
       break;
     default:
       userRolePath = "invalidUserRolePath";
+  }
+
+  if (userRolePath == "invalidUserRolePath") {
+    return null;
   }
 
   Uri url = Uri.parse('$apiAuthRootUrl/$userRolePath/$userID');
@@ -155,8 +160,6 @@ Future getUserFromStorage() async {
       return Patient.fromJson(jsonDecode(response.body));
     } else if (userRole == "DOCTOR") {
       return Doctor.fromJson(jsonDecode(response.body));
-    } else if (userRole == "ADMIN") {
-      // return Admin.fromJson(jsonDecode(response.body));
     }
   } else {
     return null;
