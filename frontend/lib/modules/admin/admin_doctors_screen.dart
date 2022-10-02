@@ -18,7 +18,6 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
   late List allUsers;
   List suggestions = [];
   String searchText = "";
-  String? userRole;
   bool isLoading = true;
   bool timeUp = false;
 
@@ -169,7 +168,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              subtitle: Text('${suggestions[index].specialty}',
+                              subtitle: Text("Account Status: ${suggestions[index].accountStatus ? 'Active' : 'Inactive'}",
                                 style: const TextStyle(color: Colors.white),
                               ),
                               onTap: () async {
@@ -191,8 +190,8 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                                   pushNewScreen(
                                     context,
                                     screen: AdminViewUserProfileScreen(
-                                      // user: suggestions[index],
-                                      // userRole: userRole,
+                                      user: suggestions[index],
+                                      userRole: "DOCTOR",
                                     ),
                                   );
                                 }

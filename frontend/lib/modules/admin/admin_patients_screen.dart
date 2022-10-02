@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
@@ -19,7 +18,6 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
   late List allUsers;
   List suggestions = [];
   String searchText = "";
-  String? userRole;
   bool isLoading = true;
   bool timeUp = false;
 
@@ -170,7 +168,7 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              subtitle: Text('Age: ${AgeCalculator.age(suggestions[index].dateOfBirth).years}',
+                              subtitle: Text("Account Status: ${suggestions[index].accountStatus ? 'Active' : 'Inactive'}",
                                 style: const TextStyle(color: Colors.white),
                               ),
                               onTap: () async {
@@ -192,8 +190,8 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
                                   pushNewScreen(
                                     context,
                                     screen: AdminViewUserProfileScreen(
-                                      // user: suggestions[index],
-                                      // userRole: userRole,
+                                      user: suggestions[index],
+                                      userRole: "PATIENT",
                                     ),
                                   );
                                 }
