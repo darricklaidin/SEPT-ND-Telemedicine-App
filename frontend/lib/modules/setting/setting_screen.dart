@@ -5,6 +5,7 @@ import 'package:frontend/services/auth_service.dart';
 import '../../main.dart';
 import '../doctor/edit_availabilities_screen.dart';
 import 'edit_doctor_personal_details_screen.dart';
+import 'edit_patient_health_status.dart';
 import 'edit_patient_personal_details_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -97,7 +98,7 @@ Widget _buildEditHealthStatusBtn(BuildContext context, double width, double heig
       height: height * 0.07,
       child: ElevatedButton(
         onPressed: () {
-
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const EditPatientHealthStatusScreen()));
         },
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
