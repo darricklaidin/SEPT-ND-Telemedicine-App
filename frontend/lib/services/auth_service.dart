@@ -66,6 +66,28 @@ Future<ApiResponse> loginUser(String email, String password) async {
   return res;
 }
 
+Future<ApiResponse> registerUser(String firstName, String lastName, String email, String password, String dateOfBirth) async {
+
+  Uri url = Uri.parse('$apiAuthRootUrl/auth/signup');
+  Map data = {'firstName': firstName, 'lastName': lastName, 'email': email, 'password': password, 'dateOfBirth': dateOfBirth};
+  var body = json.encode(data);
+
+  final response = await http.post(url,
+      headers: {"Content-Type": "application/json"}, body: body);
+  Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+  ApiResponse res = ApiResponse();
+  if (response.statusCode == 200) {
+    await loginUser(decodedResponse['email'], password);
+    res.success = true;
+  } else {
+    // get error message
+    res.msg = "A user with that email already exists.";
+  }
+  return res;
+
+}
+
 Future<void> logoutUser() async {
   await storage.deleteAll();
 }
