@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../config/themes/light_palette.dart';
+import '../../main.dart';
+import '../../services/auth_service.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({Key? key}) : super(key: key);
@@ -10,6 +12,12 @@ class AdminHomeScreen extends StatefulWidget {
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
+
+  logout(context) async {
+    await logoutUser();
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MyApp()), (route) => route.isFirst);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -37,7 +45,9 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ),
             SizedBox(height: height * 0.01,),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                await logout(context);
+              },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
               ),
