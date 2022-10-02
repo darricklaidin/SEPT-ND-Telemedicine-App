@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -52,6 +54,14 @@ public class User implements UserDetails {
 
     public User(int userID, List<Role> roles) {
         this.userID = userID;
+        this.firstName = "Admin";
+        this.lastName = "1";
+        this.email = "a@g.com";
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode("adminpass");
+
+        this.dateOfBirth = LocalDate.of(2000, 1, 1);
         this.roles = roles;
     }
 
