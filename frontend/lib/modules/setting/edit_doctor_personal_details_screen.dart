@@ -25,6 +25,10 @@ class _EditDoctorPersonalDetailsScreenState extends State<EditDoctorPersonalDeta
   TextEditingController(text: '');
   final TextEditingController _emailController =
   TextEditingController(text: '');
+  final TextEditingController _passwordController =
+  TextEditingController(text: '');
+  final TextEditingController _cpasswordController =
+  TextEditingController(text: '');
   final TextEditingController _specialtyController =
   TextEditingController(text: '');
 
@@ -57,6 +61,7 @@ class _EditDoctorPersonalDetailsScreenState extends State<EditDoctorPersonalDeta
         var firstName = _fnameController.text;
         var lastName = _lnameController.text;
         var email = _emailController.text;
+        var password = _passwordController.text;
         var specialty = _specialtyController.text;
 
         List existingSpecialties = await SpecialtyService.getSpecialties();
@@ -86,10 +91,11 @@ class _EditDoctorPersonalDetailsScreenState extends State<EditDoctorPersonalDeta
           lastName: lastName,
           email: email,
           dateOfBirth: DateFormat('yyyy-MM-dd').parse(dateInput!),
+          accountStatus: true,
           specialty: specialty,
         );
 
-        res.msg = await DoctorService.updateDoctor(widget.doctorID, updatedDoctor, null, specialtyID);
+        res.msg = await DoctorService.updateDoctor(widget.doctorID, updatedDoctor, password, specialtyID);
         if (res.msg == "Success") {
           res.success = true;
         }
@@ -204,6 +210,47 @@ class _EditDoctorPersonalDetailsScreenState extends State<EditDoctorPersonalDeta
                           return null;
                         },
                       ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      controller: _passwordController,
+                      // key: passKey,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password cannot be empty';
+                        }
+                        else if (value.length < 8) {
+                          return 'Password should be at least 8 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      controller: _cpasswordController,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Confirm Password',
+                      ),
+                      validator: (value) {
+                        // var password = passKey.currentState.value;
+                        if (value != _passwordController.text) {
+                          return 'Passwords must match';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   const SizedBox(height: 20),
