@@ -32,6 +32,10 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
 
     user = await getUserFromStorage();
 
+    if (user == null) {
+      await logoutUser();
+    }
+
     setState(() {
       isLoading = false;
     });
@@ -84,7 +88,7 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
                   children: [
                     Column(
                       children: [
-                        Text("Hello ${user!.firstName}"),
+                        Text("Hello ${user?.firstName ?? 'User'}"),
                         SizedBox(height: height * 0.05,),
                         ElevatedButton(
                           onPressed: () => logout(context),
