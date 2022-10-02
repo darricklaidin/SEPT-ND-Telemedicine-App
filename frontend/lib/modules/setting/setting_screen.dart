@@ -4,6 +4,7 @@ import 'package:frontend/services/auth_service.dart';
 
 import '../../main.dart';
 import '../doctor/edit_availabilities_screen.dart';
+import 'edit_doctor_personal_details_screen.dart';
 import 'edit_patient_personal_details_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -150,7 +151,9 @@ List<Widget> _buildEditPersonalDetailsBtn(BuildContext context, int userID, Stri
                 MaterialPageRoute(builder: (context) =>
                 EditPatientPersonalDetailsScreen(patientID: userID,)));
           } else if (userRole == "DOCTOR") {
-            // Navigator.pushNamed(context, "/editDoctorDetails");
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) =>
+                    EditDoctorPersonalDetailsScreen(doctorID: userID,)));
           }
         },
         style: ButtonStyle(
