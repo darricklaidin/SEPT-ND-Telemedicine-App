@@ -121,7 +121,7 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
 
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("Register New Doctor")),
+          title: const Text("Register New Doctor"),
         ),
         body: Form(
           key: _formKey,
