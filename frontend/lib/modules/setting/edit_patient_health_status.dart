@@ -83,9 +83,10 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
           title: const Text('Edit Patient Health Status'),
         ),
         body: SingleChildScrollView(
-          child: Container(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: SizedBox(
             width: width,
-            height: height,
+            height: height * 0.8,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
