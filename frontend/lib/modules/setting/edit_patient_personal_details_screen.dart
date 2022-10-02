@@ -18,21 +18,17 @@ class EditPatientPersonalDetailsScreen extends StatefulWidget {
 class _EditPatientPersonalDetailsScreenState extends State<EditPatientPersonalDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fnameController =
-  TextEditingController(text: 'Nimesh');
+  TextEditingController(text: '');
   final TextEditingController _lnameController =
-  TextEditingController(text: 'God');
+  TextEditingController(text: '');
   final TextEditingController _emailController =
-  TextEditingController(text: 'n@g.com');
+  TextEditingController(text: '');
 
   String? dateInput;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   Future<void> updateDetails(context) async {
     ApiResponse res = ApiResponse();
+    res.msg = "Error";
 
     if (dateInput == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -84,11 +80,11 @@ class _EditPatientPersonalDetailsScreenState extends State<EditPatientPersonalDe
       Navigator.pop(context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(bottom: 10.0),
-          content: Text("Invalid Fields"),
-          duration: Duration(seconds: 2),
+          margin: const EdgeInsets.only(bottom: 10.0),
+          content: Text(res.msg!),
+          duration: const Duration(seconds: 2),
           backgroundColor: LightPalette.error,
         ),
       );
