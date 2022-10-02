@@ -34,6 +34,12 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
 
     if (user == null) {
       await logoutUser();
+
+      if(!mounted) return;
+
+      Navigator.of(context, rootNavigator: true).pushReplacement(
+          MaterialPageRoute(builder: (context) => const MyApp())
+      );
     }
 
     setState(() {
@@ -88,7 +94,7 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
                   children: [
                     Column(
                       children: [
-                        Text("Hello ${user?.firstName ?? 'User'}"),
+                        Text("Hello ${user?.firstName ?? 'User'}", style: const TextStyle(fontWeight: FontWeight.bold),),
                         SizedBox(height: height * 0.05,),
                         ElevatedButton(
                           onPressed: () => logout(context),
