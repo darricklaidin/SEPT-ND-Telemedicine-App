@@ -75,7 +75,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    loadAvailabilities();
+    if (widget.userRole == "PATIENT") {
+      loadAvailabilities();
+    }
   }
 
   @override
@@ -104,14 +106,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (isLoading) {
             return const Center(child: CircularProgressIndicator());
           } else {
-            return SizedBox(
-              height: height,
-              child: RefreshIndicator(
-                onRefresh: () async {
-                  if (await checkIfUserExists(errorThemeColor)) {
+            return RefreshIndicator(
+              onRefresh: () async {
+                if (await checkIfUserExists(errorThemeColor)) {
+                  if (widget.userRole == "PATIENT") {
                     await loadAvailabilities();
                   }
-                },
+                }
+              },
+              child: SizedBox(
+                height: height,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(
