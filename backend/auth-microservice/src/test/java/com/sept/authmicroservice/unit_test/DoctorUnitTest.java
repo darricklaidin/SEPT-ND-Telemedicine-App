@@ -1,6 +1,7 @@
 package com.sept.authmicroservice.unit_test;
 
 import com.sept.authmicroservice.repository.DoctorRepository;
+import com.sept.authmicroservice.repository.UserRepository;
 import com.sept.authmicroservice.service.DoctorService;
 import org.junit.jupiter.api.Test;
 import org.mockito.AdditionalAnswers;
@@ -24,6 +25,7 @@ import static org.mockito.Mockito.when;
 class DoctorUnitTest {
 
     private DoctorRepository mockDoctorRepository;
+    private UserRepository mockUserRepository;
     private DoctorService doctorService;
 
     private Doctor doctor;
@@ -32,7 +34,9 @@ class DoctorUnitTest {
     @BeforeEach
     void setUp() {
         mockDoctorRepository = Mockito.mock(DoctorRepository.class);
-        doctorService = new DoctorService(mockDoctorRepository);
+        mockUserRepository = Mockito.mock(UserRepository.class);
+
+        doctorService = new DoctorService(mockDoctorRepository, mockUserRepository);
 
         LocalDate dob = LocalDate.of(2000, Month.APRIL, 18);
         doctor = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com",
