@@ -17,15 +17,15 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fnameController =
-  TextEditingController(text: 'Nimesh');
+  TextEditingController(text: '');
   final TextEditingController _lnameController =
-  TextEditingController(text: 'God');
+  TextEditingController(text: '');
   final TextEditingController _emailController =
-  TextEditingController(text: 'n@g.com');
+  TextEditingController(text: '');
   final TextEditingController _passwordController =
-  TextEditingController(text: "nim@nim123");
+  TextEditingController(text: '');
   final TextEditingController _cpasswordController =
-  TextEditingController(text: "nim@nim123");
+  TextEditingController(text: '');
 
   String? dateInput;
 
