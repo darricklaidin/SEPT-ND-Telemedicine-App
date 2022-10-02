@@ -1,13 +1,13 @@
-package com.sept.authmicroservice.controller;
+package com.sept.prescriptionmicroservice.controller;
 
-import com.sept.authmicroservice.model.Prescription;
-import com.sept.authmicroservice.service.PrescriptionService;
+import com.sept.prescriptionmicroservice.model.Prescription;
+import com.sept.prescriptionmicroservice.service.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.sept.authmicroservice.payload.PrescriptionDTO;
+import com.sept.prescriptionmicroservice.payload.PrescriptionDTO;
 
 @RestController
 @RequestMapping("/api/prescriptions")

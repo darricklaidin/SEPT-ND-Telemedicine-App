@@ -1,4 +1,4 @@
-package com.sept.authmicroservice.model;
+package com.sept.prescriptionmicroservice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;

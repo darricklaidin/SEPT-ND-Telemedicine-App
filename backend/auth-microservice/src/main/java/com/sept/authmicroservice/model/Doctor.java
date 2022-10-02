@@ -20,14 +20,10 @@ public class Doctor extends User {
     @JoinColumn(name = "specialtyID", referencedColumnName = "specialtyID", nullable = false)
     private Specialty specialty;
 
-    @OneToOne()
-    @JoinColumn(name = "prescriptionID", referencedColumnName = "prescriptionID", nullable = true)
-    private Prescription prescription;
-
     public Doctor(int userID, String firstName, String lastName, String email, String password,
-                  LocalDate dateOfBirth, List<Role> roles, Specialty specialty, Prescription prescription) {
+                  LocalDate dateOfBirth, List<Role> roles, Specialty specialty) {
         super(userID, firstName, lastName, email, password, dateOfBirth, roles);
         this.specialty = specialty;
-        this.prescription = prescription;
+
     }
 }

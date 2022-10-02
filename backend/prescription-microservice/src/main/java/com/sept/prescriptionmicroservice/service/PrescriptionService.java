@@ -1,10 +1,10 @@
-package com.sept.authmicroservice.service;
+package com.sept.prescriptionmicroservice.service;
 
-import com.sept.authmicroservice.exception.ResourceAlreadyExistsException;
-import com.sept.authmicroservice.exception.ResourceNotFoundException;
-import com.sept.authmicroservice.model.Prescription;
-import com.sept.authmicroservice.payload.PrescriptionDTO;
-import com.sept.authmicroservice.repository.PrescriptionRepository;
+import com.sept.prescriptionmicroservice.exception.ResourceAlreadyExistsException;
+import com.sept.prescriptionmicroservice.exception.ResourceNotFoundException;
+import com.sept.prescriptionmicroservice.model.Prescription;
+import com.sept.prescriptionmicroservice.payload.PrescriptionDTO;
+import com.sept.prescriptionmicroservice.repository.PrescriptionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;

@@ -1,6 +1,6 @@
-package com.sept.authmicroservice.repository;
+package com.sept.prescriptionmicroservice.repository;
 
-import com.sept.authmicroservice.model.Prescription;
+import com.sept.prescriptionmicroservice.model.Prescription;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.sept.authmicroservice.payload;
+package com.sept.prescriptionmicroservice.payload;
 
 import javax.validation.constraints.NotBlank;
 
