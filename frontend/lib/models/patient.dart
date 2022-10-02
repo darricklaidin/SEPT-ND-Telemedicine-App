@@ -3,7 +3,7 @@ import 'package:frontend/models/user.dart';
 import '../utility.dart';
 
 class Patient extends User {
-  final String? symptoms;
+  String? symptoms;
 
   Patient({userID, firstName, lastName, email, dateOfBirth, required this.symptoms})
       : super(
