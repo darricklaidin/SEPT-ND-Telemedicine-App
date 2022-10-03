@@ -19,19 +19,19 @@ public class PrescriptionController {
         this.prescriptionService = prescriptionService;
     }
 
-    // Get all specialties
+    // Get all prescription
     @GetMapping("")
     public ResponseEntity<Page<Prescription>> getAllPrescriptions(Pageable pageable) {
         return ResponseEntity.ok(prescriptionService.getAllPrescriptions(pageable));
     }
 
-    // Get specialty by ID
+    // Get prescription by ID
     @GetMapping("/{prescriptionID}")
     public ResponseEntity<Prescription> getPrescriptionByID(@PathVariable(value = "prescriptionID") int prescriptionID) {
         return ResponseEntity.ok(prescriptionService.getPrescriptionByID(prescriptionID));
     }
 
-    // Create prescriptions ....... ASK NIM AND DARRICK
+    // Create prescriptions
     @PostMapping("")
     public ResponseEntity<Prescription> createPrescription(@RequestBody Prescription prescription, Prescription doctorID, Prescription patientID) {
         return ResponseEntity.ok(prescriptionService.createPrescription(prescription, doctorID, patientID));
@@ -55,7 +55,7 @@ public class PrescriptionController {
         return ResponseEntity.ok(prescriptionService.getPatientPrescriptions(patientID, pageable));
     }
 
-    // Update specialties
+    // Update prescription
     @PutMapping("/{prescriptionID}")
     public ResponseEntity<Prescription> updatePrescription(
             @RequestBody PrescriptionDTO prescriptionDTO,
@@ -64,7 +64,7 @@ public class PrescriptionController {
         return ResponseEntity.ok(prescriptionService.updatePrescription(prescriptionID, prescriptionDTO));
     }
 
-    // Delete specialties
+    // Delete prescription
     @DeleteMapping("/{prescriptionID}")
     public ResponseEntity<Prescription> deleteSpecialty(@PathVariable(value = "prescriptionID") int prescriptionID) {
         return ResponseEntity.ok(prescriptionService.deletedPrescription(prescriptionID));
