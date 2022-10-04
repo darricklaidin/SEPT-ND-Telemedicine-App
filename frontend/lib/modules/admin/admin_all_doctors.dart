@@ -10,7 +10,7 @@ import 'package:frontend/models/appointment.dart';
 import 'package:intl/intl.dart';
 
 class AdminAllDoctorsScreen extends StatefulWidget {
-  AdminAllDoctorsScreen({Key? key}) : super(key: key);
+  const AdminAllDoctorsScreen({Key? key}) : super(key: key);
 
   @override
   _AdminAllDoctorsScreen createState() =>

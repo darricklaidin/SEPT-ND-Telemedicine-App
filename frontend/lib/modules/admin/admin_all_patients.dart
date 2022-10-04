@@ -10,7 +10,7 @@ import 'package:frontend/models/appointment.dart';
 import 'package:intl/intl.dart';
 
 class AdminAllPatientsScreen extends StatefulWidget {
-  AdminAllPatientsScreen({Key? key}) : super(key: key);
+  const AdminAllPatientsScreen({Key? key}) : super(key: key);
 
   @override
   _AdminAllPatientsScreen createState() =>
@@ -77,7 +77,7 @@ class _AdminAllPatientsScreen extends State<AdminAllPatientsScreen> {
                         itemCount: patients.length,
                         itemBuilder: (context, index) {
                           return ListTile(
-                            title: Text("${patients[index].firstName}"),
+                            title: Text("${patients[index]}"),
                           );
 
                         }),

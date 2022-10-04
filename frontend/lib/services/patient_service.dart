@@ -27,6 +27,28 @@ class PatientService {
     }
   }
 
+  static Future<List<Patient>> fetchPatientList() async {
+
+    //initialize list of patients;
+    List<Patient> patients = [];
+
+    //fetching the data
+    var response = await http.get(Uri.parse('$apiAuthRootUrl/patients'), headers: {
+      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjEiLCJleHAiOjE2NjQ5Njk0NDQsImlhdCI6MTY2NDM2NDY0NCwiZW1haWwiOiJicnlhbkBnbWFpbC5jb20iLCJhdXRob3JpdGllcyI6IlBBVElFTlQifQ.YK-cydutMzH9ohT58evJunY9FCUEnhguv-8_0sUSaT-Wm4HCusMIQT8XH6lpoOw_bNHk061npHPWYgGhM1bTPA'});
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body)["content"];  // list of patients
+
+      for (dynamic patient in jsonData) {
+        patients.add(Patient.fromJson(patient));
+      }
+      return patients;
+
+    } else {
+      throw Exception("Failed to load patient's list");
+    }
+  }
+
 
   static Future fetchPatient(int patientID) async {
     final response = await http
