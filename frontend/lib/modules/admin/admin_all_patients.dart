@@ -63,7 +63,7 @@ class _AdminAllPatientsScreen extends State<AdminAllPatientsScreen> {
               ),
               const SizedBox(height: 25),
               Builder(builder: (context) {
-                if (isLoading) {
+                if (false) {
                   return const Padding(
                     padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
                     child: Center(
@@ -76,9 +76,8 @@ class _AdminAllPatientsScreen extends State<AdminAllPatientsScreen> {
                         padding: const EdgeInsets.all(0),
                         itemCount: patients.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            height: 40,
-                            child: Center(child:Text('${patients[index]}')),
+                          return ListTile(
+                            title: Text("${patients[index].firstName}"),
                           );
 
                         }),
