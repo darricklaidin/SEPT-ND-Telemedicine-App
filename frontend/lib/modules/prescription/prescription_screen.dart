@@ -35,7 +35,6 @@ class _PrescriptionScreen extends State<PrescriptionScreen> {
     Prescription newPrescription = Prescription(prescriptionID: -1, doctorID: doctorID, patientID: patientID, prescription: prescriptionText);
 
     var testPrescription = await PrescriptionService.createPrescription(newPrescription);
-    print(testPrescription);
   }
 
   @override
@@ -67,7 +66,7 @@ class _PrescriptionScreen extends State<PrescriptionScreen> {
                     )
                 ),
                 onChanged: (text) {
-                  setState() {
+                  setState(() {
                     prescriptionText = text;
                   });
                 }
@@ -75,8 +74,6 @@ class _PrescriptionScreen extends State<PrescriptionScreen> {
 
               ElevatedButton(
                   onPressed: () async {
-                    print(prescriptionText);
-
                     await createPrescription();
 
                     if (!mounted) return;

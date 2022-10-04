@@ -28,16 +28,13 @@ class PrescriptionService {
   }
 
   static Future createPrescription(Prescription prescription) async {
-    // print(jsonEncode(prescription.toJson()));
-
     var response = await http.post(
       Uri.parse('$apiPrescriptionRootUrl/prescriptions'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
       body: jsonEncode(prescription.toJson()),
     );
-
-    print(response.statusCode);
-    print(jsonDecode(response.body));
-
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
