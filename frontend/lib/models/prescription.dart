@@ -31,7 +31,6 @@ class Prescription {
       'doctorID': doctorID,
       'patientID': patientID,
       'prescription': prescription,
-
     };
   }
 }

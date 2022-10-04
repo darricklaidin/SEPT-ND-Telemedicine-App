@@ -23,23 +23,24 @@ class _PrescriptionScreen extends State<PrescriptionScreen> {
   bool isLoading = true;
 
   final textarea = TextEditingController();
-  String text = "";
+  String prescriptionText = "";
 
-  void _setText() {
-    setState(() {
-      text = textarea.text;
-    });
+  Future createPrescription() async {
+    // Create prescription
+    // prescriptionText would have the text value in the text box
+
+    // FIXME: Replace hard coded user IDs with actual IDs
+    int patientID = 2;
+    int doctorID = 1;
+    Prescription newPrescription = Prescription(prescriptionID: -1, doctorID: doctorID, patientID: patientID, prescription: prescriptionText);
+
+    var testPrescription = await PrescriptionService.createPrescription(newPrescription);
+    print(testPrescription);
   }
 
   @override
   void initState() {
     super.initState();
-  }
-  
-  String addPrescription = "";
-  
-  Future createPrescription(prescription) async {
-    addPrescription = await PrescriptionService.createPrescription(prescription);
   }
 
   @override
@@ -57,22 +58,31 @@ class _PrescriptionScreen extends State<PrescriptionScreen> {
               TextField(
                 controller: textarea,
                 keyboardType: TextInputType.multiline,
-                maxLines: 4,
+                minLines: 1,
+                maxLines: null,
                 decoration: const InputDecoration(
                     hintText: "Enter Prescription",
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(width: 1, color: Colors.redAccent)
                     )
                 ),
-
+                onChanged: (text) {
+                  setState() {
+                    prescriptionText = text;
+                  }
+                }
               ),
 
               ElevatedButton(
-                  onPressed: (){
+                  onPressed: () async {
+                    print(prescriptionText);
+
+                    await createPrescription();
+
+                    if (!mounted) return;
+
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Prescription Saved!'),));
-                    _setText();
-                    createPrescription(context);
-                    print(textarea.text);
+
                   },
                   child: const Text("Save Prescription")
               )

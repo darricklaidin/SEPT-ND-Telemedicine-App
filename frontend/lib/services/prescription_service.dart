@@ -18,7 +18,7 @@ class PrescriptionService {
         .get(Uri.parse('$apiPrescriptionRootUrl/prescriptions/$prescriptionID'));
     if (response.statusCode == 200) {
       if (await getPrescriptionFromJSON(jsonDecode(response.body)) == null) {
-        // TODO: When one of the users gets deleted, Delete appointment with this appointment id from database
+        // TODO: When one of the users gets deleted, Delete prescription with this appointment id from database
       }
     } else if (response.statusCode == 404) {
       return jsonDecode(response.body)['message'];
@@ -28,13 +28,16 @@ class PrescriptionService {
   }
 
   static Future createPrescription(Prescription prescription) async {
+    // print(jsonEncode(prescription.toJson()));
+
     var response = await http.post(
       Uri.parse('$apiPrescriptionRootUrl/prescriptions'),
-      headers: <String, String>{
-        'Content-Type': 'prescription/json; charset=UTF-8',
-      },
       body: jsonEncode(prescription.toJson()),
     );
+
+    print(response.statusCode);
+    print(jsonDecode(response.body));
+
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
