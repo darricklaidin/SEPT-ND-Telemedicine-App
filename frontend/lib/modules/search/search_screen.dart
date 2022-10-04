@@ -102,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
             // Search bar
             TextField(
               decoration: InputDecoration(
-                hintText: 'Search for doctors',
+                hintText: 'Search for ${userRole == "PATIENT" ? "doctors" : "patients"}',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),

@@ -162,7 +162,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
           margin: EdgeInsets.only(bottom: 10.0),
           content: Text("Appointment created successfully."),
           duration: Duration(seconds: 2),
-          backgroundColor: LightPalette.error,
+          backgroundColor: LightPalette.success,
         ),
       );
     }

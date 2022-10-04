@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/config/themes/light_palette.dart';
 import 'package:frontend/services/doctor_service.dart';
 import 'package:intl/intl.dart';
 
@@ -72,11 +73,6 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
-    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
-    Color errorThemeColor = Theme.of(context).colorScheme.error;
 
     return Scaffold(
       appBar: AppBar(
@@ -186,12 +182,12 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                                   return;
                                 }
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                     behavior: SnackBarBehavior.floating,
-                                    margin: const EdgeInsets.only(bottom: 10.0),
-                                    content: const Text("Appointment deleted"),
-                                    duration: const Duration(seconds: 2),
-                                    backgroundColor: errorThemeColor,
+                                    margin: EdgeInsets.only(bottom: 10.0),
+                                    content: Text("Appointment deleted"),
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: LightPalette.success,
                                   ),
                                 );
                               },

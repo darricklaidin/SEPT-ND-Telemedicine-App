@@ -35,7 +35,6 @@ public class DoctorController {
     }
 
     // Update doctors
-    // Deactivate doctors (use PUT to modify accountStatus value instead of DELETE)
     @PutMapping("/{doctorID}")
     public ResponseEntity<Doctor> updateDoctor(
             @RequestBody Doctor doctor,

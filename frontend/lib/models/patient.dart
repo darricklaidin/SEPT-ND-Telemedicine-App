@@ -1,13 +1,18 @@
 import 'package:frontend/models/user.dart';
 
+import '../utility.dart';
+
 class Patient extends User {
-  Patient({userID, firstName, lastName, email, dateOfBirth, accountStatus})
+  String? symptoms;
+
+  Patient({userID, firstName, lastName, email, dateOfBirth, accountStatus, required this.symptoms})
       : super(
             userID: userID,
             firstName: firstName,
             lastName: lastName,
             email: email,
-            dateOfBirth: dateOfBirth);
+            dateOfBirth: dateOfBirth,
+            accountStatus: accountStatus);
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     return Patient(
@@ -16,6 +21,22 @@ class Patient extends User {
       lastName: json['lastName'],
       email: json['email'],
       dateOfBirth: DateTime.parse(json['dateOfBirth']),
+      accountStatus: json['accountStatus'],
+      symptoms: json['symptoms'],
     );
   }
+
+  toJson(String? newPassword) {
+    return {
+      'userID': userID,
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': newPassword,
+      'dateOfBirth': Utility.dateToStringJSON(dateOfBirth),
+      'accountStatus': accountStatus,
+      'symptoms': symptoms,
+    };
+  }
+
 }

@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -50,8 +52,33 @@ public class User implements UserDetails {
     @JoinTable
     private List<Role> roles;
 
+    @NotNull
+    @Column(nullable = false)
+    private boolean accountStatus = true;
+
+    // Initialize patient/doctor
+    public User(int userID, String firstName, String lastName, String email, String password, LocalDate dateOfBirth,
+                List<Role> roles) {
+        this.userID = userID;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.roles = roles;
+    }
+
+    // To initialize admin
     public User(int userID, List<Role> roles) {
         this.userID = userID;
+        this.firstName = "Admin";
+        this.lastName = "1";
+        this.email = "a@g.com";
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.password = passwordEncoder.encode("adminpass");
+
+        this.dateOfBirth = LocalDate.of(2000, 1, 1);
         this.roles = roles;
     }
 
@@ -91,6 +118,6 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return true;
+        return this.accountStatus;
     }
 }

@@ -31,7 +31,7 @@ Future<UserDTO?> validateJWT(String token) async {
   Uri url = Uri.parse('$apiAuthRootUrl/auth/validate');
   final response = await http.get(url, headers: {
     'Authorization': 'Bearer $token',
-  }).timeout(Duration(seconds: 3));
+  }).timeout(const Duration(seconds: 3));
   if (response.statusCode == 200) {
     res = UserDTO.fromJson(jsonDecode(response.body));
   }
@@ -66,6 +66,51 @@ Future<ApiResponse> loginUser(String email, String password) async {
   return res;
 }
 
+Future<ApiResponse> registerUser(String firstName, String lastName, String email, String password, String dateOfBirth) async {
+
+  Uri url = Uri.parse('$apiAuthRootUrl/auth/signup');
+  Map data = {'firstName': firstName, 'lastName': lastName, 'email': email, 'password': password, 'dateOfBirth': dateOfBirth};
+  var body = json.encode(data);
+
+  final response = await http.post(url,
+      headers: {"Content-Type": "application/json"}, body: body);
+  Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+  ApiResponse res = ApiResponse();
+  if (response.statusCode == 200) {
+    await loginUser(decodedResponse['email'], password);
+    res.success = true;
+  } else {
+    // get error message
+    res.msg = "A user with that email already exists.";
+  }
+  return res;
+
+}
+
+Future<ApiResponse> registerDoctor(String firstName, String lastName, String email, String password, String dateOfBirth, int specialtyID) async {
+
+  Uri url = Uri.parse('$apiAuthRootUrl/auth/signup-doctor');
+  Map data = {'firstName': firstName, 'lastName': lastName, 'email': email, 'password': password, 'dateOfBirth': dateOfBirth,
+    'specialtyID': specialtyID};
+
+  var body = json.encode(data);
+
+  final response = await http.post(url,
+      headers: {"Content-Type": "application/json"}, body: body);
+  Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+  ApiResponse res = ApiResponse();
+  if (response.statusCode == 200) {
+    res.success = true;
+  } else {
+    // get error message
+    res.msg = "A user with that email already exists.";
+  }
+  return res;
+
+}
+
 Future<void> logoutUser() async {
   await storage.deleteAll();
 }
@@ -83,10 +128,11 @@ Future getUserFromStorage() async {
   String userRole = await getUserRoleFromStorage();
   String userRolePath;
 
+  if (userRole == "ADMIN") {
+    return "ADMIN";
+  }
+
   switch (userRole) {
-    case "ADMIN":
-      userRolePath = "admins";
-      break;
     case "PATIENT":
       userRolePath = "patients";
       break;
@@ -95,6 +141,10 @@ Future getUserFromStorage() async {
       break;
     default:
       userRolePath = "invalidUserRolePath";
+  }
+
+  if (userRolePath == "invalidUserRolePath") {
+    return null;
   }
 
   Uri url = Uri.parse('$apiAuthRootUrl/$userRolePath/$userID');
@@ -110,8 +160,6 @@ Future getUserFromStorage() async {
       return Patient.fromJson(jsonDecode(response.body));
     } else if (userRole == "DOCTOR") {
       return Doctor.fromJson(jsonDecode(response.body));
-    } else if (userRole == "ADMIN") {
-      // return Admin.fromJson(jsonDecode(response.body));
     }
   } else {
     return null;

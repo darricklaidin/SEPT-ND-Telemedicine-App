@@ -1,4 +1,4 @@
-
+import 'dart:async';
 
 import '../models/appointment.dart';
 import 'package:frontend/config/constants.dart';
@@ -26,29 +26,6 @@ class PatientService {
       throw Exception('Failed to load patients');
     }
   }
-
-  static Future<List<Patient>> fetchPatientList() async {
-
-    //initialize list of patients;
-    List<Patient> patients = [];
-
-    //fetching the data
-    var response = await http.get(Uri.parse('$apiAuthRootUrl/patients'), headers: {
-      'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJpZCI6IjEiLCJleHAiOjE2NjQ5Njk0NDQsImlhdCI6MTY2NDM2NDY0NCwiZW1haWwiOiJicnlhbkBnbWFpbC5jb20iLCJhdXRob3JpdGllcyI6IlBBVElFTlQifQ.YK-cydutMzH9ohT58evJunY9FCUEnhguv-8_0sUSaT-Wm4HCusMIQT8XH6lpoOw_bNHk061npHPWYgGhM1bTPA'});
-
-    if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body)["content"];  // list of patients
-
-      for (dynamic patient in jsonData) {
-        patients.add(Patient.fromJson(patient));
-      }
-      return patients;
-
-    } else {
-      throw Exception("Failed to load patient's list");
-    }
-  }
-
 
   static Future fetchPatient(int patientID) async {
     final response = await http
@@ -87,5 +64,29 @@ class PatientService {
     }
   }
 
+  /// Update the patient with the specified [patientID].
+  /// Returns the updated [patient] if successful, otherwise returns the error message.
+  /// Leave [newPassword] as [null] if you don't want to change the password.
+  static Future updatePatient(int patientID, Patient patient, String? newPassword) async {
+
+    // if new password is null, use old password
+    var response = await http.put(Uri.parse('$apiAuthRootUrl/patients/$patientID'),
+        headers: {
+          'Authorization': 'Bearer ${await getJWT()}',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(patient.toJson(newPassword)));
+
+    Map<String, dynamic> decodedResponse = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return "Success";
+    } else if (decodedResponse['message'] == "Resource Already Exists") {
+      throw Exception("A user with that email already exists");
+    } else {
+      throw Exception('Failed to update patient profile');
+    }
+
+  }
 
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/admin/admin_all_doctors.dart';
-import 'package:frontend/modules/admin/admin_all_patients.dart';
-import 'package:frontend/modules/prescription/prescription_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
+import 'modules/admin/admin_main_screen.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
 
@@ -38,8 +36,9 @@ class _MyAppState extends State<MyApp> {
         ),
         initialRoute: '/',
         routes: {
-          "/": (context) => const AdminAllPatientsScreen(),
-          "/home": (context) => const MainScreen()
+          "/": (context) => const LoginScreen(),
+          "/home": (context) => const MainScreen(),
+          "/admin": (context) => const AdminMainScreen(),
         });
   }
 }

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/authorization/register_screen.dart';
 import 'package:frontend/services/auth_service.dart';
 
 import '../../config/themes/light_palette.dart';
@@ -30,10 +31,58 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _getAuth() async {
-    // Check if token already exists in storage
     try {
+      // Check if token already exists in storage
       if (await checkAuth() != null) {
-        await Navigator.pushReplacementNamed(context, '/home');
+        // Check that user account is active
+        var user = await getUserFromStorage();
+
+        if (user == null) {
+          setState(() {
+            isLoading = false;
+          });
+
+          if (!mounted) return;
+
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("User no longer exists."),
+              backgroundColor: LightPalette.error));
+
+          return;
+        }
+
+        if (user != "ADMIN") {
+          if (!mounted) return;
+
+          if (user.accountStatus == false) {
+            setState(() {
+              isLoading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text(
+                    "Account has been deactivated. Please contact admin for assistance."),
+                backgroundColor: LightPalette.error));
+            await logoutUser();
+            return;
+          }
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            behavior: SnackBarBehavior.floating,
+            margin: EdgeInsets.only(bottom: 10.0),
+            content: Text("Login Successful"),
+            duration: Duration(seconds: 2),
+            backgroundColor: LightPalette.success,
+          ),
+        );
+        if (await getUserRoleFromStorage() == "ADMIN") {
+          if (!mounted) return;
+          Navigator.pushReplacementNamed(context, '/admin');
+        } else {
+          if (!mounted) return;
+          Navigator.pushReplacementNamed(context, '/home');
+        }
       }
     } on TimeoutException{
       setState(() {
@@ -45,11 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   Future<void> login(context) async {
@@ -73,8 +120,35 @@ class _LoginScreenState extends State<LoginScreen> {
       res.msg = "Error";
     }
 
+    if (res.msg == "User is disabled") {
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              "Account has been deactivated. Please contact admin for assistance."),
+          backgroundColor: LightPalette.error));
+      return;
+    }
+
     if (res.success) {
-      Navigator.pushReplacementNamed(context, '/home');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          content: Text("Login Successful"),
+          duration: Duration(seconds: 2),
+          backgroundColor: LightPalette.success,
+        ),
+      );
+
+      if (await getUserRoleFromStorage() == "ADMIN") {
+        await Navigator.pushReplacementNamed(context, '/admin');
+      } else {
+        await Navigator.pushReplacementNamed(context, '/home');
+      }
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(res.msg ?? 'Invalid Credentials'),
@@ -136,10 +210,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
                     }
-                    // FIXME: Uncomment when deploying
-                    // else if (value.length < 8) {
-                    //   return 'Password should be atleast 8 characters';
-                    // }
+                    else if (value.length < 8) {
+                      return 'Password should be atleast 8 characters';
+                    }
                     return null;
                   },
                 ),
@@ -151,11 +224,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 onPressed: () => login(context),
                 child: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Forgot Password?",
-                style: TextStyle(decoration: TextDecoration.underline),
               ),
               const SizedBox(height: 20),
               RichText(
@@ -175,8 +243,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(content: Text('Register Text Clicked'),));
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const RegisterScreen())
+                          );
                         }),
                   ]),
               )

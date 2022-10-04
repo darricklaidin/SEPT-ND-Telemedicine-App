@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:frontend/services/auth_service.dart';
 
 import '../../main.dart';
+import '../doctor/edit_availabilities_screen.dart';
+import 'edit_doctor_personal_details_screen.dart';
+import 'edit_patient_health_status.dart';
+import 'edit_patient_personal_details_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -64,17 +68,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     userRole == "PATIENT" ?
-                    _buildEditHealthStatusBtn(width, height, primaryThemeColor,
+                    _buildEditHealthStatusBtn(context, width, height, primaryThemeColor,
                         secondaryThemeColor) :
-                    _buildEditMyAvailabilitiesBtn(width, height, primaryThemeColor,
+                    _buildEditMyAvailabilitiesBtn(context, width, height, primaryThemeColor,
                         secondaryThemeColor),
-
                     SizedBox(height: height * 0.05),
                     ..._buildEditPersonalDetailsBtn(
-                        width, height, primaryThemeColor, secondaryThemeColor),
+                        context, user.userID, userRole, width, height, primaryThemeColor, secondaryThemeColor),
                     SizedBox(height: height * 0.05),
                     ..._buildNotificationSettingsBtn(
-                        width, height, primaryThemeColor, secondaryThemeColor),
+                        context, width, height, primaryThemeColor, secondaryThemeColor),
                     SizedBox(height: height * 0.1),
                     ..._buildLogoutBtn(
                         context, width, height, primaryThemeColor, secondaryThemeColor),
@@ -89,13 +92,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-Widget _buildEditHealthStatusBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+Widget _buildEditHealthStatusBtn(BuildContext context, double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
   return SizedBox(
       width: width * 0.5,
       height: height * 0.07,
       child: ElevatedButton(
         onPressed: () {
-
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const EditPatientHealthStatusScreen()));
         },
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -113,13 +116,13 @@ Widget _buildEditHealthStatusBtn(double width, double height, Color primaryTheme
   );
 }
 
-Widget _buildEditMyAvailabilitiesBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+Widget _buildEditMyAvailabilitiesBtn(BuildContext context, double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
   return SizedBox(
       width: width * 0.5,
       height: height * 0.07,
       child: ElevatedButton(
         onPressed: () {
-
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const EditAvailabilityScreen()));
         },
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -137,14 +140,22 @@ Widget _buildEditMyAvailabilitiesBtn(double width, double height, Color primaryT
   );
 }
 
-List<Widget> _buildEditPersonalDetailsBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+List<Widget> _buildEditPersonalDetailsBtn(BuildContext context, int userID, String userRole, double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
   return [
     SizedBox(
       width: width * 0.5,
       height: height * 0.07,
       child: ElevatedButton(
         onPressed: () {
-
+          if (userRole == "PATIENT") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) =>
+                EditPatientPersonalDetailsScreen(patientID: userID,)));
+          } else if (userRole == "DOCTOR") {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) =>
+                    EditDoctorPersonalDetailsScreen(doctorID: userID,)));
+          }
         },
         style: ButtonStyle(
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -163,7 +174,7 @@ List<Widget> _buildEditPersonalDetailsBtn(double width, double height, Color pri
   ];
 }
 
-List<Widget> _buildNotificationSettingsBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+List<Widget> _buildNotificationSettingsBtn(BuildContext context, double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
   return [
     SizedBox(
       width: width * 0.5,

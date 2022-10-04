@@ -1,30 +1,29 @@
 import 'dart:async';
-
-import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/profile/profile_button.dart';
+
+import 'package:frontend/config/themes/light_palette.dart';
 import 'package:frontend/services/doctor_service.dart';
+import 'package:frontend/services/specialty_service.dart';
 import 'package:frontend/utility.dart';
-
+import '../../models/doctor.dart';
+import '../../models/patient.dart';
 import '../../services/patient_service.dart';
-import '../appointment/book_appointment_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
+class AdminViewUserProfileScreen extends StatefulWidget {
 
   final user;
   final userRole;
 
-  const ProfileScreen({Key? key, required this.user, required this.userRole}) : super(key: key);
+  const AdminViewUserProfileScreen({Key? key, required this.user, required this.userRole}) : super(key: key);
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<AdminViewUserProfileScreen> createState() => _AdminViewUserProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen> {
 
   List availabilitySchedule = [];
-  String healthStatus = "No health status to display.";
   bool isLoading = true;
   bool timeUp = false;
 
@@ -51,7 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future checkIfUserExists(Color errorThemeColor) async {
-    if (widget.userRole == "PATIENT" ?
+    if (widget.userRole == "DOCTOR" ?
     await DoctorService.fetchDoctor(widget.user.userID) == "Resource Not Found"
         : await PatientService.fetchPatient(widget.user.userID) == "Resource Not Found") {
 
@@ -73,16 +72,118 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   }
 
+  Future activateAccount() async {
+    if (widget.userRole == "PATIENT") {
+      Patient updatedPatient = await widget.user;
+
+      setState(() {
+        updatedPatient.accountStatus = true;
+      });
+
+      // set this user's account status to true by using updatePatient()
+      await PatientService.updatePatient(widget.user.userID, updatedPatient, null);
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          duration: Duration(seconds: 2),
+          content: Text('Successfully activated account'),
+          backgroundColor: LightPalette.success,
+        ),
+      );
+    } else if (widget.userRole == "DOCTOR") {
+      Doctor updatedDoctor = await widget.user;
+
+      setState(() {
+        updatedDoctor.accountStatus = true;
+      });
+
+      List specialties = await SpecialtyService.getSpecialties();
+
+      int specialtyID = -1;
+      for (var specialty in specialties) {
+        if (specialty.specialtyName == updatedDoctor.specialty) {
+          specialtyID = specialty.specialtyID;
+        }
+      }
+
+      // set this user's account status to false by using updateDoctor()
+      await DoctorService.updateDoctor(widget.user.userID, updatedDoctor, null, specialtyID);
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          duration: Duration(seconds: 2),
+          content: Text('Successfully activated account'),
+          backgroundColor: LightPalette.success,
+        ),
+      );
+    }
+  }
+
+  Future deactivateAccount() async {
+    if (widget.userRole == "PATIENT") {
+      Patient updatedPatient = await widget.user;
+
+      setState(() {
+        updatedPatient.accountStatus = false;
+      });
+
+      // set this user's account status to false by using updatePatient()
+      await PatientService.updatePatient(widget.user.userID, updatedPatient, null);
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          duration: Duration(seconds: 2),
+          content: Text('Successfully deactivated account'),
+          backgroundColor: LightPalette.success,
+        ),
+      );
+    } else if (widget.userRole == "DOCTOR") {
+      Doctor updatedDoctor = await widget.user;
+
+      setState(() {
+        updatedDoctor.accountStatus = false;
+      });
+
+      List specialties = await SpecialtyService.getSpecialties();
+
+      int specialtyID = -1;
+      for (var specialty in specialties) {
+        if (specialty.specialtyName == updatedDoctor.specialty) {
+          specialtyID = specialty.specialtyID;
+        }
+      }
+
+      // set this user's account status to false by using updateDoctor()
+      await DoctorService.updateDoctor(widget.user.userID, updatedDoctor, null, specialtyID);
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.only(bottom: 10.0),
+          duration: Duration(seconds: 2),
+          content: Text('Successfully deactivated account'),
+          backgroundColor: LightPalette.success,
+        ),
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    if (widget.userRole == "PATIENT") {
+    if (widget.userRole == "DOCTOR") {
       loadAvailabilities();
-    } else if (widget.userRole == "DOCTOR") {
-      setState(() {
-        healthStatus = widget.user.symptoms ?? healthStatus;
-        isLoading = false;
-      });
     } else {
       setState(() {
         isLoading = false;
@@ -102,7 +203,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: _buildTitleRow(width, height, primaryThemeColor, secondaryThemeColor),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.black,
@@ -119,8 +219,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return RefreshIndicator(
               onRefresh: () async {
                 if (await checkIfUserExists(errorThemeColor)) {
-                  if (widget.userRole == "PATIENT") {
-                    await loadAvailabilities();
+                  if (widget.userRole == "DOCTOR") {
+                    loadAvailabilities();
                   }
                 }
               },
@@ -133,10 +233,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       ..._buildProfileHeader(width, height, primaryThemeColor, secondaryThemeColor),
                       SizedBox(height: height * 0.01),
-                      ..._buildHealthStatus(width, height, primaryThemeColor, secondaryThemeColor),
                       ..._buildAvailabilitySchedule(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
-                      SizedBox(height: height * 0.05),
-                      ..._buildBookAppointmentBtn(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      SizedBox(height: height * 0.01),
+                      ..._buildActivateAccountButton(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      SizedBox(height: height * 0.01),
+                      ..._buildDeactivateAccountButton(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      SizedBox(height: height * 0.1),
                     ],
                   ),
                 ),
@@ -145,18 +247,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
         },
       ),
-    );
-  }
-
-  Row _buildTitleRow(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        const ProfileButton(),
-        SizedBox(
-          width: width * 0.05,
-        )
-      ],
     );
   }
 
@@ -174,29 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         textAlign: TextAlign.center,
       ),
       Text(
-        widget.userRole == "PATIENT" ? '${widget.user.specialty}' : 'Age: ${AgeCalculator.age(widget.user.dateOfBirth).years}',
-        style: const TextStyle(fontSize: 14, color: Colors.grey),
-        textAlign: TextAlign.center,
-      ),
-    ];
-  }
-
-  List<Widget> _buildHealthStatus(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
-    if (widget.userRole == "PATIENT") return [SizedBox(height: height * 0.05)];
-    return [
-      SizedBox(
-        height: height * 0.05,
-      ),
-      const Text(
-        'Health Status',
-        style: TextStyle(fontSize: 21),
-        textAlign: TextAlign.center,
-      ),
-      SizedBox(
-        height: height * 0.05,
-      ),
-      Text(
-        healthStatus,
+        "Account Status: ${widget.user.accountStatus ? 'Active' : 'Inactive'}",
         style: const TextStyle(fontSize: 14, color: Colors.grey),
         textAlign: TextAlign.center,
       ),
@@ -204,7 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   List<Widget> _buildAvailabilitySchedule(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
-    if (widget.userRole == "PATIENT") {
+    if (widget.userRole == "DOCTOR") {
       if (timeUp) {
         return [
           SizedBox(
@@ -212,7 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: EdgeInsets.fromLTRB(0, height * 0.05, 0, 0),
               child: const Text("Timeout: Unable to fetch the doctor's availabilities"),
             ),
-        ),
+          ),
         ];
       }
       else if (availabilitySchedule.isEmpty) {
@@ -252,42 +320,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return [SizedBox(height: height * 0.05)];
   }
 
-  List<Widget> _buildBookAppointmentBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
-    return widget.userRole == "DOCTOR" ? [SizedBox(height: height * 0.05,)] : [
-      Center(
-        child: SizedBox(
-          width: width * 0.45,
-          height: 40,
-          child: TextButton(
-            // Navigate to make appointment page
-            onPressed: () async {
-              if (await checkIfUserExists(errorThemeColor)) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => BookAppointmentScreen(doctor: widget.user)));
-              }
-              await loadAvailabilities();
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-            ),
-            child: const Text(
-              'Book Appointment',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+  List<Widget> _buildActivateAccountButton(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
+    return [
+      ElevatedButton(
+        onPressed: () {
+          activateAccount();
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(secondaryThemeColor),
         ),
+        child: const Text("Activate Account",
+          style: TextStyle(fontWeight: FontWeight.bold),),
       ),
-      SizedBox(
-        height: height * 0.05,
-      )
     ];
   }
+
+  List<Widget> _buildDeactivateAccountButton(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
+    return [
+      ElevatedButton(
+        onPressed: () {
+          deactivateAccount();
+        },
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(errorThemeColor),
+        ),
+        child: const Text("Deactivate Account",
+          style: TextStyle(fontWeight: FontWeight.bold),),
+      ),
+    ];
+  }
+
 }
