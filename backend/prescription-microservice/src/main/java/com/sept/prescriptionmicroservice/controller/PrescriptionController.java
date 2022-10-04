@@ -33,8 +33,8 @@ public class PrescriptionController {
 
     // Create prescriptions
     @PostMapping("")
-    public ResponseEntity<Prescription> createPrescription(@RequestBody Prescription prescription, Prescription doctorID, Prescription patientID) {
-        return ResponseEntity.ok(prescriptionService.createPrescription(prescription, doctorID, patientID));
+    public ResponseEntity<Prescription> createPrescription(@RequestBody Prescription prescription) {
+        return ResponseEntity.ok(prescriptionService.createPrescription(prescription));
     }
 
     // Get a doctor's prescriptions

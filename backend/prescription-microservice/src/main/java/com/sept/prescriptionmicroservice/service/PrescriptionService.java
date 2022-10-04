@@ -50,7 +50,7 @@ public class PrescriptionService {
 
 
     @Transactional
-    public Prescription createPrescription(Prescription prescription, Prescription doctorID, Prescription patientID) throws ResourceAlreadyExistsException {
+    public Prescription createPrescription(Prescription prescription) throws ResourceAlreadyExistsException {
         // Ensure prescription ID does not already exist
         try {
             this.getPrescriptionByID(prescription.getPrescriptionID());
@@ -74,8 +74,8 @@ public class PrescriptionService {
         Prescription updatedPrescription = this.getPrescriptionByID(prescriptionID); //Also checks if specialtyID exists
 
         updatedPrescription.setPrescription(prescription.getPrescription());
-        updatedPrescription.setDoctorID(prescription.getDoctorID());
-        updatedPrescription.setPatientID(prescription.getPatientID());
+
+        prescriptionRepository.save(updatedPrescription);
 
         return updatedPrescription;
     }
