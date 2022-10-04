@@ -69,7 +69,7 @@ class _PrescriptionScreen extends State<PrescriptionScreen> {
                 onChanged: (text) {
                   setState() {
                     prescriptionText = text;
-                  }
+                  });
                 }
               ),
 
