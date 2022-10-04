@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/modules/prescription/prescription_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
         ),
         initialRoute: '/',
         routes: {
-          "/": (context) => const LoginScreen(),
+          "/": (context) => const PrescriptionScreen(),
           "/home": (context) => const MainScreen()
         });
   }
