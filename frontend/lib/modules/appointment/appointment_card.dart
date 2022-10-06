@@ -7,11 +7,11 @@ import 'package:frontend/services/appointment_service.dart';
 class AppointmentCard extends StatefulWidget {
   final int appointmentID;
   final String name;
+  final int doctorID;
   final int age;
   final String date;
   final String startTime;
   final String endTime;
-
   final Function delete;
   final Function handleTabSelection;
   final Function reload;
@@ -20,6 +20,7 @@ class AppointmentCard extends StatefulWidget {
     Key? key,
     required this.appointmentID,
     required this.name,
+    required this.doctorID,
     required this.age,
     required this.date,
     required this.startTime,
@@ -30,7 +31,7 @@ class AppointmentCard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _AppointmentCardState createState() => _AppointmentCardState();
+  State<AppointmentCard> createState() => _AppointmentCardState();
 }
 
 class _AppointmentCardState extends State<AppointmentCard> {
@@ -120,6 +121,7 @@ class _AppointmentCardState extends State<AppointmentCard> {
                                 delete: widget.delete,
                                 handleTabSelection: widget.handleTabSelection,
                                 name: widget.name,
+                                doctorID: widget.doctorID,
                               ),
                             ),
                           );
