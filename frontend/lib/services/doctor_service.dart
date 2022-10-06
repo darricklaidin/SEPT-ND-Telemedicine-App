@@ -28,6 +28,29 @@ class DoctorService {
     }
   }
 
+  static Future<List<Doctor>> fetchDoctorList() async {
+
+    //initialize list of patients;
+    List<Doctor> doctors = [];
+
+    //fetching the data
+    var response = await http.get(Uri.parse('$apiAuthRootUrl/doctors'), headers: {
+      'Authorization': 'Bearer ${await getJWT()}'});
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body)["content"];  // list of patients //response.body
+
+      for (dynamic doctor in jsonData) {
+        doctors.add(Doctor.fromJson(doctor)); //give Doctor Object
+      }
+      return doctors;
+
+    } else {
+      throw Exception("Failed to load patient's appointments");
+    }
+  }
+
+
   static Future fetchDoctor(int doctorID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/doctors/$doctorID'), headers: {
