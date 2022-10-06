@@ -1,11 +1,9 @@
-package com.sept.authmicroservice.rename_as_required;
+package com.sept.authmicroservice.unit_test;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class CustomUserDetailsServiceTest {
+class CustomUserDetailsServiceUnitTest {
 
     @BeforeEach
     void setUp() {

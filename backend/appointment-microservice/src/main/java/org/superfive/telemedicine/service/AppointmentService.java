@@ -32,6 +32,7 @@ public class AppointmentService {
     @Transactional
     // Get all appointments
     public Page<Appointment> getAllAppointments(Pageable pageable) {
+
         return appointmentRepository.findAllBy(pageable);
     }
 
