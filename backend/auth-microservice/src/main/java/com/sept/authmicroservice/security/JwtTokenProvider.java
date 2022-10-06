@@ -62,8 +62,6 @@ public class JwtTokenProvider {
         UserDTO userDTO = getUserDtoFromToken(token);
         User principal = new User(userDTO.getUserID(), userDTO.getRoles());
 
-        List<Role> roles = new ArrayList<>();
-
         return new UsernamePasswordAuthenticationToken(principal, "", userDTO.getRoles());
     }
 
