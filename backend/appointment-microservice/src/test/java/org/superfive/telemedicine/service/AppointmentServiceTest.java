@@ -95,6 +95,19 @@ class AppointmentServiceTest {
 
     @Test
     void getDoctorAppointments() {
+        when(mockAppointmentRepository.findByDoctorID(appointment.getDoctorID(),null)).thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(appointment, appointment2))));
+
+        Page<Appointment> appointmentDoctorPage = appointmentService.getDoctorAppointments(appointment.getDoctorID(),null);  // Get doctor page
+
+        List<Appointment> doctorAppointments = appointmentDoctorPage.getContent();  // Get list of doctors from doctor page
+
+        // Test doctor1 list length
+        assertEquals(2, doctorAppointments.size());
+
+        // Test doctor1 appointments match
+        assertEquals(appointment, doctorAppointments.get(0));
+        assertEquals(appointment2, doctorAppointments.get(1));
+
     }
 
     @Test
@@ -115,9 +128,25 @@ class AppointmentServiceTest {
 
     @Test
     void addAppointment() {
+//        BDDMockito.given(mockAppointmentRepository.findByDoctorID(appointment.getAppointmentID())).willReturn(Optional.of(appointment));
+        SpecialtyDTO specialtyDTO1 = new SpecialtyDTO();
+
+        specialtyDTO1.setSpecialtyName("Cardiology");
+
+        System.out.println(specialtyDTO1.getSpecialtyName());
+
+//        Specialty tester = specialtyService.createSpecialty(specialtyDTO1);
+//
+//        verify(mockSpecialtyRepository).save(tester);
+
     }
 
     @Test
     void cancelAppointment() {
+        when(mockAppointmentRepository.findByAppointmentID(appointment.getAppointmentID())).thenReturn(Optional.of(appointment));
+
+        appointmentService.cancelAppointment(appointment.getAppointmentID());
+
+        verify(mockAppointmentRepository).deleteById(appointment.getAppointmentID());
     }
 }
