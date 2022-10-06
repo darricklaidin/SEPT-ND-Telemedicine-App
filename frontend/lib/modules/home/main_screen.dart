@@ -73,7 +73,6 @@ class _MainScreenState extends State<MainScreen> {
       const SearchScreen(),
       ManageAppointmentsScreen(handleTabSelection: _handleTabSelection),
       const NotificationScreen(),
-      ChatScreen(handleTabSelection: _handleTabSelection),
     ];
   }
 
@@ -113,15 +112,6 @@ class _MainScreenState extends State<MainScreen> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
         routeAndNavigatorSettings: const RouteAndNavigatorSettings(
           initialRoute: '/notifications',
-        ),
-      ),
-      PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.chat_bubble),
-        title: ("Chat"),
-        activeColorPrimary: CupertinoColors.activeBlue,
-        inactiveColorPrimary: CupertinoColors.systemGrey,
-        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
-          initialRoute: '/chat',
         ),
       ),
     ];

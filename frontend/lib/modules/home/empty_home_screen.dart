@@ -127,7 +127,7 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
                                     )),
                                 ElevatedButton(
                                   onPressed: () => {
-                                    widget.handleTabSelection(chatPageIndex)
+                                    widget.handleTabSelection(searchPageIndex)
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: primaryThemeColor,

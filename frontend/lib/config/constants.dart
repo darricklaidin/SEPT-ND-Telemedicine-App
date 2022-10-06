@@ -13,7 +13,6 @@ const String apiBookingRootUrl = 'http://$localhost:$bookingApiPort/api';
 const int homePageIndex = 0;
 const int searchPageIndex = 1;
 const int appointmentsPageIndex = 2;
-const int chatPageIndex = 3;
 
 // Limit bound for dates
 DateTime minDate = DateTime(0000, 1, 1);
