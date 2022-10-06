@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:age_calculator/age_calculator.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/config/themes/light_palette.dart';
 import 'package:frontend/services/doctor_service.dart';
@@ -16,14 +15,16 @@ import 'package:frontend/services/auth_service.dart';
 
 import '../profile/profile_button.dart';
 
-
 class ManageAppointmentsScreen extends StatefulWidget {
   final Function handleTabSelection;
 
-  ManageAppointmentsScreen({Key? key, required this.handleTabSelection,}) : super(key: key);
+  const ManageAppointmentsScreen({
+    Key? key,
+    required this.handleTabSelection,
+  }) : super(key: key);
 
   @override
-  _ManageAppointmentsScreenState createState() =>
+  State<ManageAppointmentsScreen> createState() =>
       _ManageAppointmentsScreenState();
 }
 
@@ -41,11 +42,13 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
     try {
       // If role is patient, then fetch patient appointments
       if (userRole == "PATIENT") {
-        appointments = await PatientService.fetchPatientAppointments(await getUserIdFromStorage());
+        appointments = await PatientService.fetchPatientAppointments(
+            await getUserIdFromStorage());
       }
       // If role is doctor, then fetch doctor appointments
       else if (userRole == "DOCTOR") {
-        appointments = await DoctorService.fetchDoctorAppointments(await getUserIdFromStorage());
+        appointments = await DoctorService.fetchDoctorAppointments(
+            await getUserIdFromStorage());
       }
     } on TimeoutException {
       if (!mounted) return;
@@ -73,75 +76,71 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: const [
-            ProfileButton(),
-            SizedBox(
-              width: 20,
-            )
-          ],
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: const [
+              ProfileButton(),
+              SizedBox(
+                width: 20,
+              )
+            ],
+          ),
+          automaticallyImplyLeading: false,
         ),
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
-        child: Column(
-          children: <Widget>[
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Appointments",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+          child: Column(
+            children: <Widget>[
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Appointments",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 25),
-            Builder(builder: (context) {
-              if (isLoading) {
-                return const Padding(
-                  padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else if (timeUp) {
-                return Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      await loadAppointments();
-                    },
-                    child: ListView(
-                      children: const [
+              const SizedBox(height: 25),
+              Builder(builder: (context) {
+                if (isLoading) {
+                  return const Padding(
+                    padding: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else if (timeUp) {
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await loadAppointments();
+                      },
+                      child: ListView(children: const [
                         Center(
                           child: Text("Timeout: Unable to fetch appointments"),
                         ),
-                      ]
+                      ]),
                     ),
-                  ),
-                );
-              } else if (appointments.isEmpty) {
-                return Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      await loadAppointments();
-                    },
-                    child: ListView(
-                        children: const [
-                          Center(
-                            child: Text("No appointments found"),
-                          ),
-                        ]
+                  );
+                } else if (appointments.isEmpty) {
+                  return Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await loadAppointments();
+                      },
+                      child: ListView(children: const [
+                        Center(
+                          child: Text("No appointments found"),
+                        ),
+                      ]),
                     ),
-                  ),
-                );
-              } else {
+                  );
+                } else {
                   return Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
@@ -154,24 +153,22 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                             // Display appropriate info based on role
                             return AppointmentCard(
                               appointmentID: appointments[index].appointmentID,
-                              name:
-                              userRole == "PATIENT" ?
-                              "${appointments[index].doctor.firstName} "
-                                  "${appointments[index].doctor.lastName}" :
-                              "${appointments[index].patient.firstName} "
-                                  "${appointments[index].patient.lastName}",
-
-                              age: AgeCalculator.age(
-                                      userRole == "PATIENT" ?
-                                      appointments[index].doctor.dateOfBirth :
-                                      appointments[index].patient.dateOfBirth).years,
-
+                              name: userRole == "PATIENT"
+                                  ? "${appointments[index].doctor.firstName} "
+                                      "${appointments[index].doctor.lastName}"
+                                  : "${appointments[index].patient.firstName} "
+                                      "${appointments[index].patient.lastName}",
+                              doctorID: appointments[index].doctor.userID,
+                              age: AgeCalculator.age(userRole == "PATIENT"
+                                      ? appointments[index].doctor.dateOfBirth
+                                      : appointments[index].patient.dateOfBirth)
+                                  .years,
                               date: DateFormat('dd MMM yyyy')
                                   .format(appointments[index].date),
-                              startTime:
-                                  Utility.timeToString(appointments[index].startTime),
-                              endTime:
-                                  Utility.timeToString(appointments[index].endTime),
+                              startTime: Utility.timeToString(
+                                  appointments[index].startTime),
+                              endTime: Utility.timeToString(
+                                  appointments[index].endTime),
                               delete: () async {
                                 await AppointmentService.deleteAppointment(
                                     appointments[index].appointmentID);
@@ -197,10 +194,10 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                           }),
                     ),
                   );
-              }
-            }),
-        ],
-      ),
-    ));
+                }
+              }),
+            ],
+          ),
+        ));
   }
 }

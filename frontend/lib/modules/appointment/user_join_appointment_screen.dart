@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:frontend/config/constants.dart';
-
+import 'package:frontend/modules/chat/chat_screen.dart';
+import 'package:frontend/services/auth_service.dart';
 
 class UserJoinAppointment extends StatefulWidget {
   final Function delete;
   final Function handleTabSelection;
   final String name;
+  final int doctorID;
 
   const UserJoinAppointment(
-      {Key? key, required this.delete, required this.name, required this.handleTabSelection})
+      {Key? key,
+      required this.delete,
+      required this.name,
+      required this.handleTabSelection,
+      required this.doctorID})
       : super(key: key);
 
   @override
@@ -18,18 +23,20 @@ class UserJoinAppointment extends StatefulWidget {
 }
 
 class _UserJoinAppointmentState extends State<UserJoinAppointment> {
+  late int userID;
   @override
   void initState() {
     super.initState();
+    _setUserID();
+  }
+
+  _setUserID() async {
+    userID = await getUserIdFromStorage();
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
     Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
-    Color errorThemeColor = Theme.of(context).colorScheme.error;
 
     return Scaffold(
       appBar: AppBar(
@@ -41,9 +48,7 @@ class _UserJoinAppointmentState extends State<UserJoinAppointment> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const Icon(CupertinoIcons.profile_circled, size: 40),
-            Text(
-              widget.name,
-            ),
+            Text(widget.name),
             const SizedBox(height: 50),
             ElevatedButton(
               onPressed: () {
@@ -53,20 +58,31 @@ class _UserJoinAppointmentState extends State<UserJoinAppointment> {
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(Colors.red),
               ),
-              child: const Text("Cancel", style: TextStyle(fontWeight: FontWeight.bold),),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
-                // This method pushes a new screen to the stack but does not update the bottom nav bar
-                // pushNewScreen(context, screen: new ChatScreen());
-
-                // This method moves the nav bar controller to the chat screen
-                widget.handleTabSelection(chatPageIndex);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatScreen(
+                            handleTabSelection: widget.handleTabSelection,
+                            doctorID: widget.doctorID,
+                            isPatient: true,
+                            patientID: userID,
+                          )),
+                );
               },
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
               ),
-              child: const Text("Join Chat", style: TextStyle(fontWeight: FontWeight.bold),),
+              child: const Text(
+                "Join Chat",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         ),
