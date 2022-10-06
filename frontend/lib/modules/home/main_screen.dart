@@ -4,6 +4,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../appointment/manage_appointments_screen.dart';
 import '../chat/chat_screen.dart';
+import '../notifications/notifications.dart';
 import '../search/search_screen.dart';
 import 'empty_home_screen.dart';
 
@@ -71,6 +72,7 @@ class _MainScreenState extends State<MainScreen> {
       EmptyHomeScreen(handleTabSelection: _handleTabSelection),
       const SearchScreen(),
       ManageAppointmentsScreen(handleTabSelection: _handleTabSelection),
+      const NotificationScreen(),
       ChatScreen(handleTabSelection: _handleTabSelection),
     ];
   }
@@ -102,6 +104,15 @@ class _MainScreenState extends State<MainScreen> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
         routeAndNavigatorSettings: const RouteAndNavigatorSettings(
           initialRoute: '/appointments',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.bell),
+        title: ("Notifications"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/notifications',
         ),
       ),
       PersistentBottomNavBarItem(
