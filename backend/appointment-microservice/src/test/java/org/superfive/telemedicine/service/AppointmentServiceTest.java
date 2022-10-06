@@ -128,16 +128,18 @@ class AppointmentServiceTest {
 
     @Test
     void addAppointment() {
-//        BDDMockito.given(mockAppointmentRepository.findByDoctorID(appointment.getAppointmentID())).willReturn(Optional.of(appointment));
-        SpecialtyDTO specialtyDTO1 = new SpecialtyDTO();
 
-        specialtyDTO1.setSpecialtyName("Cardiology");
-
-        System.out.println(specialtyDTO1.getSpecialtyName());
-
-//        Specialty tester = specialtyService.createSpecialty(specialtyDTO1);
+        //TODO: COMPLETE NEEDED
+////        BDDMockito.given(mockAppointmentRepository.findByDoctorID(appointment.getAppointmentID())).willReturn(Optional.of(appointment));
+//        SpecialtyDTO specialtyDTO1 = new SpecialtyDTO();
 //
-//        verify(mockSpecialtyRepository).save(tester);
+//        specialtyDTO1.setSpecialtyName("Cardiology");
+//
+//        System.out.println(specialtyDTO1.getSpecialtyName());
+//
+////        Specialty tester = specialtyService.createSpecialty(specialtyDTO1);
+////
+////        verify(mockSpecialtyRepository).save(tester);
 
     }
 
