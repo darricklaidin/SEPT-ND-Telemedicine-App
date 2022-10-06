@@ -59,74 +59,70 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     ),
                   ],
                 ),
-                SingleChildScrollView(
-                    child: Center(
-                  child: SizedBox(
-                    width: (MediaQuery.of(context).size.width * 0.87),
-                    child: ListView.builder(
-                      itemCount: 5,
-                      shrinkWrap: true,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Column(
-                          children: [
-                            Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              color: primaryThemeColor,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(5, 10, 10, 5),
-                                child: Row(
-                                  children: [
-                                    SizedBox(
-                                        width:
-                                            (MediaQuery.of(context).size.width *
-                                                0.05)),
-                                    CircleAvatar(
-                                      radius: 25,
-                                      child: Image.asset('assets/patient.png'),
-                                    ),
-                                    SizedBox(
-                                        width:
-                                            (MediaQuery.of(context).size.width *
-                                                0.03)),
-                                    Column(
-                                      children: [
-                                        const Text(
-                                            "Time to take your medication",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold)),
-                                        SizedBox(
-                                            height: (MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.01)),
-                                        const Text("Panadol (6 pills) - 6AM ",
-                                            style: TextStyle(
+                SizedBox(
+                  width: (MediaQuery.of(context).size.width * 0.87),
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 5,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            color: primaryThemeColor,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                      width:
+                                          (MediaQuery.of(context).size.width *
+                                              0.05)),
+                                  CircleAvatar(
+                                    radius: 25,
+                                    child: Image.asset('assets/patient.png'),
+                                  ),
+                                  SizedBox(
+                                      width:
+                                          (MediaQuery.of(context).size.width *
+                                              0.03)),
+                                  Column(
+                                    children: [
+                                      const Text("Time to take your medication",
+                                          style: TextStyle(
                                               color: Colors.white,
-                                            )),
-                                        SizedBox(
-                                            height: (MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.01)),
-                                      ],
-                                    )
-                                  ],
-                                ),
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                          height: (MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.01)),
+                                      const Text("Panadol (6 pills) - 6AM ",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          )),
+                                      SizedBox(
+                                          height: (MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.01)),
+                                    ],
+                                  )
+                                ],
                               ),
                             ),
-                            SizedBox(
-                                height: (MediaQuery.of(context).size.height *
-                                    0.02)),
-                          ],
-                        );
-                      },
-                    ),
+                          ),
+                          SizedBox(
+                              height:
+                                  (MediaQuery.of(context).size.height * 0.02)),
+                        ],
+                      );
+                    },
                   ),
-                )),
+                ),
                 SizedBox(height: (MediaQuery.of(context).size.height * 0.025)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,77 +145,68 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     ),
                   ],
                 ),
-                SingleChildScrollView(
-                  child: Center(
-                    child: SizedBox(
-                      width: (MediaQuery.of(context).size.width * 0.87),
-                      child: ListView.builder(
-                        itemCount: 4,
-                        shrinkWrap: true,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
-                            children: [
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                color: primaryThemeColor,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(5, 10, 10, 5),
-                                  child: Row(
-                                    children: [
-                                      SizedBox(
-                                          width: (MediaQuery.of(context)
-                                                  .size
-                                                  .width *
+                SizedBox(
+                  width: (MediaQuery.of(context).size.width * 0.87),
+                  child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: 4,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: [
+                          Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            color: primaryThemeColor,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 10, 10, 5),
+                              child: Row(
+                                children: [
+                                  SizedBox(
+                                      width:
+                                          (MediaQuery.of(context).size.width *
                                               0.05)),
-                                      CircleAvatar(
-                                        radius: 25,
-                                        child:
-                                            Image.asset('assets/patient.png'),
-                                      ),
-                                      SizedBox(
-                                          width: (MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.03)),
-                                      Column(
-                                        children: [
-                                          const Text(
-                                              "Time to take your medication",
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(
-                                              height: (MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.01)),
-                                          const Text("Panadol (6 pills) - 6AM ",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              )),
-                                          SizedBox(
-                                              height: (MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.01)),
-                                        ],
-                                      )
-                                    ],
+                                  CircleAvatar(
+                                    radius: 25,
+                                    child: Image.asset('assets/patient.png'),
                                   ),
-                                ),
+                                  SizedBox(
+                                      width:
+                                          (MediaQuery.of(context).size.width *
+                                              0.03)),
+                                  Column(
+                                    children: [
+                                      const Text("Time to take your medication",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                          height: (MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.01)),
+                                      const Text("Panadol (6 pills) - 6AM ",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          )),
+                                      SizedBox(
+                                          height: (MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.01)),
+                                    ],
+                                  )
+                                ],
                               ),
-                              SizedBox(
-                                height:
-                                    (MediaQuery.of(context).size.height * 0.02),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: (MediaQuery.of(context).size.height * 0.02),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ],
