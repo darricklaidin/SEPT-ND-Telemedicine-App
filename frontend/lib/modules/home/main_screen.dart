@@ -29,51 +29,49 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-      builder: (context) {
-        return PersistentTabView(
-          context,
-          controller: _controller,
-          screens: _buildScreens(),
-          items: _navBarsItems(),
-          confineInSafeArea: true,
-          backgroundColor: Colors.white, // Default is Colors.white.
-          handleAndroidBackButtonPress: true, // Default is true.
-          resizeToAvoidBottomInset:
-              true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
-          stateManagement: true, // Default is true.
-          hideNavigationBarWhenKeyboardShows:
-              true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
-          decoration: NavBarDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            colorBehindNavBar: Colors.white,
-          ),
-          popAllScreensOnTapOfSelectedTab: true,
-          popActionScreens: PopActionScreensType.all,
-          itemAnimationProperties: const ItemAnimationProperties(
-            // Navigation Bar's items animation properties.
-            duration: Duration(milliseconds: 200),
-            curve: Curves.ease,
-          ),
-          screenTransitionAnimation: const ScreenTransitionAnimation(
-            // Screen transition animation on change of selected tab.
-            animateTabTransition: true,
-            curve: Curves.ease,
-            duration: Duration(milliseconds: 200),
-          ),
-          navBarStyle:
-              NavBarStyle.style1, // Choose the nav bar style with this property.
-        );
-      }
-    );
+    return Builder(builder: (context) {
+      return PersistentTabView(
+        context,
+        controller: _controller,
+        screens: _buildScreens(),
+        items: _navBarsItems(),
+        confineInSafeArea: true,
+        backgroundColor: Colors.white, // Default is Colors.white.
+        handleAndroidBackButtonPress: true, // Default is true.
+        resizeToAvoidBottomInset:
+            true, // This needs to be true if you want to move up the screen when keyboard appears. Default is true.
+        stateManagement: true, // Default is true.
+        hideNavigationBarWhenKeyboardShows:
+            true, // Recommended to set 'resizeToAvoidBottomInset' as true while using this argument. Default is true.
+        decoration: NavBarDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          colorBehindNavBar: Colors.white,
+        ),
+        popAllScreensOnTapOfSelectedTab: true,
+        popActionScreens: PopActionScreensType.all,
+        itemAnimationProperties: const ItemAnimationProperties(
+          // Navigation Bar's items animation properties.
+          duration: Duration(milliseconds: 200),
+          curve: Curves.ease,
+        ),
+        screenTransitionAnimation: const ScreenTransitionAnimation(
+          // Screen transition animation on change of selected tab.
+          animateTabTransition: true,
+          curve: Curves.ease,
+          duration: Duration(milliseconds: 200),
+        ),
+        navBarStyle:
+            NavBarStyle.style1, // Choose the nav bar style with this property.
+      );
+    });
   }
 
   List<Widget> _buildScreens() {
     return [
-      const EmptyHomeScreen(),
+      EmptyHomeScreen(handleTabSelection: _handleTabSelection),
       const SearchScreen(),
       ManageAppointmentsScreen(handleTabSelection: _handleTabSelection),
-      const ChatScreen(),
+      ChatScreen(handleTabSelection: _handleTabSelection),
     ];
   }
 
@@ -98,13 +96,13 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       PersistentBottomNavBarItem(
-          icon: const Icon(CupertinoIcons.calendar),
-          title: ("Appointments"),
-          activeColorPrimary: CupertinoColors.activeBlue,
-          inactiveColorPrimary: CupertinoColors.systemGrey,
-          routeAndNavigatorSettings: const RouteAndNavigatorSettings(
-            initialRoute: '/appointments',
-          ),
+        icon: const Icon(CupertinoIcons.calendar),
+        title: ("Appointments"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/appointments',
+        ),
       ),
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.chat_bubble),

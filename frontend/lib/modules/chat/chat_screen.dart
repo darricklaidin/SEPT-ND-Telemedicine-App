@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/home/empty_home_screen.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:talkjs_flutter/talkjs_flutter.dart';
+import 'package:frontend/config/constants.dart';
 
 import '../../services/doctor_service.dart';
 import '../../services/patient_service.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  final Function handleTabSelection;
+
+  const ChatScreen({Key? key, required this.handleTabSelection})
+      : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -56,10 +58,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back,
                       size: 20, color: Colors.black),
-                  onPressed: () => pushNewScreen(
-                    context,
-                    screen: const EmptyHomeScreen(),
-                  ),
+                  onPressed: () => {widget.handleTabSelection(homePageIndex)},
                 )),
             body: body,
           );
