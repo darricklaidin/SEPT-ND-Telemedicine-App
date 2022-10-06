@@ -9,7 +9,6 @@ import '../models/doctor.dart';
 import '../models/patient.dart';
 
 class AppointmentService {
-
   static Future findAppointmentByID(int appointmentID) async {
     var response = await http
         .get(Uri.parse('$apiBookingRootUrl/appointments/$appointmentID'));
@@ -34,11 +33,11 @@ class AppointmentService {
     );
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      return [true, jsonDecode(response.body)];
     } else if (response.statusCode == 400) {
-      return jsonDecode(response.body)['message'];
+      return [false, jsonDecode(response.body)['message']];
     } else {
-      return 'Failed to create appointment';
+      return [false, 'Failed to create appointment'];
     }
   }
 
@@ -53,13 +52,15 @@ class AppointmentService {
   }
 
   static Future getAppointmentFromJSON(appointment) async {
-    dynamic tempDoctor = await DoctorService.fetchDoctor(appointment['doctorID']);
+    dynamic tempDoctor =
+        await DoctorService.fetchDoctor(appointment['doctorID']);
     if (tempDoctor == "Resource Not Found") {
       return null;
     }
     Doctor doctor = tempDoctor;
 
-    dynamic tempPatient = await PatientService.fetchPatient(appointment['patientID']);
+    dynamic tempPatient =
+        await PatientService.fetchPatient(appointment['patientID']);
     if (tempPatient == "Resource Not Found") {
       return null;
     }
@@ -67,5 +68,4 @@ class AppointmentService {
 
     return Appointment.fromJson(appointment, doctor, patient);
   }
-
 }
