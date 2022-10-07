@@ -1,8 +1,8 @@
 package org.superfive.telemedicine.service;
 
-import com.sept.authmicroservice.model.Doctor;
-import com.sept.authmicroservice.model.Specialty;
-import com.sept.authmicroservice.payload.SpecialtyDTO;
+//import com.sept.authmicroservice.model.Doctor;
+//import com.sept.authmicroservice.model.Specialty;
+//import com.sept.authmicroservice.payload.SpecialtyDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

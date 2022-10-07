@@ -1,13 +1,14 @@
 package org.superfive.telemedicine.service;
 
-import com.sept.authmicroservice.model.Specialty;
-import com.sept.authmicroservice.payload.SpecialtyDTO;
+//import com.sept.authmicroservice.model.Specialty;
+//import com.sept.authmicroservice.payload.SpecialtyDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.superfive.telemedicine.exception.ResourceNotFoundException;
 import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
@@ -128,18 +129,19 @@ class AppointmentServiceTest {
 
     @Test
     void addAppointment() {
+//        Appointment mockAppointment = Mockito.mock(Appointment.class);
+//        //TODO: COMPLETE NEEDED
+//        when(mockAppointmentRepository.findByAppointmentID(mockAppointment.getAppointmentID())).thenThrow(new ResourceNotFoundException("a", "b", 1));
+//        when(mockAppointmentRepository.findByDoctorID(mockAppointment.getDoctorID(), null)).thenThrow(new ResourceNotFoundException("a", "b", 1));
+//        when(mockAppointmentRepository.findByPatientID(mockAppointment.getPatientID(), null)).thenThrow(new ResourceNotFoundException("a", "b", 1));
 
-        //TODO: COMPLETE NEEDED
-////        BDDMockito.given(mockAppointmentRepository.findByDoctorID(appointment.getAppointmentID())).willReturn(Optional.of(appointment));
-//        SpecialtyDTO specialtyDTO1 = new SpecialtyDTO();
-//
-//        specialtyDTO1.setSpecialtyName("Cardiology");
-//
-//        System.out.println(specialtyDTO1.getSpecialtyName());
-//
-////        Specialty tester = specialtyService.createSpecialty(specialtyDTO1);
-////
-////        verify(mockSpecialtyRepository).save(tester);
+
+//        BDDMockito.given(mockAppointmentRepository.findByAppointmentID(appointment.getAppointmentID())).willThrow(new ResourceNotFoundException("Appointment", "appointmentID", appointment.getAppointmentID()));
+//        System.out.println(appointment.getStartTime());
+//        appointmentService.addAppointment(mockAppointment);
+//        assertEquals();
+
+//        verify(mockAppointmentRepository).save(mockAppointment);
 
     }
 
