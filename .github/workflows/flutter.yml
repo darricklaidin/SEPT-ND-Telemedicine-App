@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Java and Flutter CI
+name: Java CI with Maven and Flutter CI
 
 on:
   push:
@@ -26,7 +26,7 @@ jobs:
         env:
           MYSQL_DATABASE: tele-med
           MYSQL_HOST: localhost
-          MYSQL_PORT: 3307
+          MYSQL_PORT: 3306
           MYSQL_ROOT_PASSWORD: password
         ports:
           - 3307:3306
