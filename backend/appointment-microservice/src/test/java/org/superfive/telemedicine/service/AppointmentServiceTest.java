@@ -62,10 +62,10 @@ class AppointmentServiceTest {
         Page<Appointment> appointmentPage = appointmentService.getAllAppointments(null);
         List<Appointment> retrievedAppointments = appointmentPage.getContent();
 
-        // Test doctor list length
+        // Test appointment list length
         assertEquals(appointments.size(), retrievedAppointments.size());
 
-        // Test each doctor matches
+        // Test each appointment matches
         for (int i = 0; i < appointments.size(); i++) {
             assertEquals(appointments.get(i), retrievedAppointments.get(i));
         }
@@ -86,13 +86,12 @@ class AppointmentServiceTest {
         Page<Appointment> appointmentDoctorPage = appointmentService.getDoctorAppointments(appointment1.getDoctorID(),null);
         List<Appointment> retrievedDoctorAppointments = appointmentDoctorPage.getContent();
 
-        // Test doctor1 list length
+        // Test appointment1 list length
         assertEquals(2, retrievedDoctorAppointments.size());
 
-        // Test doctor1 appointments match
+        // Test appointment1 appointments match
         assertEquals(appointment1, retrievedDoctorAppointments.get(0));
         assertEquals(appointment2, retrievedDoctorAppointments.get(1));
-
     }
 
     @Test
@@ -101,13 +100,13 @@ class AppointmentServiceTest {
                 .thenReturn(new PageImpl<>(new ArrayList<>(Collections.singletonList(appointment1))));
 
         Page<Appointment> appointmentPatientPage = appointmentService.getPatientAppointments(appointment1.getPatientID(),null);
-        List<Appointment> patientAppointments = appointmentPatientPage.getContent();
+        List<Appointment> retrievedPatientAppointments = appointmentPatientPage.getContent();
 
-        // Test patient1 list length
-        assertEquals(1, patientAppointments.size());
+        // Test appointment1 list length
+        assertEquals(1, retrievedPatientAppointments.size());
 
-        // Test patient1 match
-        assertEquals(appointment1, patientAppointments.get(0));
+        // Test appointment1 match
+        assertEquals(appointment1, retrievedPatientAppointments.get(0));
     }
 
     @Test
@@ -132,14 +131,14 @@ class AppointmentServiceTest {
         when(mockAvailabilityRepository.findByDoctorID(appointment4.getDoctorID(), null))
                 .thenReturn(new PageImpl<>(new ArrayList<>()));
 
-        // Mock appointments for patient
+        // Mock appointments for appointment
         when(mockAppointmentRepository.findByPatientID(appointment5.getPatientID(), null))
                 .thenReturn(new PageImpl<>(new ArrayList<>(List.of(appointment4))));
-        // Mock appointments for doctor
+        // Mock appointments for appointment
         when(mockAppointmentRepository.findByDoctorID(appointment5.getDoctorID(), null))
                 .thenReturn(new PageImpl<>(new ArrayList<>(List.of(appointment4))));
 
-        // Add appointment that is not within doctor's availability
+        // Add appointment that is not within appointment's availability
         assertThrows(DoctorUnavailableException.class, () -> appointmentService.addAppointment(appointment4));
 
         // Mock an availability
@@ -149,10 +148,10 @@ class AppointmentServiceTest {
                                 LocalTime.of(10, 0, 0), LocalTime.of(18, 0, 0), 1))
                 )));
 
-        // Add appointment that is within doctor's availability but clashes with other appointments
+        // Add appointment that is within appointment's availability but clashes with other appointments
         assertThrows(EntityTimeClashException.class, () -> appointmentService.addAppointment(appointment5));
 
-        // Add appointment that is within doctor's availability and does not clash with other appointments
+        // Add appointment that is within appointment's availability and does not clash with other appointments
         Appointment appointment6 = new Appointment(6,
                 LocalDate.of(2022, Month.OCTOBER, 10), LocalTime.of(15, 0, 0),
                 LocalTime.of(15, 30, 0), "COMPLETED", 1,1);
@@ -210,7 +209,6 @@ class AppointmentServiceTest {
 
         // Test that deleted appointment matches appointment1
         assertEquals(appointment1, deletedAppointment);
-
     }
 
 }

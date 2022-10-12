@@ -58,16 +58,10 @@ class PatientServiceUnitTest {
 
         List<Patient> retrievedPatients = patientPage.getContent();
 
-        // Test doctor list length
+        // Test patient list length
         assertEquals(2, patients.size());
 
-        // Test doctor 1 match
-        assertEquals(patient1, patients.get(0));
-
-        // Test doctor 2 match
-        assertEquals(patient2, patients.get(1));
-
-        // Test each doctor matches
+        // Test each patient matches
         for (int i = 0; i < patients.size(); i++) {
             assertEquals(patients.get(i), retrievedPatients.get(i));
         }
@@ -80,7 +74,7 @@ class PatientServiceUnitTest {
     }
 
     @Test
-    void updateDoctor() {
+    void updatePatient() {
         Patient updatedPatient = new Patient(patient1.getUserID(), "Darrick", "Laidin", "updatedl@gmail.com",
                 "update", dob2 , null);
         updatedPatient.setAccountStatus(false);
