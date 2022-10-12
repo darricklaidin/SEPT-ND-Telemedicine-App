@@ -1,6 +1,7 @@
 package com.sept.authmicroservice.unit_test;
 
 import com.sept.authmicroservice.model.Doctor;
+import com.sept.authmicroservice.model.Specialty;
 import com.sept.authmicroservice.repository.DoctorRepository;
 import com.sept.authmicroservice.repository.UserRepository;
 import com.sept.authmicroservice.service.DoctorService;
@@ -27,6 +28,9 @@ class DoctorServiceUnitTest {
     private Doctor doctor2;
     private final List<Doctor> doctors = new ArrayList<>();
 
+    private Specialty specialty2;
+
+
     LocalDate dob1;
     LocalDate dob2;
 
@@ -40,8 +44,11 @@ class DoctorServiceUnitTest {
         dob1 = LocalDate.of(2000, Month.JANUARY, 1);
         dob2 = LocalDate.of(2001, Month.FEBRUARY, 2);
 
-        doctor1 = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com", "password", dob1, null , null);
-        doctor2 = new Doctor(2, "Mohamed", "Mahamed", "pc@fmail.coa", "password", dob2, null , null);
+        Specialty specialty1 = new Specialty("Cardiology");
+        specialty2 = new Specialty("Surgery");
+
+        doctor1 = new Doctor(1, "Hirday", "Bajaj", "patient@fmail.com", "password", dob1, null , specialty1);
+        doctor2 = new Doctor(2, "Mohamed", "Mahamed", "pc@fmail.coa", "password", dob2, null , specialty2);
 
         doctors.add(doctor1);
         doctors.add(doctor2);
@@ -80,11 +87,11 @@ class DoctorServiceUnitTest {
     @Test
     void updateDoctor() {
         Doctor updateDoctor = new Doctor(doctor1.getUserID(), "Darrick", "Laidin", "updatedl@gmail.com",
-                "update", dob2 , null, null);
+                "update", dob2 , null, specialty2);
         updateDoctor.setAccountStatus(false);
 
         Doctor oldDoctor1 = new Doctor(doctor1.getUserID(), doctor1.getFirstName(), doctor1.getLastName(),
-                doctor1.getEmail(), doctor1.getPassword(), doctor1.getDateOfBirth(), null, null);
+                doctor1.getEmail(), doctor1.getPassword(), doctor1.getDateOfBirth(), null, doctor1.getSpecialty());
 
         when(mockDoctorRepository.findByUserID(doctor1.getUserID())).thenReturn(Optional.of(doctor1));
         when(mockDoctorRepository.save(doctor1)).thenAnswer(i -> {
@@ -94,6 +101,7 @@ class DoctorServiceUnitTest {
             doctor1.setEmail(updateDoctor.getEmail());
             doctor1.setPassword(updateDoctor.getPassword());
             doctor1.setDateOfBirth(updateDoctor.getDateOfBirth());
+            doctor1.setSpecialty(updateDoctor.getSpecialty());
             return doctor1;
         });
 
@@ -104,16 +112,18 @@ class DoctorServiceUnitTest {
         assertEquals(updateDoctor.getEmail(), doctor1.getEmail());
         assertEquals(updateDoctor.getPassword(), doctor1.getPassword());
         assertEquals(updateDoctor.getDateOfBirth(), doctor1.getDateOfBirth());
+        assertEquals(updateDoctor.isEnabled(), doctor1.isEnabled());
+        assertEquals(updateDoctor.getSpecialty(), doctor1.getSpecialty());
 
         assertNotEquals(oldDoctor1.getFirstName(), doctor1.getFirstName());
         assertNotEquals(oldDoctor1.getLastName(), doctor1.getLastName());
         assertNotEquals(oldDoctor1.getEmail(), doctor1.getEmail());
         assertNotEquals(oldDoctor1.getPassword(), doctor1.getPassword());
         assertNotEquals(oldDoctor1.getDateOfBirth(), doctor1.getDateOfBirth());
+        assertNotEquals(oldDoctor1.isEnabled(), doctor1.isEnabled());
+        assertNotEquals(oldDoctor1.getSpecialty(), doctor1.getSpecialty());
 
         assertNull(doctor1.getRoles());
-        assertNull(doctor1.getSpecialty());
-
     }
 
     @Test
