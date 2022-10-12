@@ -8,7 +8,7 @@
         <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>sept.superfive.</groupId>
     <artifactId>auth-microservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>auth-microservice</name>
