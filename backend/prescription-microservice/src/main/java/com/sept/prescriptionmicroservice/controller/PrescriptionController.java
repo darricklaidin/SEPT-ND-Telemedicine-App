@@ -66,7 +66,7 @@ public class PrescriptionController {
 
     // Delete prescription
     @DeleteMapping("/{prescriptionID}")
-    public ResponseEntity<Prescription> deleteSpecialty(@PathVariable(value = "prescriptionID") int prescriptionID) {
-        return ResponseEntity.ok(prescriptionService.deletedPrescription(prescriptionID));
+    public ResponseEntity<Prescription> deletePrescription(@PathVariable(value = "prescriptionID") int prescriptionID) {
+        return ResponseEntity.ok(prescriptionService.deletePrescription(prescriptionID));
     }
 }

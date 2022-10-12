@@ -71,9 +71,12 @@ public class PrescriptionService {
 
     @Transactional
     public Prescription updatePrescription(int prescriptionID, PrescriptionDTO prescription) {
+
         Prescription updatedPrescription = this.getPrescriptionByID(prescriptionID); //Also checks if specialtyID exists
 
         updatedPrescription.setPrescription(prescription.getPrescription());
+        updatedPrescription.setDoctorID(prescription.getDoctorID());
+        updatedPrescription.setPatientID(prescription.getPatientID());
 
         prescriptionRepository.save(updatedPrescription);
 
@@ -81,7 +84,7 @@ public class PrescriptionService {
     }
 
     @Transactional
-    public Prescription deletedPrescription(int prescriptionID) {
+    public Prescription deletePrescription(int prescriptionID) {
         Prescription deletedPrescription = this.getPrescriptionByID(prescriptionID);
         prescriptionRepository.deleteById(prescriptionID);
         return deletedPrescription;
