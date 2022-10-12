@@ -138,13 +138,13 @@ class PatientServiceUnitTest {
         Page<Patient> patientPage = patientService.getAllPatients(null);
         List<Patient> retrievedPatients = patientPage.getContent();
 
-        // Test specialty list length
+        // Test patient list length
         assertEquals(patients.size() - 1, retrievedPatients.size());
 
-        // Test that specialty1 has been deleted
+        // Test that patient1 has been deleted
         assertEquals(patient2, retrievedPatients.get(0));
 
-        // Test that deleted specialty matches specialty1
+        // Test that deleted patient matches patient1
         assertEquals(patient1, deletedPatient);
     }
 }
