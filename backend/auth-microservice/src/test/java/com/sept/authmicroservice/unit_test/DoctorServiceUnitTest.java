@@ -66,12 +66,6 @@ class DoctorServiceUnitTest {
         // Test doctor list length
         assertEquals(2, doctors.size());
 
-        // Test doctor 1 match
-        assertEquals(doctor1, doctors.get(0));
-
-        // Test doctor 2 match
-        assertEquals(doctor2, doctors.get(1));
-
         // Test each doctor matches
         for (int i = 0; i < doctors.size(); i++) {
             assertEquals(doctors.get(i), retrievedDoctors.get(i));
@@ -86,34 +80,34 @@ class DoctorServiceUnitTest {
 
     @Test
     void updateDoctor() {
-        Doctor updateDoctor = new Doctor(doctor1.getUserID(), "Darrick", "Laidin", "updatedl@gmail.com",
+        Doctor updatedDoctor = new Doctor(doctor1.getUserID(), "Darrick", "Laidin", "updatedl@gmail.com",
                 "update", dob2 , null, specialty2);
-        updateDoctor.setAccountStatus(false);
+        updatedDoctor.setAccountStatus(false);
 
         Doctor oldDoctor1 = new Doctor(doctor1.getUserID(), doctor1.getFirstName(), doctor1.getLastName(),
                 doctor1.getEmail(), doctor1.getPassword(), doctor1.getDateOfBirth(), null, doctor1.getSpecialty());
 
         when(mockDoctorRepository.findByUserID(doctor1.getUserID())).thenReturn(Optional.of(doctor1));
         when(mockDoctorRepository.save(doctor1)).thenAnswer(i -> {
-            doctor1.setAccountStatus(updateDoctor.isEnabled());
-            doctor1.setFirstName(updateDoctor.getFirstName());
-            doctor1.setLastName(updateDoctor.getLastName());
-            doctor1.setEmail(updateDoctor.getEmail());
-            doctor1.setPassword(updateDoctor.getPassword());
-            doctor1.setDateOfBirth(updateDoctor.getDateOfBirth());
-            doctor1.setSpecialty(updateDoctor.getSpecialty());
+            doctor1.setAccountStatus(updatedDoctor.isEnabled());
+            doctor1.setFirstName(updatedDoctor.getFirstName());
+            doctor1.setLastName(updatedDoctor.getLastName());
+            doctor1.setEmail(updatedDoctor.getEmail());
+            doctor1.setPassword(updatedDoctor.getPassword());
+            doctor1.setDateOfBirth(updatedDoctor.getDateOfBirth());
+            doctor1.setSpecialty(updatedDoctor.getSpecialty());
             return doctor1;
         });
 
-        doctorService.updateDoctor(doctor1.getUserID(), updateDoctor);
+        doctorService.updateDoctor(doctor1.getUserID(), updatedDoctor);
 
-        assertEquals(updateDoctor.getFirstName(), doctor1.getFirstName());
-        assertEquals(updateDoctor.getLastName(), doctor1.getLastName());
-        assertEquals(updateDoctor.getEmail(), doctor1.getEmail());
-        assertEquals(updateDoctor.getPassword(), doctor1.getPassword());
-        assertEquals(updateDoctor.getDateOfBirth(), doctor1.getDateOfBirth());
-        assertEquals(updateDoctor.isEnabled(), doctor1.isEnabled());
-        assertEquals(updateDoctor.getSpecialty(), doctor1.getSpecialty());
+        assertEquals(updatedDoctor.getFirstName(), doctor1.getFirstName());
+        assertEquals(updatedDoctor.getLastName(), doctor1.getLastName());
+        assertEquals(updatedDoctor.getEmail(), doctor1.getEmail());
+        assertEquals(updatedDoctor.getPassword(), doctor1.getPassword());
+        assertEquals(updatedDoctor.getDateOfBirth(), doctor1.getDateOfBirth());
+        assertEquals(updatedDoctor.isEnabled(), doctor1.isEnabled());
+        assertEquals(updatedDoctor.getSpecialty(), doctor1.getSpecialty());
 
         assertNotEquals(oldDoctor1.getFirstName(), doctor1.getFirstName());
         assertNotEquals(oldDoctor1.getLastName(), doctor1.getLastName());
@@ -140,13 +134,13 @@ class DoctorServiceUnitTest {
         Page<Doctor> doctorPage = doctorService.getAllDoctors(null);
         List<Doctor> retrievedDoctors = doctorPage.getContent();
 
-        // Test specialty list length
+        // Test doctor list length
         assertEquals(doctors.size() - 1, retrievedDoctors.size());
 
-        // Test that specialty1 has been deleted
+        // Test that doctor1 has been deleted
         assertEquals(doctor2, retrievedDoctors.get(0));
 
-        // Test that deleted specialty matches specialty1
+        // Test that deleted doctor matches doctor1
         assertEquals(doctor1, deletedDoctor);
     }
 }

@@ -1,146 +1,174 @@
 package org.superfive.telemedicine.service;
 
-//import com.sept.authmicroservice.model.Doctor;
-//import com.sept.authmicroservice.model.Specialty;
-//import com.sept.authmicroservice.payload.SpecialtyDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
-
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import static org.mockito.Mockito.*;
 import org.superfive.telemedicine.dto.AvailabilityDTO;
-import org.superfive.telemedicine.model.Appointment;
+import org.superfive.telemedicine.exception.InvalidTimeException;
+import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
 import org.superfive.telemedicine.model.Availability;
-import org.superfive.telemedicine.repository.AppointmentRepository;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.*;
 
 class
 AvailabilityServiceTest {
 
-    private int availabilityID;
-    private DayOfWeek dayOfWeek;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private DayOfWeek dayOfWeek2;
-    private LocalTime startTime2;
-    private LocalTime endTime2;
-    private int doctorID;
     private AvailabilityRepository mockAvailabilityRepository;
     private AvailabilityService availabilityService;
 
-    private Availability availability;
+    private Availability availability1;
+    private Availability availability2;
+
+    private final List<Availability> availabilities = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
         mockAvailabilityRepository = Mockito.mock(AvailabilityRepository.class);
         availabilityService = new AvailabilityService(mockAvailabilityRepository);
 
-        dayOfWeek = DayOfWeek.MONDAY;
-        startTime = LocalTime.of(8,0,0);
-        endTime = LocalTime.of(17,0,0);
+        availability1 = new Availability(1, DayOfWeek.MONDAY,
+                LocalTime.of(9, 0, 0), LocalTime.of(17, 0, 0),1);
+        availability2 = new Availability(2, DayOfWeek.FRIDAY,
+                LocalTime.of(12, 0, 0), LocalTime.of(22, 0, 0),1);
 
-        availability = new Availability(1,dayOfWeek,startTime,endTime,1);
-
+        availabilities.add(availability1);
+        availabilities.add(availability2);
     }
-
 
     @Test
     void getAllAvailabilities() {
-        when(mockAvailabilityRepository.findAllBy(null)).thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(availability))));
+        when(mockAvailabilityRepository.findAllBy(null))
+                .thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(availability1, availability2))));
 
         Page<Availability> availabilityPage = availabilityService.getAllAvailabilities(null);  // Get doctor page
+        List<Availability> retrievedAvailabilities = availabilityPage.getContent();
 
-        List<Availability> availabilities = availabilityPage.getContent();
+        assertEquals(availabilities.size(), retrievedAvailabilities.size());
+
+        for (int i = 0; i < availabilities.size(); i++) {
+            assertEquals(availabilities.get(i), retrievedAvailabilities.get(i));
+        }
     }
 
     @Test
     void getAvailabilityByID() {
-        when(mockAvailabilityRepository.findByAvailabilityID(availability.getAvailabilityID())).thenReturn(Optional.of(availability));
-
-        Availability testAvailability = availabilityService.getAvailabilityByID(availability.getAvailabilityID());
-
-        assertEquals(testAvailability, availability);
-
+        when(mockAvailabilityRepository.findByAvailabilityID(availability1.getAvailabilityID())).thenReturn(Optional.of(availability1));
+        Availability testAvailability = availabilityService.getAvailabilityByID(availability1.getAvailabilityID());
+        assertEquals(testAvailability, availability1);
     }
 
     @Test
     void getDoctorAvailabilities() {
-        when(mockAvailabilityRepository.findByDoctorID(availability.getDoctorID(),null)).thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(availability))));
+        when(mockAvailabilityRepository.findByDoctorID(availability1.getDoctorID(),null))
+                .thenReturn(new PageImpl<>(new ArrayList<>(Collections.singletonList(availability1))));
 
-        Page<Availability> availabilitiesDoctorPage = availabilityService.getDoctorAvailabilities(availability.getDoctorID(),null);  // Get doctor page
-
+        Page<Availability> availabilitiesDoctorPage = availabilityService.getDoctorAvailabilities(availability1.getDoctorID(),null);  // Get doctor page
         List<Availability> doctorAvailability = availabilitiesDoctorPage.getContent();
 
         assertEquals(1, doctorAvailability.size());
 
-        assertEquals(availability, doctorAvailability.get(0));
+        assertEquals(availability1, doctorAvailability.get(0));
     }
 
     @Test
     void addAvailability() {
-        //TODO : Need to complete this section -- TEST WHERE FAIL CONDITION WHERE AVAILABILITY ALREADY EXISTS
-        BDDMockito.given(mockAvailabilityRepository.findByAvailabilityID(availability.getAvailabilityID())).willReturn(Optional.of(availability));
+        AvailabilityDTO invalidTimeAvailabilityDTO = new AvailabilityDTO(3,
+                2, LocalTime.of(11, 0, 0), LocalTime.of(10, 0, 0),
+                1);
 
-        dayOfWeek2 = DayOfWeek.MONDAY;
-        startTime2 = LocalTime.of(12,0,0);
-        endTime2 = LocalTime.of(14,0,0);
+        assertThrows(InvalidTimeException.class, () -> availabilityService.addAvailability(invalidTimeAvailabilityDTO));
 
-        Availability availability2 = new Availability(2,dayOfWeek2,startTime2,endTime2,1);
+        AvailabilityDTO availability3DTO = new AvailabilityDTO(3,
+                2, LocalTime.of(10, 0, 0), LocalTime.of(11, 0, 0),
+                1);
 
-        AvailabilityDTO availabilityDTO1 = new AvailabilityDTO(availability2.getAvailabilityID(), 7, availability2.getStartTime(), availability2.getEndTime(), availability2.getDoctorID());
+        when(mockAvailabilityRepository.findByDoctorIDAndDayOfWeek(availability3DTO.getDoctorID(),
+                        DayOfWeek.of(availability3DTO.getDayOfWeek()))).thenReturn(Optional.ofNullable(availability1));
 
-        Availability tester = availabilityService.addAvailability(availabilityDTO1);
+        assertThrows(ResourceAlreadyExistsException.class, () -> availabilityService.addAvailability(availability3DTO));
 
-        verify(mockAvailabilityRepository).save(tester);
+        AvailabilityDTO availability4DTO = new AvailabilityDTO(4, 2,
+                LocalTime.of(10, 0, 0), LocalTime.of(11, 0, 0), 1);
 
+        when(mockAvailabilityRepository.findByDoctorIDAndDayOfWeek(availability4DTO.getDoctorID(),
+                        DayOfWeek.of(availability4DTO.getDayOfWeek()))).thenReturn(Optional.empty());
+
+        Availability availability4 = availabilityService.addAvailability(availability4DTO);
+
+        assertEquals(availability4DTO.getAvailabilityID(), availability4.getAvailabilityID());
+        assertEquals(availability4DTO.getStartTime(), availability4.getStartTime());
+        assertEquals(availability4DTO.getEndTime(), availability4.getEndTime());
+        assertEquals(availability4DTO.getDayOfWeek(), availability4.getDayOfWeek().getValue());
+        assertEquals(availability4DTO.getDoctorID(), availability4.getDoctorID());
     }
 
     @Test
     void rescheduleAvailability() {
-        BDDMockito.given(mockAvailabilityRepository.findByAvailabilityID(availability.getAvailabilityID())).willReturn(Optional.of(availability)); //doctor = USERID 1
+        when(mockAvailabilityRepository.findByAvailabilityID(availability1.getAvailabilityID())).thenReturn(Optional.of(availability1));
 
-        DayOfWeek dayOfWeek_update = DayOfWeek.THURSDAY;
-        LocalTime startTime_update = LocalTime.of(10,0,0);
-        LocalTime endTime_update = LocalTime.of(14,0,0);
+        AvailabilityDTO invalidTimeAvailabilityDTO = new AvailabilityDTO(3,
+                2, LocalTime.of(11, 0, 0), LocalTime.of(10, 0, 0),
+                1);
 
-        Availability updateAvailability = new Availability(1,dayOfWeek_update,startTime_update,endTime_update,1);
+        assertThrows(InvalidTimeException.class,
+                () -> availabilityService.rescheduleAvailability(invalidTimeAvailabilityDTO, 1));
 
-        AvailabilityDTO availabilityDTO1 = new AvailabilityDTO(updateAvailability.getAvailabilityID(), 7, updateAvailability.getStartTime(), updateAvailability.getEndTime(), updateAvailability.getDoctorID());
+        AvailabilityDTO availabilityDTO = new AvailabilityDTO(1, 4,
+                LocalTime.of(8, 0, 0), LocalTime.of(20, 0, 0), 2);
 
+        Availability oldAvailability1 = new Availability(availability1.getAvailabilityID(), availability1.getDayOfWeek(),
+                availability1.getStartTime(), availability1.getEndTime(), availability1.getDoctorID());
 
+        when(mockAvailabilityRepository.save(availability1)).thenAnswer(i -> {
+            availability1.setStartTime(availabilityDTO.getStartTime());
+            availability1.setEndTime(availabilityDTO.getEndTime());
+            availability1.setDayOfWeek(DayOfWeek.of(availabilityDTO.getDayOfWeek()));
+            availability1.setDoctorID(availabilityDTO.getDoctorID());
+            return availability1;
+        });
 
-        availabilityService.rescheduleAvailability(availabilityDTO1, updateAvailability.getAvailabilityID());
+        availabilityService.rescheduleAvailability(availabilityDTO, availability1.getAvailabilityID());
 
-        assertEquals(1, availability.getAvailabilityID());
-        assertEquals(DayOfWeek.SUNDAY, availability.getDayOfWeek());
-        assertEquals(LocalTime.of(10,0,0), availability.getStartTime());
-        assertEquals(LocalTime.of(14,0,0), availability.getEndTime());
-        assertEquals(1, availability.getDoctorID());
+        assertEquals(availabilityDTO.getAvailabilityID(), availability1.getAvailabilityID());
+        assertEquals(DayOfWeek.of(availabilityDTO.getDayOfWeek()), availability1.getDayOfWeek());
+        assertEquals(availabilityDTO.getStartTime(), availability1.getStartTime());
+        assertEquals(availabilityDTO.getEndTime(), availability1.getEndTime());
+        assertEquals(availabilityDTO.getDoctorID(), availability1.getDoctorID());
 
+        assertNotEquals(oldAvailability1.getDayOfWeek(), availability1.getDayOfWeek());
+        assertNotEquals(oldAvailability1.getStartTime(), availability1.getStartTime());
+        assertNotEquals(oldAvailability1.getEndTime(), availability1.getEndTime());
+        assertNotEquals(oldAvailability1.getDoctorID(), availability1.getDoctorID());
     }
 
     @Test
     void deleteAvailability() {
-        when(mockAvailabilityRepository.findByAvailabilityID(availability.getAvailabilityID())).thenReturn(Optional.of(availability));
+        when(mockAvailabilityRepository.findByAvailabilityID(availability1.getAvailabilityID())).thenReturn(Optional.of(availability1));
 
-        availabilityService.deleteAvailability(availability.getAvailabilityID());
+        doNothing().when(mockAvailabilityRepository).deleteById(availability1.getAvailabilityID());
 
-        verify(mockAvailabilityRepository).deleteById(availability.getAvailabilityID());
+        Availability deletedAvailability = availabilityService.deleteAvailability(availability1.getAvailabilityID());
+
+        when(mockAvailabilityRepository.findAllBy(null))
+                .thenReturn(new PageImpl<>(new ArrayList<>(Collections.singletonList(availability2))));
+
+        Page<Availability> availabilityPage = availabilityService.getAllAvailabilities(null);
+        List<Availability> retrievedAvailabilities = availabilityPage.getContent();
+
+        // Test availability list length
+        assertEquals(availabilities.size() - 1, retrievedAvailabilities.size());
+
+        // Test that availability1 has been deleted
+        assertEquals(availability2, retrievedAvailabilities.get(0));
+
+        // Test that deleted availability matches availability1
+        assertEquals(availability1, deletedAvailability);
     }
 }

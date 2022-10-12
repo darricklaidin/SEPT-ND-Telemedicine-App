@@ -103,9 +103,7 @@ class SpecialtyServiceUnitTest {
 
         // Test newSpecialty name matches
         assertEquals(newSpecialty.getSpecialtyName(), retrievedSpecialties.get(specialties.size()).getSpecialtyName());
-
     }
-
 
     @Test
     void updateSpecialty() {
@@ -135,7 +133,6 @@ class SpecialtyServiceUnitTest {
 
         // Test that updatedSpecialty matches with specialty1
         assertEquals(specialty1, updatedSpecialty);
-
     }
 
     @Test
