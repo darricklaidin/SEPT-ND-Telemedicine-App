@@ -78,9 +78,7 @@ public class PrescriptionService {
         updatedPrescription.setDoctorID(prescription.getDoctorID());
         updatedPrescription.setPatientID(prescription.getPatientID());
 
-        prescriptionRepository.save(updatedPrescription);
-
-        return updatedPrescription;
+        return prescriptionRepository.save(updatedPrescription);
     }
 
     @Transactional

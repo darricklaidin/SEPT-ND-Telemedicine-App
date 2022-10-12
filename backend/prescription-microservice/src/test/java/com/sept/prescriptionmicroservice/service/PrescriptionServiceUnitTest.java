@@ -108,53 +108,40 @@ class PrescriptionServiceUnitTest {
 
     @Test
     void updatePrescription() {
-//        PrescriptionDTO prescriptionDTO = new PrescriptionDTO();
-//        prescriptionDTO.setPrescription("Chocolate");
-//        prescriptionDTO.setPatientID(1);
-//        prescriptionDTO.setDoctorID(1);
-//        prescriptionDTO.setPrescriptionID(1);
-//
-//        Prescription newPrescription = new Prescription(prescriptionDTO.getPrescriptionID(),prescriptionDTO.getDoctorID(),prescriptionDTO.getPatientID(),prescriptionDTO.getPrescription());
-//
-//
-//        when(mockPrescriptionRepository.save(newPrescription)).thenAnswer(i -> {
-//            prescription.setPrescription(newPrescription.getPrescription());
-//            prescription.setDoctorID(newPrescription.getDoctorID());
-//            prescription.setPatientID(newPrescription.getPatientID());
-//            prescription.setPrescriptionID(newPrescription.getPrescriptionID());
-//            return prescription;
-//        });
-//
-//
-//        when(mockPrescriptionRepository.findByPrescriptionID(prescription.getPrescriptionID()))
-//                .thenReturn(Optional.of(newPrescription));
-//
-//        Prescription updatedPrescription = prescriptionService.updatePrescription(prescription.getPrescriptionID(), prescriptionDTO);
-//
-//        when(mockPrescriptionRepository.findAllBy(null))
-//                .thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(prescription, prescription2))));
-//
-//        // Test that specialty1's name has been updated
-//        assertEquals("Chocolate", prescription.getPrescription());
-//
-//        // Test that the id of specialty 1 remains unchanged
-//        assertEquals(1, prescription.getPrescriptionID());
-//
-//
-//        System.out.println(updatedPrescription.getPrescription());
-//        System.out.println(updatedPrescription.getDoctorID());
-//        System.out.println(updatedPrescription.getPrescriptionID());
-//        System.out.println(updatedPrescription.getPatientID());
-//
-//
-//        System.out.println(prescription.getPrescription());
-//        System.out.println(prescription.getDoctorID());
-//        System.out.println(prescription.getPrescriptionID());
-//        System.out.println(prescription.getPatientID());
-//
-//        // Test that updatedSpecialty matches with specialty1
-//        assertEquals(prescription, updatedPrescription);
-//
+
+        PrescriptionDTO prescriptionDTO = new PrescriptionDTO();
+        prescriptionDTO.setPrescription("Chocolate");
+        prescriptionDTO.setPatientID(1);
+        prescriptionDTO.setDoctorID(1);
+
+        Prescription updatePrescription = new Prescription(1,prescriptionDTO.getDoctorID(),prescriptionDTO.getPatientID(),prescriptionDTO.getPrescription());
+
+
+        when(mockPrescriptionRepository.save(updatePrescription)).thenAnswer(i -> {
+            prescription.setPrescription(updatePrescription.getPrescription());
+            prescription.setDoctorID(updatePrescription.getDoctorID());
+            prescription.setPatientID(updatePrescription.getPatientID());
+            return prescription;
+        });
+
+
+        when(mockPrescriptionRepository.findByPrescriptionID(prescription.getPrescriptionID()))
+                .thenReturn(Optional.of(updatePrescription));
+
+        Prescription updatedPrescription = prescriptionService.updatePrescription(prescription.getPrescriptionID(), prescriptionDTO);
+
+        when(mockPrescriptionRepository.findAllBy(null))
+                .thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(prescription, prescription2))));
+
+        // Test that specialty1's name has been updated
+        assertEquals("Chocolate", prescription.getPrescription());
+
+        // Test that the id of specialty 1 remains unchanged
+        assertEquals(1, prescription.getPrescriptionID());
+
+        // Test that updatedSpecialty matches with specialty1
+        assertEquals(prescription, updatedPrescription);
+
 
     }
 

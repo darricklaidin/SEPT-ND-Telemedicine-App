@@ -12,7 +12,6 @@ import java.time.LocalTime;
 @Getter
 @Setter
 public class PrescriptionDTO {
-    private int prescriptionID;
 
     private String prescription;
 
@@ -22,8 +21,7 @@ public class PrescriptionDTO {
     @NotNull
     private int doctorID;
 
-    public PrescriptionDTO(int prescriptionID, int doctorID, int patientID, String prescription) {
-        this.prescriptionID = prescriptionID;
+    public PrescriptionDTO(int doctorID, int patientID, String prescription) {
         this.doctorID = doctorID;
         this.patientID = patientID;
         this.prescription = prescription;
