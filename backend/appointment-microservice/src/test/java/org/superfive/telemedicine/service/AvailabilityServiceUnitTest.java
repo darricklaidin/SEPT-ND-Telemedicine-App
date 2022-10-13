@@ -18,7 +18,7 @@ import org.superfive.telemedicine.repository.AvailabilityRepository;
 import java.util.*;
 
 class
-AvailabilityServiceTest {
+AvailabilityServiceUnitTest {
 
     private AvailabilityRepository mockAvailabilityRepository;
     private AvailabilityService availabilityService;

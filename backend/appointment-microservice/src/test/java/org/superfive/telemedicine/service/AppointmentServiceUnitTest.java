@@ -22,7 +22,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class AppointmentServiceTest {
+class AppointmentServiceUnitTest {
 
     private AppointmentRepository mockAppointmentRepository;
     private AvailabilityRepository mockAvailabilityRepository;
