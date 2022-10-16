@@ -8,11 +8,11 @@
         <version>2.7.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>backend</artifactId>
+    <groupId>sept.superfive</groupId>
+    <artifactId>appointment-microservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>backend</name>
-    <description>backend</description>
+    <name>appointment-microservice</name>
+    <description>appointment-microservice</description>
     <properties>
         <java.version>11</java.version>
     </properties>
