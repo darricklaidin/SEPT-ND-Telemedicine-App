@@ -13,6 +13,7 @@ class SpecialtyControllerTest {
 
     @Test
     void getAllSpecialties() {
+
     }
 
     @Test
