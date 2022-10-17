@@ -43,7 +43,7 @@ class DoctorIntegrationTest {
     public void setup() {
         userRepository.deleteAll();  // clear the database
 
-        // Register new patients
+        // Register new doctors
         doctor1 = new Doctor(0, "Darrick", "Edbert", "darrick@g.com",
                 "darrick", LocalDate.of(2004, 6, 7), null, null);
         Doctor doctor2 = new Doctor(0, "Bryan", "Hong", "bryan@g.com",
