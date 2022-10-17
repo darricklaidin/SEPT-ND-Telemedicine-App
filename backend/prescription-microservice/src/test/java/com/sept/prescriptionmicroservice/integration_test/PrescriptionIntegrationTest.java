@@ -2,9 +2,7 @@ package com.sept.prescriptionmicroservice.integration_test;
 
 
 import com.sept.prescriptionmicroservice.model.Prescription;
-import com.sept.prescriptionmicroservice.payload.PrescriptionDTO;
 import com.sept.prescriptionmicroservice.repository.PrescriptionRepository;
-import com.sept.prescriptionmicroservice.service.PrescriptionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +19,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-public class PrescriptionIntegrationTest {
+class PrescriptionIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private PrescriptionRepository prescriptionRepository;
-
-    @Autowired
-    private PrescriptionService prescriptionService;
 
     @BeforeEach
     void setUp() {
@@ -49,13 +44,10 @@ public class PrescriptionIntegrationTest {
         prescriptionRepository.save(prescription2);
         prescriptionRepository.save(prescription3);
         prescriptionRepository.save(prescription4);
-
-        Prescription prescription = prescriptionRepository.findAllBy(null).getContent().get(0);
-
     }
 
     @Test
-    void getPrescriptionByID() throws Exception {
+    void testGetPrescriptionByID() throws Exception {
         Prescription prescription = prescriptionRepository.findAllBy(null).getContent().get(0);
 
         mockMvc.perform(get("/api/prescriptions/" + prescription.getPrescriptionID()))
@@ -73,7 +65,7 @@ public class PrescriptionIntegrationTest {
     }
 
     @Test
-    void getAllPrescriptions() throws Exception {
+    void testGetAllPrescriptions() throws Exception {
         mockMvc.perform(get("/api/prescriptions"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$['content']", hasSize(4)))
@@ -86,7 +78,7 @@ public class PrescriptionIntegrationTest {
 
 
     @Test
-    void getPatientPrescriptions() throws Exception {
+    void testGetPatientPrescriptions() throws Exception {
         Prescription prescription = prescriptionRepository.findAllBy(null).getContent().get(0);
 
         mockMvc.perform(get("/api/prescriptions/patient/"+prescription.getPatientID()))
@@ -97,7 +89,7 @@ public class PrescriptionIntegrationTest {
     }
 
     @Test
-    void getDoctorPrescriptions() throws Exception {
+    void testGetDoctorPrescriptions() throws Exception {
         Prescription prescription = prescriptionRepository.findAllBy(null).getContent().get(0);
 
         mockMvc.perform(get("/api/prescriptions/doctor/"+prescription.getDoctorID()))
@@ -109,21 +101,21 @@ public class PrescriptionIntegrationTest {
     }
 
     @Test
-    void createPrescription() throws Exception {
+    void testCreatePrescription() throws Exception {
         mockMvc.perform(post("/api/prescriptions")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{ \"prescription\": \"Cough Med\" }")
-//                        .content("{ \"patientID\": 3 }")
-//                        .content("{ \"doctorID\": 2 }")
-                )
-
+                        .content("{ \"prescription\": \"Cough Med\",\n" +
+                                 "  \"patientID\": 1,\n" +
+                                 "  \"doctorID\": 2\n" +
+                                 "}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.prescription").value("Cough Med"));
-//                .andExpect(jsonPath("$.patientID").value("1"));
+                .andExpect(jsonPath("$.prescription").value("Cough Med"))
+                .andExpect(jsonPath("$.patientID").value("1"))
+                .andExpect(jsonPath("$.doctorID").value("2"));
     }
 
     @Test
-    void updatePrescription() throws Exception {
+    void testUpdatePrescription() throws Exception {
         Prescription prescription = prescriptionRepository.findAllBy(null).getContent().get(0);
 
         mockMvc.perform(put("/api/prescriptions/" + prescription.getPrescriptionID())
@@ -134,7 +126,7 @@ public class PrescriptionIntegrationTest {
     }
 
     @Test
-    void deletePrescription() throws Exception {
+    void testDeletePrescription() throws Exception {
         Prescription prescription = prescriptionRepository.findAllBy(null).getContent().get(0);
 
         mockMvc.perform(delete("/api/prescriptions/" + prescription.getPrescriptionID()))
