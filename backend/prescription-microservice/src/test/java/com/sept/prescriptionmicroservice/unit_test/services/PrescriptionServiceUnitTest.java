@@ -1,4 +1,4 @@
-package com.sept.prescriptionmicroservice.service;
+package com.sept.prescriptionmicroservice.unit_test.services;
 
 import com.sept.prescriptionmicroservice.model.Prescription;
 import com.sept.prescriptionmicroservice.payload.PrescriptionDTO;

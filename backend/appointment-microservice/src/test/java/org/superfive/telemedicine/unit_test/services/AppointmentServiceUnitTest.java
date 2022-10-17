@@ -1,4 +1,4 @@
-package org.superfive.telemedicine.service;
+package org.superfive.telemedicine.unit_test.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +12,7 @@ import org.superfive.telemedicine.model.Appointment;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AppointmentRepository;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
+import org.superfive.telemedicine.service.AppointmentService;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package org.superfive.telemedicine.service;
+package org.superfive.telemedicine.unit_test.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +14,7 @@ import org.superfive.telemedicine.exception.InvalidTimeException;
 import org.superfive.telemedicine.exception.ResourceAlreadyExistsException;
 import org.superfive.telemedicine.model.Availability;
 import org.superfive.telemedicine.repository.AvailabilityRepository;
+import org.superfive.telemedicine.service.AvailabilityService;
 
 import java.util.*;
 

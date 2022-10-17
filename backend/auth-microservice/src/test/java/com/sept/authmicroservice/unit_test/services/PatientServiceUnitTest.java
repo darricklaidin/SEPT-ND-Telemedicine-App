@@ -1,4 +1,4 @@
-package com.sept.authmicroservice.unit_test;
+package com.sept.authmicroservice.unit_test.services;
 
 import com.sept.authmicroservice.model.Patient;
 import com.sept.authmicroservice.repository.PatientRepository;
