@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import '../../models/patient.dart';
 import '../../services/doctor_service.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/models/prescription.dart';
@@ -13,11 +14,12 @@ import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/services/prescription_service.dart';
 
 import '../../models/doctor.dart';
+
  
 
 class PrescriptionScreen extends StatefulWidget {
-  final Doctor doctor;
-  const PrescriptionScreen({Key? key, required this.doctor}) : super(key: key);
+  final Patient patient;
+  const PrescriptionScreen({Key? key, required this.patient}) : super(key: key);
   
   @override
   State<PrescriptionScreen> createState() => _PrescriptionScreenState();
@@ -35,11 +37,14 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
     // prescriptionText would have the text value in the text box
 
     // FIXME: Replace hard coded user IDs with actual IDs
-    int patientID = 2;
-    int doctorID = 1;
+    int doctorID = await getUserIdFromStorage();  // access from getuserIDfromstorage
+    int patientID = widget.patient.userID;  // access from patient object
     Prescription newPrescription = Prescription(prescriptionID: -1, doctorID: doctorID, patientID: patientID, prescription: prescriptionText);
 
     var testPrescription = await PrescriptionService.createPrescription(newPrescription);
+
+    // if testprescription == message:
+    //     show snackbar "faield to prescirbe medcine"
   }
 
   @override

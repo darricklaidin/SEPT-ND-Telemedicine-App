@@ -33,11 +33,11 @@ class PrescriptionServiceUnitTest {
         prescriptionService = new PrescriptionService(mockPrescriptionRepository);
 
         // Create new specialties
-        prescription = new Prescription(1,1,1,"Panadol");
+        prescription = new Prescription(1,2,1,"Panadol");
 
-        prescription2 = new Prescription(2,2,2,"Telfast");
+        prescription2 = new Prescription(2,4,3,"Telfast");
 
-        prescription3 = new Prescription(3,2,1,"Telfast");
+        prescription3 = new Prescription(3,2,3,"Telfast");
 
         // Add specialties to specialties list
 //        prescriptions.add(prescription);
@@ -79,10 +79,11 @@ class PrescriptionServiceUnitTest {
     @Test
     void getPatientPrescriptions() {
         ArrayList<Prescription> prescriptions_test;
-        when(mockPrescriptionRepository.findByPatientID(1,null)).thenReturn(new PageImpl<>(prescriptions_test = new ArrayList<>(Arrays.asList(prescription, prescription3))));
+        when(mockPrescriptionRepository.findByPatientID(prescription.getPatientID(), null))
+                .thenReturn(new PageImpl<>(prescriptions_test = new ArrayList<>(Arrays.asList(prescription, prescription3))));
 
 
-        Page<Prescription> prescriptionPage = prescriptionService.getPatientPrescriptions(1,null);
+        Page<Prescription> prescriptionPage = prescriptionService.getPatientPrescriptions(prescription.getPatientID(),null);
         List<Prescription> retrievedPrescriptions = prescriptionPage.getContent();
 
         // Test prescription list length
@@ -98,10 +99,10 @@ class PrescriptionServiceUnitTest {
     @Test
     void getDoctorPrescriptions() {
         ArrayList<Prescription> prescriptions_test;
-        when(mockPrescriptionRepository.findByDoctorID(1,null)).thenReturn(new PageImpl<>(prescriptions_test = new ArrayList<>(Arrays.asList(prescription))));
+        when(mockPrescriptionRepository.findByDoctorID(prescription.getDoctorID(),null))
+                .thenReturn(new PageImpl<>(prescriptions_test = new ArrayList<>(Collections.singletonList(prescription))));
 
-
-        Page<Prescription> prescriptionPage = prescriptionService.getDoctorPrescriptions(1,null);
+        Page<Prescription> prescriptionPage = prescriptionService.getDoctorPrescriptions(prescription.getDoctorID(),null);
         List<Prescription> retrievedPrescriptions = prescriptionPage.getContent();
 
         // Test prescription list length
@@ -120,7 +121,7 @@ class PrescriptionServiceUnitTest {
         //Method variable only for testing
         ArrayList<Prescription> prescriptions_test;
 
-        Prescription newPrescription = new Prescription(4,1,1,"Chocolate");
+        Prescription newPrescription = new Prescription(4,2,3,"Chocolate");
         when(mockPrescriptionRepository.save(newPrescription)).thenReturn(newPrescription);
 
         Prescription createdPrescription = prescriptionService.createPrescription(newPrescription);
@@ -151,7 +152,7 @@ class PrescriptionServiceUnitTest {
         prescriptionDTO.setPatientID(1);
         prescriptionDTO.setDoctorID(1);
 
-        Prescription updatePrescription = new Prescription(1,prescriptionDTO.getDoctorID(),prescriptionDTO.getPatientID(),prescriptionDTO.getPrescription());
+        Prescription updatePrescription = new Prescription(prescription.getPrescriptionID(), prescriptionDTO.getDoctorID(),prescriptionDTO.getPatientID(),prescriptionDTO.getPrescription());
 
 
         when(mockPrescriptionRepository.save(updatePrescription)).thenAnswer(i -> {
