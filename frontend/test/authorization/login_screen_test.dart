@@ -130,4 +130,30 @@ void main() {
       ),
     );
   });
+
+  testWidgets('valid email and password, valid account, call loginUser, fail',
+      (WidgetTester tester) async {
+    String validEmail = "email@email.com";
+    String validPassword = "123456textemptynot";
+
+    // load screen with required auth returns
+    arrangeAuthServiceReturnsNullAuth(false);
+    arrangeAuthServiceReturnsLoginSuccess(validEmail, validPassword, false);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    // test login button click with non-empty input
+    Finder email = find.byKey(const Key('email'));
+    Finder pwd = find.byKey(const Key('password'));
+
+    await tester.enterText(email, validEmail);
+    await tester.enterText(pwd, validPassword);
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+
+    // expect loginUser being called and failure snackbar shown
+    verify(() => mockAuthService.loginUser(validEmail, validPassword))
+        .called(1);
+    expect(find.text('Invalid Credentials'), findsOneWidget);
+  });
 }
