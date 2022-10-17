@@ -182,27 +182,28 @@ class PrescriptionServiceUnitTest {
 
     }
 
-//    @Test
-//    void deletePrescription() {
-//        when(mockPrescriptionRepository.findByPrescriptionID(prescription.getPrescriptionID())).thenReturn(Optional.of(prescription));
-//
-//        doNothing().when(mockPrescriptionRepository).deleteById(prescription.getPrescriptionID());
-//
-//        Prescription deletedPrescription = prescriptionService.deletePrescription(prescription.getPrescriptionID());
-//
-//        when(mockPrescriptionRepository.findAllBy(null))
-//                .thenReturn(new PageImpl<>(new ArrayList<>(Collections.singletonList(prescription2))));
-//
-//        Page<Prescription> prescriptionPage = prescriptionService.getAllPrescriptions(null);
-//        List<Prescription> retrievedPrescriptions = prescriptionPage.getContent();
-//
-//        // Test prescription list length
-//        assertEquals(prescriptions.size() - 1, retrievedPrescriptions.size());
-//
-//        // Test that prescription has been deleted
-//        assertEquals(prescription2, retrievedPrescriptions.get(0));
-//
-//        // Test that deleted prescription matches prescription
-//        assertEquals(prescription, deletedPrescription);
-//    }
+    @Test
+    void deletePrescription() {
+        when(mockPrescriptionRepository.findByPrescriptionID(prescription.getPrescriptionID())).thenReturn(Optional.of(prescription));
+
+        doNothing().when(mockPrescriptionRepository).deleteById(prescription.getPrescriptionID());
+
+        Prescription deletedPrescription = prescriptionService.deletePrescription(prescription.getPrescriptionID());
+
+        ArrayList<Prescription> prescriptions_test;
+        when(mockPrescriptionRepository.findAllBy(null))
+                .thenReturn(new PageImpl<>(prescriptions_test = new ArrayList<>(Collections.singletonList(prescription2))));
+
+        Page<Prescription> prescriptionPage = prescriptionService.getAllPrescriptions(null);
+        List<Prescription> retrievedPrescriptions = prescriptionPage.getContent();
+
+        // Test prescription list length
+        assertEquals(prescriptions_test.size(), retrievedPrescriptions.size());
+
+        // Test that prescription has been deleted
+        assertEquals(prescription2, retrievedPrescriptions.get(0));
+
+        // Test that deleted prescription matches prescription
+        assertEquals(prescription, deletedPrescription);
+    }
 }
