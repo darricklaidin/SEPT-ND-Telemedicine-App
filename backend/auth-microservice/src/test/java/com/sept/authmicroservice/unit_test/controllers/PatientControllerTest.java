@@ -1,8 +1,7 @@
-package com.sept.authmicroservice.controller;
+package com.sept.authmicroservice.unit_test.controllers;
 
+import com.sept.authmicroservice.controller.PatientController;
 import com.sept.authmicroservice.model.Patient;
-import com.sept.authmicroservice.repository.PatientRepository;
-import com.sept.authmicroservice.repository.UserRepository;
 import com.sept.authmicroservice.service.PatientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +14,6 @@ import java.time.Month;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 class PatientControllerTest {

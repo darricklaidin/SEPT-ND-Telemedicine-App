@@ -1,9 +1,7 @@
-package com.sept.prescriptionmicroservice.controller;
+package com.sept.prescriptionmicroservice.unit_test.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PrescriptionControllerTest {
 
