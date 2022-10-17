@@ -25,8 +25,6 @@ class PrescriptionServiceUnitTest {
     private Prescription prescription2;
     private Prescription prescription3;
 
-//    private final List<Prescription> prescriptions = new ArrayList<>();
-
     @BeforeEach
     void setUp() {
         mockPrescriptionRepository = Mockito.mock(PrescriptionRepository.class);
@@ -38,11 +36,6 @@ class PrescriptionServiceUnitTest {
         prescription2 = new Prescription(2,4,3,"Telfast");
 
         prescription3 = new Prescription(3,2,3,"Telfast");
-
-        // Add specialties to specialties list
-//        prescriptions.add(prescription);
-//        prescriptions.add(prescription2);
-//        prescriptions.add(prescription3);
     }
 
     @Test
