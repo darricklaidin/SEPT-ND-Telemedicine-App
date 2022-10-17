@@ -59,7 +59,6 @@ class PrescriptionServiceUnitTest {
         }
     }
 
-
     @Test
     void getPrescriptionByID() {
         when(mockPrescriptionRepository.findByPrescriptionID(prescription.getPrescriptionID())).thenReturn(Optional.of(prescription));

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
@@ -24,8 +24,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private final SpecialtyRepository specialtyRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
-
-    private boolean alreadySetup = false;
 
     protected static final String[] INITIAL_SPECIALTIES = {"General Physician", "Dermatology", "Pediatric"};
 
@@ -41,9 +39,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(final ContextRefreshedEvent event) {
-        if (alreadySetup) {
-            return;
-        }
 
         // == create initial roles
         createRolesIfNotFound();
@@ -61,8 +56,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     void createAdminIfNotFound() {
         if (Boolean.FALSE.equals(
-                userRepository.existsByRolesIn(new ArrayList<>(Arrays.asList((roleRepository.findByName(RoleName.ADMIN))))))) {
-            userRepository.save(new User(-1, new ArrayList<>(Arrays.asList(roleRepository.findByName(RoleName.ADMIN)))));
+                userRepository.existsByRolesIn(new ArrayList<>(Collections.singletonList((roleRepository.findByName(RoleName.ADMIN))))))) {
+            userRepository.save(new User(-1, new ArrayList<>(Collections.singletonList(roleRepository.findByName(RoleName.ADMIN)))));
         }
     }
 
