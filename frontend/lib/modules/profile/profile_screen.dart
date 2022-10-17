@@ -13,8 +13,9 @@ import '../appointment/book_appointment_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
 
-  final user;
-  final userRole;
+  final user;  // user belonging to this profile screen
+
+  final userRole;  // current user accessing this page's role
 
   const ProfileScreen({Key? key, required this.user, required this.userRole}) : super(key: key);
 
@@ -294,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   List<Widget> _buildPrescriptionBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
-    return widget.userRole == "DOCTOR" ? [SizedBox(height: height * 0.05,)] : [
+    return widget.userRole == "PATIENT" ? [SizedBox(height: height * 0.05,)] : [
       Center(
         child: SizedBox(
           width: width * 0.45,
@@ -303,7 +304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             // Navigate to make appointment page
             onPressed: () async {
               if (await checkIfUserExists(errorThemeColor)) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionScreen(doctor: widget.user)));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionScreen(patient: widget.user)));
               }
             },
             style: ButtonStyle(
