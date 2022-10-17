@@ -63,14 +63,14 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   Future<dynamic> uploadBookingMock(
       {required BookingService newBooking}) async {
     // current patient user
-    Patient? patient = await getUserFromStorage();
+    Patient? patient = await AuthService.getUserFromStorage();
 
     // doctor who the appointment is made for
     Doctor doctor = widget.doctor;
 
     // Check that users exist
     if (patient == null) {
-      await logoutUser();
+      await AuthService.logoutUser();
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const MyApp()),

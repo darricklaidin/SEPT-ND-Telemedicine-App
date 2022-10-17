@@ -16,7 +16,6 @@ class EditAvailabilityScreen extends StatefulWidget {
 }
 
 class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
-
   // Set default to null
   TimeOfDay? startTimeMonday;
   TimeOfDay? endTimeMonday;
@@ -128,7 +127,6 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
       default:
         break;
     }
-
   }
 
   loadAvailabilities() async {
@@ -136,7 +134,8 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
       isLoading = true;
     });
 
-    doctorAvailabilities = await DoctorService.fetchDoctorAvailabilities(await getUserIdFromStorage());
+    doctorAvailabilities = await DoctorService.fetchDoctorAvailabilities(
+        await AuthService.getUserIdFromStorage());
 
     setState(() {
       for (Availability availability in doctorAvailabilities) {
@@ -170,7 +169,6 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
   }
 
   updateAvailability() async {
-
     List weekDaysList = [
       [startTimeMonday, endTimeMonday],
       [startTimeTuesday, endTimeTuesday],
@@ -182,7 +180,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
     ];
 
     for (int i = 0; i < weekDaysList.length; i++) {
-      int weekDayIndex = i+1;
+      int weekDayIndex = i + 1;
       if (weekDaysList[i][0] == null || weekDaysList[i][1] == null) {
       } else {
         Availability newWeekDayAvailability = Availability(
@@ -190,20 +188,22 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
             dayOfWeek: weekDayIndex,
             startTime: weekDaysList[i][0],
             endTime: weekDaysList[i][1],
-            doctor: await getUserFromStorage()
-        );
+            doctor: await AuthService.getUserFromStorage());
 
         if (!mounted) return;
 
         // Check start time before end time
-        if (!(DateTime(2021, 1, 1, weekDaysList[i][0]!.hour, weekDaysList[i][0]!.minute)
-            .isBefore(DateTime(2021, 1, 1, weekDaysList[i][1]!.hour, weekDaysList[i][1]!.minute)))) {
+        if (!(DateTime(2021, 1, 1, weekDaysList[i][0]!.hour,
+                weekDaysList[i][0]!.minute)
+            .isBefore(DateTime(2021, 1, 1, weekDaysList[i][1]!.hour,
+                weekDaysList[i][1]!.minute)))) {
           // Show snack bar
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               behavior: SnackBarBehavior.floating,
               margin: const EdgeInsets.only(bottom: 10.0),
-              content: Text("Invalid Time Range for ${Utility.convertIntToDayOfWeek(weekDayIndex)}. Check that all start times are before end times"),
+              content: Text(
+                  "Invalid Time Range for ${Utility.convertIntToDayOfWeek(weekDayIndex)}. Check that all start times are before end times"),
               duration: const Duration(seconds: 2),
               backgroundColor: LightPalette.error,
             ),
@@ -215,13 +215,15 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
 
     // This time do the operations
     for (int i = 0; i < weekDaysList.length; i++) {
-      int weekDayIndex = i+1;
+      int weekDayIndex = i + 1;
       if (weekDaysList[i][0] == null || weekDaysList[i][1] == null) {
         // DELETE AVAILABILITY IF AVAILABILITY WITH DOCTOR AND DAY EXISTS; ELSE DO NOTHING
-        if (doctorAvailabilities.any((availability) => availability.dayOfWeek == weekDayIndex)) {
-          await AvailabilityService
-              .deleteAvailability(doctorAvailabilities
-              .firstWhere((availability) => availability.dayOfWeek == weekDayIndex).availabilityID);
+        if (doctorAvailabilities
+            .any((availability) => availability.dayOfWeek == weekDayIndex)) {
+          await AvailabilityService.deleteAvailability(doctorAvailabilities
+              .firstWhere(
+                  (availability) => availability.dayOfWeek == weekDayIndex)
+              .availabilityID);
         }
       } else {
         Availability newWeekDayAvailability = Availability(
@@ -229,11 +231,10 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
             dayOfWeek: weekDayIndex,
             startTime: weekDaysList[i][0],
             endTime: weekDaysList[i][1],
-            doctor: await getUserFromStorage()
-        );
+            doctor: await AuthService.getUserFromStorage());
 
-        dynamic weekDayResponse = await AvailabilityService
-            .createAvailability(newWeekDayAvailability);
+        dynamic weekDayResponse = await AvailabilityService.createAvailability(
+            newWeekDayAvailability);
 
         if (!mounted) return;
 
@@ -243,7 +244,8 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
             SnackBar(
               behavior: SnackBarBehavior.floating,
               margin: const EdgeInsets.only(bottom: 10.0),
-              content: Text("Invalid Time Range for ${Utility.convertIntToDayOfWeek(weekDayIndex)}. Check that all start times are before end times"),
+              content: Text(
+                  "Invalid Time Range for ${Utility.convertIntToDayOfWeek(weekDayIndex)}. Check that all start times are before end times"),
               duration: const Duration(seconds: 2),
               backgroundColor: LightPalette.error,
             ),
@@ -251,9 +253,13 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
           return;
         } else if (weekDayResponse == "Resource Already Exists") {
           // Find availability id with that doctor id and day of week and update that
-          dynamic updateWeekDayResponse = await AvailabilityService
-              .updateAvailability(doctorAvailabilities
-              .firstWhere((availability) => availability.dayOfWeek == weekDayIndex).availabilityID, newWeekDayAvailability);
+          dynamic updateWeekDayResponse =
+              await AvailabilityService.updateAvailability(
+                  doctorAvailabilities
+                      .firstWhere((availability) =>
+                          availability.dayOfWeek == weekDayIndex)
+                      .availabilityID,
+                  newWeekDayAvailability);
         }
       }
     }
@@ -262,16 +268,15 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
 
     // If all validated and success
     ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          behavior: SnackBarBehavior.floating,
-          margin: EdgeInsets.only(bottom: 10.0),
-          content: Text("Availability Updated"),
-          duration: Duration(seconds: 2),
-          backgroundColor: LightPalette.success,
-        ),
-      );
-      Navigator.pop(context);
-
+      const SnackBar(
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.only(bottom: 10.0),
+        content: Text("Availability Updated"),
+        duration: Duration(seconds: 2),
+        backgroundColor: LightPalette.success,
+      ),
+    );
+    Navigator.pop(context);
   }
 
   @override
@@ -292,260 +297,373 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
       appBar: AppBar(
         title: const Text("Edit Availability"),
       ),
-      body: Builder(
-        builder: (context) {
-          if (isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            return Container(
-              height: height,
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 0, vertical: height * 0.025),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(width * 0.05, 0, 0, 0),
-                    child: Column(
-                      children: [
-                        Row(
-                            children: [
-                              SizedBox(width: width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON, child: const Text("Monday:"),),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Monday", "start");
-                                },
-                                child: Text(
-                                  startTimeMonday != null ? startTimeMonday!.format(context) : "Select Start Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                              SizedBox(width: width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Monday", "end");
-                                },
-                                child: Text(
-                                  endTimeMonday != null ? endTimeMonday!.format(context) : "Select End Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                            ]
+      body: Builder(builder: (context) {
+        if (isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return Container(
+            height: height,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: 0, vertical: height * 0.025),
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(width * 0.05, 0, 0, 0),
+                  child: Column(
+                    children: [
+                      Row(children: [
+                        SizedBox(
+                          width:
+                              width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON,
+                          child: const Text("Monday:"),
                         ),
-                        SizedBox(height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,),
-                        Row(
-                            children: [
-                              SizedBox(width: width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON, child: const Text("Tuesday:")),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Tuesday", "start");
-                                },
-                                child: Text(
-                                  startTimeTuesday != null ? startTimeTuesday!.format(context) : "Select Start Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                              SizedBox(width: width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Tuesday", "end");
-                                },
-                                child: Text(
-                                  endTimeTuesday != null ? endTimeTuesday!.format(context) : "Select End Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                            ]
-                        ),
-                        SizedBox(height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,),
-                        Row(
-                            children: [
-                              SizedBox(width: width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON, child: const Text("Wednesday:")),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Wednesday", "start");
-                                },
-                                child: Text(
-                                  startTimeWednesday != null ? startTimeWednesday!.format(context) : "Select Start Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                              SizedBox(width: width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Wednesday", "end");
-                                },
-                                child: Text(
-                                  endTimeWednesday != null ? endTimeWednesday!.format(context) : "Select End Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                            ]
-                        ),
-                        SizedBox(height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,),
-                        Row(
-                            children: [
-                              SizedBox(width: width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON, child: const Text("Thursday:")),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Thursday", "start");
-                                },
-                                child: Text(
-                                  startTimeThursday != null ? startTimeThursday!.format(context) : "Select Start Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                              SizedBox(width: width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Thursday", "end");
-                                },
-                                child: Text(
-                                  endTimeThursday != null ? endTimeThursday!.format(context) : "Select End Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                            ]
-                        ),
-                        SizedBox(height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,),
-                        Row(
-                            children: [
-                              SizedBox(width: width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON, child: const Text("Friday:")),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Friday", "start");
-                                },
-                                child: Text(
-                                  startTimeFriday != null ? startTimeFriday!.format(context) : "Select Start Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                              SizedBox(width: width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Friday", "end");
-                                },
-                                child: Text(
-                                  endTimeFriday != null ? endTimeFriday!.format(context) : "Select End Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                            ]
-                        ),
-                        SizedBox(height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,),
-                        Row(
-                            children: [
-                              SizedBox(width: width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON, child: const Text("Saturday:")),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Saturday", "start");
-                                },
-                                child: Text(
-                                  startTimeSaturday != null ? startTimeSaturday!.format(context) : "Select Start Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                              SizedBox(width: width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Saturday", "end");
-                                },
-                                child: Text(
-                                  endTimeSaturday != null ? endTimeSaturday!.format(context) : "Select End Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                            ]
-                        ),
-                        SizedBox(height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,),
-                        Row(
-                            children: [
-                              SizedBox(width: width * HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON, child: const Text("Sunday:")),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Sunday", "start");
-                                },
-                                child: Text(
-                                  startTimeSunday != null ? startTimeSunday!.format(context) : "Select Start Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                              SizedBox(width: width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,),
-                              ElevatedButton(
-                                style: ButtonStyle(
-                                  minimumSize: MaterialStateProperty.all<Size>(Size(width * 0.2, height * 0.05)),
-                                ),
-                                onPressed: () {
-                                  _selectTime("Sunday", "end");
-                                },
-                                child: Text(
-                                  endTimeSunday != null ? endTimeSunday!.format(context) : "Select End Time",
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: BUTTON_FONT_SIZE),
-                                ),
-                              ),
-                            ]
-                        ),
-                        SizedBox(height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,),
                         ElevatedButton(
-                          onPressed: () async {
-                            await updateAvailability();
-                          },
                           style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(secondaryThemeColor),
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
                           ),
-                          child: const Text('Save',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          onPressed: () {
+                            _selectTime("Monday", "start");
+                          },
+                          child: Text(
+                            startTimeMonday != null
+                                ? startTimeMonday!.format(context)
+                                : "Select Start Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
                           ),
                         ),
-                      ],
-                    ),
+                        SizedBox(
+                          width:
+                              width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Monday", "end");
+                          },
+                          child: Text(
+                            endTimeMonday != null
+                                ? endTimeMonday!.format(context)
+                                : "Select End Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(
+                        height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,
+                      ),
+                      Row(children: [
+                        SizedBox(
+                            width: width *
+                                HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON,
+                            child: const Text("Tuesday:")),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Tuesday", "start");
+                          },
+                          child: Text(
+                            startTimeTuesday != null
+                                ? startTimeTuesday!.format(context)
+                                : "Select Start Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Tuesday", "end");
+                          },
+                          child: Text(
+                            endTimeTuesday != null
+                                ? endTimeTuesday!.format(context)
+                                : "Select End Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(
+                        height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,
+                      ),
+                      Row(children: [
+                        SizedBox(
+                            width: width *
+                                HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON,
+                            child: const Text("Wednesday:")),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Wednesday", "start");
+                          },
+                          child: Text(
+                            startTimeWednesday != null
+                                ? startTimeWednesday!.format(context)
+                                : "Select Start Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Wednesday", "end");
+                          },
+                          child: Text(
+                            endTimeWednesday != null
+                                ? endTimeWednesday!.format(context)
+                                : "Select End Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(
+                        height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,
+                      ),
+                      Row(children: [
+                        SizedBox(
+                            width: width *
+                                HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON,
+                            child: const Text("Thursday:")),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Thursday", "start");
+                          },
+                          child: Text(
+                            startTimeThursday != null
+                                ? startTimeThursday!.format(context)
+                                : "Select Start Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Thursday", "end");
+                          },
+                          child: Text(
+                            endTimeThursday != null
+                                ? endTimeThursday!.format(context)
+                                : "Select End Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(
+                        height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,
+                      ),
+                      Row(children: [
+                        SizedBox(
+                            width: width *
+                                HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON,
+                            child: const Text("Friday:")),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Friday", "start");
+                          },
+                          child: Text(
+                            startTimeFriday != null
+                                ? startTimeFriday!.format(context)
+                                : "Select Start Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Friday", "end");
+                          },
+                          child: Text(
+                            endTimeFriday != null
+                                ? endTimeFriday!.format(context)
+                                : "Select End Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(
+                        height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,
+                      ),
+                      Row(children: [
+                        SizedBox(
+                            width: width *
+                                HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON,
+                            child: const Text("Saturday:")),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Saturday", "start");
+                          },
+                          child: Text(
+                            startTimeSaturday != null
+                                ? startTimeSaturday!.format(context)
+                                : "Select Start Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Saturday", "end");
+                          },
+                          child: Text(
+                            endTimeSaturday != null
+                                ? endTimeSaturday!.format(context)
+                                : "Select End Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(
+                        height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,
+                      ),
+                      Row(children: [
+                        SizedBox(
+                            width: width *
+                                HORIZONTAL_SPACING_BETWEEN_DAY_AND_BUTTON,
+                            child: const Text("Sunday:")),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Sunday", "start");
+                          },
+                          child: Text(
+                            startTimeSunday != null
+                                ? startTimeSunday!.format(context)
+                                : "Select Start Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                        SizedBox(
+                          width:
+                              width * SPACE_BETWEEN_START_AND_END_TIME_BUTTONS,
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                            minimumSize: MaterialStateProperty.all<Size>(
+                                Size(width * 0.2, height * 0.05)),
+                          ),
+                          onPressed: () {
+                            _selectTime("Sunday", "end");
+                          },
+                          child: Text(
+                            endTimeSunday != null
+                                ? endTimeSunday!.format(context)
+                                : "Select End Time",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: BUTTON_FONT_SIZE),
+                          ),
+                        ),
+                      ]),
+                      SizedBox(
+                        height: height * VERTICAL_SPACING_BETWEEN_BUTTONS,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          await updateAvailability();
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              secondaryThemeColor),
+                        ),
+                        child: const Text(
+                          'Save',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            );
-          }
+            ),
+          );
         }
-      ),
+      }),
     );
   }
 }
-

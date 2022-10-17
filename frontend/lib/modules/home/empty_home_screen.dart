@@ -21,7 +21,7 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
   bool isLoading = true;
 
   Future<void> logout(context) async {
-    await logoutUser();
+    await AuthService.logoutUser();
     // Pop screen and push login screen
     Navigator.of(context, rootNavigator: true).pushReplacement(
         MaterialPageRoute(builder: (context) => const MyApp()));
@@ -32,10 +32,10 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
       isLoading = true;
     });
 
-    user = await getUserFromStorage();
+    user = await AuthService.getUserFromStorage();
 
     if (user == null) {
-      await logoutUser();
+      await AuthService.logoutUser();
 
       if (!mounted) return;
 

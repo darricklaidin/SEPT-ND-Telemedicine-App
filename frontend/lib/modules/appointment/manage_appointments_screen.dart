@@ -38,19 +38,19 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   Future loadAppointments() async {
     isLoading = true;
     timeUp = false;
-    userID = await getUserIdFromStorage();
-    userRole = await getUserRoleFromStorage();
+    userID = await AuthService.getUserIdFromStorage();
+    userRole = await AuthService.getUserRoleFromStorage();
 
     try {
       // If role is patient, then fetch patient appointments
       if (userRole == "PATIENT") {
         appointments = await PatientService.fetchPatientAppointments(
-            await getUserIdFromStorage());
+            await AuthService.getUserIdFromStorage());
       }
       // If role is doctor, then fetch doctor appointments
       else if (userRole == "DOCTOR") {
         appointments = await DoctorService.fetchDoctorAppointments(
-            await getUserIdFromStorage());
+            await AuthService.getUserIdFromStorage());
       }
     } on TimeoutException {
       if (!mounted) return;

@@ -18,7 +18,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-
   late List allUsers;
   List suggestions = [];
   String searchText = "";
@@ -29,7 +28,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Future loadUsers() async {
     isLoading = true;
     timeUp = false;
-    userRole = await getUserRoleFromStorage();
+    userRole = await AuthService.getUserRoleFromStorage();
     List? users;
 
     try {
@@ -54,7 +53,6 @@ class _SearchScreenState extends State<SearchScreen> {
       suggestions = List.from(allUsers);
       isLoading = false;
     });
-
   }
 
   void filter(String value) {
@@ -77,7 +75,6 @@ class _SearchScreenState extends State<SearchScreen> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Color primaryThemeColor = Theme.of(context).colorScheme.primary;
-    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
     Color errorThemeColor = Theme.of(context).errorColor;
 
     return Scaffold(
@@ -102,7 +99,8 @@ class _SearchScreenState extends State<SearchScreen> {
             // Search bar
             TextField(
               decoration: InputDecoration(
-                hintText: 'Search for ${userRole == "PATIENT" ? "doctors" : "patients"}',
+                hintText:
+                    'Search for ${userRole == "PATIENT" ? "doctors" : "patients"}',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -125,119 +123,116 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ),
             ),
-            SizedBox(height: height * 0.03,),
+            SizedBox(
+              height: height * 0.03,
+            ),
             // List of results
-            Builder(
-              builder: (context) {
-                if (isLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator()
-                  );
-                } else if (timeUp) {
-                  return Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await loadUsers();
-                        filter(searchText);
-                      },
-                      child: ListView(
-                        children: [
-                          Center(
-                          child: Text("Timeout: Unable to fetch "
-                              "${userRole == 'PATIENT' ? 'doctors' : 'patients'}"),
-                          ),
-                        ]
-                      ),
-                    ),
-                  );
-                } else if (suggestions.isEmpty) {
-                  return Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await loadUsers();
-                        filter(searchText);
-                      },
-                      child: ListView(
-                        children: const [
-                          Center(
-                            child: Text('No results found'),
-                          ),
-                        ]
-                      ),
-                    ),
-                  );
-                }
+            Builder(builder: (context) {
+              if (isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (timeUp) {
                 return Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
                       await loadUsers();
                       filter(searchText);
                     },
-                    child: ListView.separated(
-                      padding: EdgeInsets.zero,
-                      itemCount: suggestions.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          tileColor: primaryThemeColor,
-                          title: Text('${suggestions[index].firstName} ${suggestions[index].lastName}',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            userRole == "PATIENT" ?
-                            '${suggestions[index].specialty}' :
-                            'Age: ${AgeCalculator.age(suggestions[index].dateOfBirth).years}',
-
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          onTap: () async {
-                            // Before navigating to the user profile screen, check
-                            // if the user still exists in the database
-                            if (userRole == "PATIENT" ?
-                            await DoctorService.fetchDoctor(suggestions[index].userID) == "Resource Not Found" :
-                            await PatientService.fetchPatient(suggestions[index].userID) == "Resource Not Found") {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  behavior: SnackBarBehavior.floating,
-                                  margin: const EdgeInsets.only(bottom: 10.0),
-                                  duration: const Duration(seconds: 2),
-                                  content: const Text('User no longer exists'),
-                                  backgroundColor: errorThemeColor,
-                                ),
-                              );
-                              await loadUsers();
-                              filter(searchText);
-                            } else {
-                              pushNewScreen(
-                                context,
-                                screen: ProfileScreen(
-                                  user: suggestions[index],
-                                  userRole: userRole,
-                                ),
-                              );
-                            }
-                          },
-                          focusColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        );
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: height * 0.02,);
-                      },
-                    ),
-                  )
+                    child: ListView(children: [
+                      Center(
+                        child: Text("Timeout: Unable to fetch "
+                            "${userRole == 'PATIENT' ? 'doctors' : 'patients'}"),
+                      ),
+                    ]),
+                  ),
+                );
+              } else if (suggestions.isEmpty) {
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await loadUsers();
+                      filter(searchText);
+                    },
+                    child: ListView(children: const [
+                      Center(
+                        child: Text('No results found'),
+                      ),
+                    ]),
+                  ),
                 );
               }
-            )
-
+              return Expanded(
+                  child: RefreshIndicator(
+                onRefresh: () async {
+                  await loadUsers();
+                  filter(searchText);
+                },
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  itemCount: suggestions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      tileColor: primaryThemeColor,
+                      title: Text(
+                        '${suggestions[index].firstName} ${suggestions[index].lastName}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        userRole == "PATIENT"
+                            ? '${suggestions[index].specialty}'
+                            : 'Age: ${AgeCalculator.age(suggestions[index].dateOfBirth).years}',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      onTap: () async {
+                        // Before navigating to the user profile screen, check
+                        // if the user still exists in the database
+                        if (userRole == "PATIENT"
+                            ? await DoctorService.fetchDoctor(
+                                    suggestions[index].userID) ==
+                                "Resource Not Found"
+                            : await PatientService.fetchPatient(
+                                    suggestions[index].userID) ==
+                                "Resource Not Found") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.only(bottom: 10.0),
+                              duration: const Duration(seconds: 2),
+                              content: const Text('User no longer exists'),
+                              backgroundColor: errorThemeColor,
+                            ),
+                          );
+                          await loadUsers();
+                          filter(searchText);
+                        } else {
+                          pushNewScreen(
+                            context,
+                            screen: ProfileScreen(
+                              user: suggestions[index],
+                              userRole: userRole,
+                            ),
+                          );
+                        }
+                      },
+                      focusColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(
+                      height: height * 0.02,
+                    );
+                  },
+                ),
+              ));
+            })
           ],
         ),
       ),
     );
   }
-
 }

@@ -6,31 +6,30 @@ import 'package:frontend/config/constants.dart';
 
 import 'auth_service.dart';
 
-
 class SpecialtyService {
-
   static Future getSpecialties() async {
     var response = await http.get(
       Uri.parse('$apiAuthRootUrl/specialties'),
       headers: {
-        'Authorization': 'Bearer ${await getJWT()}',
+        'Authorization': 'Bearer ${await AuthService.getJWT()}',
       },
     );
 
     if (response.statusCode == 200) {
       var specialties = json.decode(response.body)['content'];
-      return specialties.map((specialty) => Specialty.fromJson(specialty)).toList();
+      return specialties
+          .map((specialty) => Specialty.fromJson(specialty))
+          .toList();
     } else {
       throw Exception('Failed to load specialties');
     }
   }
 
   static Future createSpecialty(Specialty specialty) async {
-
     var response = await http.post(
       Uri.parse('$apiAuthRootUrl/specialties'),
       headers: {
-        'Authorization': 'Bearer ${await getJWT()}',
+        'Authorization': 'Bearer ${await AuthService.getJWT()}',
         'Content-Type': 'application/json',
       },
       body: jsonEncode(specialty.toJson()),
@@ -45,7 +44,5 @@ class SpecialtyService {
     } else {
       throw Exception('Failed to create specialty');
     }
-
   }
-
 }

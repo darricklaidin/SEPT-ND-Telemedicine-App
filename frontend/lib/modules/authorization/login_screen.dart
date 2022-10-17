@@ -18,9 +18,9 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController =
-      TextEditingController(text: 'n@g.com');
+      TextEditingController(text: '');
   final TextEditingController _passwordController =
-      TextEditingController(text: "nim@nim123");
+      TextEditingController(text: "");
 
   bool isLoading = true;
 
@@ -33,9 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
   _getAuth() async {
     try {
       // Check if token already exists in storage
-      if (await checkAuth() != null) {
+      if (await AuthService.checkAuth() != null) {
         // Check that user account is active
-        var user = await getUserFromStorage();
+        var user = await AuthService.getUserFromStorage();
 
         if (user == null) {
           setState(() {
@@ -62,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 content: Text(
                     "Account has been deactivated. Please contact admin for assistance."),
                 backgroundColor: LightPalette.error));
-            await logoutUser();
+            await AuthService.logoutUser();
             return;
           }
         }
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: LightPalette.success,
           ),
         );
-        if (await getUserRoleFromStorage() == "ADMIN") {
+        if (await AuthService.getUserRoleFromStorage() == "ADMIN") {
           if (!mounted) return;
           Navigator.pushReplacementNamed(context, '/admin');
         } else {
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacementNamed(context, '/home');
         }
       }
-    } on TimeoutException{
+    } on TimeoutException {
       setState(() {
         isLoading = false;
       });
@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
         var email = _emailController.text;
         var password = _passwordController.text;
 
-        res = await loginUser(email, password);
+        res = await AuthService.loginUser(email, password);
       }
     } on TimeoutException {
       setState(() {
@@ -143,12 +143,11 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      if (await getUserRoleFromStorage() == "ADMIN") {
+      if (await AuthService.getUserRoleFromStorage() == "ADMIN") {
         await Navigator.pushReplacementNamed(context, '/admin');
       } else {
         await Navigator.pushReplacementNamed(context, '/home');
       }
-
     } else {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(res.msg ?? 'Invalid Credentials'),
@@ -158,103 +157,102 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text("Login")),
       ),
       body: Builder(
-        builder: (context) => isLoading ?
-        const Center(child: CircularProgressIndicator()) :
-        Form(key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Align(
-                alignment: Alignment.center,
-                child: SizedBox(
-                  width: 300,
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'E-mail',
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Email cannot be empty';
-                      } else if (!RegExp(
-                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(value)) {
-                        return 'Invalid email';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 300,
-                child: TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password cannot be empty';
-                    }
-                    else if (value.length < 8) {
-                      return 'Password should be atleast 8 characters';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
-                ),
-                onPressed: () => login(context),
-                child: const Text("Login", style: TextStyle(fontWeight: FontWeight.bold)),
-              ),
-              const SizedBox(height: 20),
-              RichText(
-                text: TextSpan(children: [
-                  const TextSpan(
-                    text: "Don't have an account? ",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: "Raleway",
-                    ),
-                  ),
-                  TextSpan(
-                      text: 'Register now',
-                      style: TextStyle(
-                        color: Colors.deepPurple[300],
-                        fontFamily: "Raleway",
+        builder: (context) => isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: 300,
+                        child: TextFormField(
+                          controller: _emailController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'E-mail',
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Email cannot be empty';
+                            } else if (!RegExp(
+                                    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                .hasMatch(value)) {
+                              return 'Invalid email';
+                            }
+                            return null;
+                          },
+                        ),
                       ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const RegisterScreen())
-                          );
-                        }),
-                  ]),
-              )
-            ],
-          ),
-        )
-      )
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: 300,
+                      child: TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Password',
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Password cannot be empty';
+                          } else if (value.length < 8) {
+                            return 'Password should be atleast 8 characters';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(LightPalette.secondary),
+                      ),
+                      onPressed: () => login(context),
+                      child: const Text("Login",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                    ),
+                    const SizedBox(height: 20),
+                    RichText(
+                      text: TextSpan(children: [
+                        const TextSpan(
+                          text: "Don't have an account? ",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: "Raleway",
+                          ),
+                        ),
+                        TextSpan(
+                            text: 'Register now',
+                            style: TextStyle(
+                              color: Colors.deepPurple[300],
+                              fontFamily: "Raleway",
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const RegisterScreen()));
+                              }),
+                      ]),
+                    )
+                  ],
+                ),
+              ),
+      ),
     );
   }
-
 }
