@@ -33,10 +33,12 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   bool isLoading = true;
   bool timeUp = false;
   String? userRole;
+  late int userID;
 
   Future loadAppointments() async {
     isLoading = true;
     timeUp = false;
+    userID = await getUserIdFromStorage();
     userRole = await getUserRoleFromStorage();
 
     try {
@@ -158,7 +160,9 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                                       "${appointments[index].doctor.lastName}"
                                   : "${appointments[index].patient.firstName} "
                                       "${appointments[index].patient.lastName}",
-                              doctorID: appointments[index].doctor.userID,
+                              otherUserID: userRole == "PATIENT"
+                                  ? appointments[index].doctor.userID
+                                  : appointments[index].patient.userID,
                               age: AgeCalculator.age(userRole == "PATIENT"
                                       ? appointments[index].doctor.dateOfBirth
                                       : appointments[index].patient.dateOfBirth)
@@ -169,6 +173,8 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
                                   appointments[index].startTime),
                               endTime: Utility.timeToString(
                                   appointments[index].endTime),
+                              isPatient: userRole == "PATIENT",
+                              userID: userID,
                               delete: () async {
                                 await AppointmentService.deleteAppointment(
                                     appointments[index].appointmentID);

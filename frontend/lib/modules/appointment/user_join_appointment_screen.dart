@@ -2,38 +2,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:frontend/modules/chat/chat_screen.dart';
-import 'package:frontend/services/auth_service.dart';
 
 class UserJoinAppointment extends StatefulWidget {
   final Function delete;
   final Function handleTabSelection;
   final String name;
-  final int doctorID;
+  final int userID;
+  final int otherUserID;
+  final bool isPatient;
 
-  const UserJoinAppointment(
-      {Key? key,
-      required this.delete,
-      required this.name,
-      required this.handleTabSelection,
-      required this.doctorID})
-      : super(key: key);
+  const UserJoinAppointment({
+    Key? key,
+    required this.delete,
+    required this.name,
+    required this.userID,
+    required this.handleTabSelection,
+    required this.otherUserID,
+    required this.isPatient,
+  }) : super(key: key);
 
   @override
   State<UserJoinAppointment> createState() => _UserJoinAppointmentState();
 }
 
 class _UserJoinAppointmentState extends State<UserJoinAppointment> {
-  late int userID;
-  @override
-  void initState() {
-    super.initState();
-    _setUserID();
-  }
-
-  _setUserID() async {
-    userID = await getUserIdFromStorage();
-  }
-
   @override
   Widget build(BuildContext context) {
     Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
@@ -70,9 +62,13 @@ class _UserJoinAppointmentState extends State<UserJoinAppointment> {
                   MaterialPageRoute(
                       builder: (context) => ChatScreen(
                             handleTabSelection: widget.handleTabSelection,
-                            doctorID: widget.doctorID,
-                            isPatient: true,
-                            patientID: userID,
+                            doctorID: widget.isPatient
+                                ? widget.otherUserID
+                                : widget.userID,
+                            isPatient: widget.isPatient,
+                            patientID: widget.isPatient
+                                ? widget.userID
+                                : widget.otherUserID,
                           )),
                 );
               },
