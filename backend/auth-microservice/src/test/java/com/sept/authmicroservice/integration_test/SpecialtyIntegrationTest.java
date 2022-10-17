@@ -4,6 +4,7 @@ import com.sept.authmicroservice.model.Specialty;
 import com.sept.authmicroservice.payload.DoctorSignUp;
 import com.sept.authmicroservice.payload.LoginRequest;
 import com.sept.authmicroservice.repository.SpecialtyRepository;
+import com.sept.authmicroservice.repository.UserRepository;
 import com.sept.authmicroservice.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,8 @@ class SpecialtyIntegrationTest {
 
     @Autowired
     private SpecialtyRepository specialtyRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private AuthService authService;
@@ -35,6 +38,7 @@ class SpecialtyIntegrationTest {
     @BeforeEach
     public void setup() {
         specialtyRepository.deleteAll();  // clear the database
+        userRepository.deleteAll();
 
         // Add new specialties
         Specialty specialty1 = new Specialty("Cardiology");
