@@ -46,4 +46,41 @@ void main() {
     // waits for no more rebuilds happening (the 2s future)
     await tester.pumpAndSettle();
   });
+
+  testWidgets('empty email and password validaton',
+      (WidgetTester tester) async {
+    // load screen
+    arrangeAuthServiceReturnsNullAuth(false);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    // test login button click with empty input
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+
+    // expect validator error messages
+    expect(find.text('Password cannot be empty'), findsOneWidget);
+    expect(find.text('Email cannot be empty'), findsOneWidget);
+  });
+
+  testWidgets(
+      'non-empty email and password, valid account, call sign in, succeed',
+      (WidgetTester tester) async {
+    // load screen
+    arrangeAuthServiceReturnsNullAuth(false);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    // test login button click with non-empty input
+    Finder email = find.byKey(const Key('email'));
+    Finder pwd = find.byKey(const Key('password'));
+
+    await tester.enterText(email, "email@email.com");
+    await tester.enterText(pwd, "123456textemptynot");
+    await tester.pump();
+
+    // expect validator error messages
+    expect(find.text('Password cannot be empty'), findsOneWidget);
+    expect(find.text('Email cannot be empty'), findsOneWidget);
+  });
 }
