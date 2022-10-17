@@ -53,8 +53,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         var email = _emailController.text;
         var password = _passwordController.text;
 
-        res = await AuthService.registerUser(
-            firstName, lastName, email, password, dateInput!);
+        res = await widget.authService
+            .registerUser(firstName, lastName, email, password, dateInput!);
       }
     } catch (e) {
       res.msg = e.toString();
@@ -277,8 +277,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      LoginScreen(authService: AuthService())),
+                                  builder: (context) => LoginScreen(
+                                      authService: widget.authService)),
                             );
                           },
                       ),

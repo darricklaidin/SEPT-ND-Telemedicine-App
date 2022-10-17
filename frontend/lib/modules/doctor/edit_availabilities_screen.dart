@@ -9,7 +9,10 @@ import '../../config/themes/light_palette.dart';
 import '../../services/auth_service.dart';
 
 class EditAvailabilityScreen extends StatefulWidget {
-  const EditAvailabilityScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const EditAvailabilityScreen({Key? key, required this.authService})
+      : super(key: key);
 
   @override
   State<EditAvailabilityScreen> createState() => _EditAvailabilityScreenState();
@@ -188,7 +191,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
             dayOfWeek: weekDayIndex,
             startTime: weekDaysList[i][0],
             endTime: weekDaysList[i][1],
-            doctor: await AuthService.getUserFromStorage());
+            doctor: await widget.authService.getUserFromStorage());
 
         if (!mounted) return;
 
@@ -231,7 +234,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
             dayOfWeek: weekDayIndex,
             startTime: weekDaysList[i][0],
             endTime: weekDaysList[i][1],
-            doctor: await AuthService.getUserFromStorage());
+            doctor: await widget.authService.getUserFromStorage());
 
         dynamic weekDayResponse = await AvailabilityService.createAvailability(
             newWeekDayAvailability);
@@ -303,7 +306,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
             child: CircularProgressIndicator(),
           );
         } else {
-          return Container(
+          return SizedBox(
             height: height,
             child: SingleChildScrollView(
               child: Container(

@@ -6,7 +6,10 @@ import '../../config/themes/light_palette.dart';
 import '../../models/patient.dart';
 
 class EditPatientHealthStatusScreen extends StatefulWidget {
-  const EditPatientHealthStatusScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const EditPatientHealthStatusScreen({Key? key, required this.authService})
+      : super(key: key);
 
   @override
   State<EditPatientHealthStatusScreen> createState() =>
@@ -21,7 +24,7 @@ class _EditPatientHealthStatusScreenState
       TextEditingController(text: "");
 
   Future updateHealthStatus() async {
-    Patient oldPatient = await AuthService.getUserFromStorage();
+    Patient oldPatient = await widget.authService.getUserFromStorage();
 
     Patient updatedPatient = oldPatient;
     updatedPatient.symptoms = healthStatus;
@@ -57,7 +60,7 @@ class _EditPatientHealthStatusScreenState
   }
 
   Future loadHealthStatus() async {
-    Patient currentPatient = await AuthService.getUserFromStorage();
+    Patient currentPatient = await widget.authService.getUserFromStorage();
     setState(() {
       if (currentPatient.symptoms != null) {
         healthStatus = currentPatient.symptoms!;

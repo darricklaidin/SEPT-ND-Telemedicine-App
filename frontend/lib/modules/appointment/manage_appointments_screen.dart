@@ -16,12 +16,13 @@ import 'package:frontend/services/auth_service.dart';
 import '../profile/profile_button.dart';
 
 class ManageAppointmentsScreen extends StatefulWidget {
+  final AuthService authService;
+
   final Function handleTabSelection;
 
-  const ManageAppointmentsScreen({
-    Key? key,
-    required this.handleTabSelection,
-  }) : super(key: key);
+  const ManageAppointmentsScreen(
+      {Key? key, required this.handleTabSelection, required this.authService})
+      : super(key: key);
 
   @override
   State<ManageAppointmentsScreen> createState() =>
@@ -39,7 +40,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
     isLoading = true;
     timeUp = false;
     userID = await AuthService.getUserIdFromStorage();
-    userRole = await AuthService.getUserRoleFromStorage();
+    userRole = await widget.authService.getUserRoleFromStorage();
 
     try {
       // If role is patient, then fetch patient appointments
@@ -84,9 +85,9 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
           elevation: 0,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: const [
-              ProfileButton(),
-              SizedBox(
+            children: [
+              ProfileButton(authService: widget.authService),
+              const SizedBox(
                 width: 20,
               )
             ],

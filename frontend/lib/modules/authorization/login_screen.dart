@@ -35,9 +35,9 @@ class _LoginScreenState extends State<LoginScreen> {
   _getAuth() async {
     try {
       // Check if token already exists in storage
-      if (await AuthService.checkAuth() != null) {
+      if (await widget.authService.checkAuth() != null) {
         // Check that user account is active
-        var user = await AuthService.getUserFromStorage();
+        var user = await widget.authService.getUserFromStorage();
 
         if (user == null) {
           setState(() {
@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 content: Text(
                     "Account has been deactivated. Please contact admin for assistance."),
                 backgroundColor: LightPalette.error));
-            await AuthService.logoutUser();
+            await widget.authService.logoutUser();
             return;
           }
         }
@@ -78,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
             backgroundColor: LightPalette.success,
           ),
         );
-        if (await AuthService.getUserRoleFromStorage() == "ADMIN") {
+        if (await widget.authService.getUserRoleFromStorage() == "ADMIN") {
           if (!mounted) return;
           Navigator.pushReplacementNamed(context, '/admin');
         } else {
@@ -108,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
         var email = _emailController.text;
         var password = _passwordController.text;
 
-        res = await AuthService.loginUser(email, password);
+        res = await widget.authService.loginUser(email, password);
       }
     } on TimeoutException {
       setState(() {
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      if (await AuthService.getUserRoleFromStorage() == "ADMIN") {
+      if (await widget.authService.getUserRoleFromStorage() == "ADMIN") {
         await Navigator.pushReplacementNamed(context, '/admin');
       } else {
         await Navigator.pushReplacementNamed(context, '/home');
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => RegisterScreen(
-                                            authService: AuthService())));
+                                            authService: widget.authService)));
                               }),
                       ]),
                     )

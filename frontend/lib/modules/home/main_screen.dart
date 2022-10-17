@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import '../../services/auth_service.dart';
 import '../appointment/manage_appointments_screen.dart';
-import '../chat/chat_screen.dart';
 import '../notifications/notifications.dart';
 import '../search/search_screen.dart';
 import 'empty_home_screen.dart';
@@ -69,9 +69,11 @@ class _MainScreenState extends State<MainScreen> {
 
   List<Widget> _buildScreens() {
     return [
-      EmptyHomeScreen(handleTabSelection: _handleTabSelection),
-      const SearchScreen(),
-      ManageAppointmentsScreen(handleTabSelection: _handleTabSelection),
+      EmptyHomeScreen(
+          handleTabSelection: _handleTabSelection, authService: AuthService()),
+      SearchScreen(authService: AuthService()),
+      ManageAppointmentsScreen(
+          handleTabSelection: _handleTabSelection, authService: AuthService()),
       const NotificationScreen(),
     ];
   }

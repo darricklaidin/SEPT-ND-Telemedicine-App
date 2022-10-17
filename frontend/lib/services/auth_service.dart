@@ -12,7 +12,7 @@ import '../models/patient.dart';
 const storage = FlutterSecureStorage();
 
 class AuthService {
-  static Future<UserDTO?> checkAuth() async {
+  Future<UserDTO?> checkAuth() async {
     UserDTO? res;
     // get jwt from storage and validate it
     String jwt = await getJWT();
@@ -39,7 +39,7 @@ class AuthService {
     return res;
   }
 
-  static Future<ApiResponse> loginUser(String email, String password) async {
+  Future<ApiResponse> loginUser(String email, String password) async {
     // setup request
     Uri url = Uri.parse('$apiAuthRootUrl/auth/login');
     Map data = {'username': email, 'password': password};
@@ -67,7 +67,7 @@ class AuthService {
     return res;
   }
 
-  static Future<ApiResponse> registerUser(String firstName, String lastName,
+  Future<ApiResponse> registerUser(String firstName, String lastName,
       String email, String password, String dateOfBirth) async {
     Uri url = Uri.parse('$apiAuthRootUrl/auth/signup');
     Map data = {
@@ -94,7 +94,7 @@ class AuthService {
     return res;
   }
 
-  static Future<ApiResponse> registerDoctor(
+  Future<ApiResponse> registerDoctor(
       String firstName,
       String lastName,
       String email,
@@ -126,7 +126,7 @@ class AuthService {
     return res;
   }
 
-  static Future<void> logoutUser() async {
+  Future<void> logoutUser() async {
     await storage.deleteAll();
   }
 
@@ -134,11 +134,11 @@ class AuthService {
     return int.parse(await storage.read(key: "userId") ?? "-1");
   }
 
-  static Future<String> getUserRoleFromStorage() async {
+  Future<String> getUserRoleFromStorage() async {
     return await storage.read(key: "role") ?? "NO ROLE";
   }
 
-  static Future getUserFromStorage() async {
+  Future getUserFromStorage() async {
     int userID = await getUserIdFromStorage();
     String userRole = await getUserRoleFromStorage();
     String userRolePath;

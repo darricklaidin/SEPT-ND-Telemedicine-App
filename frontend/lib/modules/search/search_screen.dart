@@ -11,7 +11,9 @@ import 'package:frontend/services/patient_service.dart';
 import 'package:frontend/services/auth_service.dart';
 
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const SearchScreen({Key? key, required this.authService}) : super(key: key);
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -28,7 +30,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Future loadUsers() async {
     isLoading = true;
     timeUp = false;
-    userRole = await AuthService.getUserRoleFromStorage();
+    userRole = await widget.authService.getUserRoleFromStorage();
     List? users;
 
     try {
@@ -83,9 +85,9 @@ class _SearchScreenState extends State<SearchScreen> {
         elevation: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
-          children: const [
-            ProfileButton(),
-            SizedBox(
+          children: [
+            ProfileButton(authService: widget.authService),
+            const SizedBox(
               width: 20,
             )
           ],
@@ -212,6 +214,7 @@ class _SearchScreenState extends State<SearchScreen> {
                             screen: ProfileScreen(
                               user: suggestions[index],
                               userRole: userRole,
+                              authService: widget.authService,
                             ),
                           );
                         }
