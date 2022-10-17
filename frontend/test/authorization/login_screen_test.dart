@@ -91,8 +91,32 @@ void main() {
     await tester.pumpAndSettle();
 
     // expect validator error messages
-    expect(find.text('Password cannot be empty'), findsOneWidget);
     expect(find.text('Email cannot be empty'), findsOneWidget);
+    expect(find.text('Password cannot be empty'), findsOneWidget);
+  });
+
+  testWidgets('invalid email and password validaton',
+      (WidgetTester tester) async {
+    // load screen
+    arrangeAuthServiceReturnsNullAuth(false);
+    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pump();
+
+    // test login button click with invalid input
+    String invalidEmail = "invalidemail.com"; // invalid email syntax
+    String invalidPassword = "123"; // too short
+    Finder email = find.byKey(const Key('email'));
+    Finder pwd = find.byKey(const Key('password'));
+
+    await tester.enterText(email, invalidEmail);
+    await tester.enterText(pwd, invalidPassword);
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle();
+
+    // expect validator error messages
+    expect(find.text('Invalid email'), findsOneWidget);
+    expect(
+        find.text('Password should be atleast 8 characters'), findsOneWidget);
   });
 
   testWidgets(
