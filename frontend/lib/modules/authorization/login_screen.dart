@@ -9,7 +9,9 @@ import '../../config/themes/light_palette.dart';
 import '../../models/api_response.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const LoginScreen({Key? key, required this.authService}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -244,8 +246,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RegisterScreen()));
+                                        builder: (context) => RegisterScreen(
+                                            authService: AuthService())));
                               }),
                       ]),
                     )

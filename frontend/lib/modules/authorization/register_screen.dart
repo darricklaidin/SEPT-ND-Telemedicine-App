@@ -8,7 +8,9 @@ import '../../models/api_response.dart';
 import '../../modules/authorization/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const RegisterScreen({Key? key, required this.authService}) : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -275,7 +277,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const LoginScreen()),
+                                  builder: (context) =>
+                                      LoginScreen(authService: AuthService())),
                             );
                           },
                       ),
