@@ -89,11 +89,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Transactional
     void createDoctorsIfNotFound() {
+        // Gets the first specialty ID (may not be '1')
+        int specialtyID = specialtyRepository.findAllBy(null).getContent().get(0).getSpecialtyID();
+
         for (int i = 1; i < 4; ++i) {
             String email = "doc" + i + "@doc.com";
             if (Boolean.FALSE.equals(userRepository.existsByEmail(email))) {
                 authService.registerDoctor(new DoctorSignUp("Doc", String.valueOf(i), email, "password",
-                        "1999-08-25", 1));
+                        "1999-08-25", specialtyID));
             }
         }
     }
