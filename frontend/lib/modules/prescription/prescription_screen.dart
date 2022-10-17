@@ -4,21 +4,26 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import '../../services/doctor_service.dart';
+import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/models/prescription.dart';
 import '../../models/api_response.dart';
 import '../../config/themes/light_palette.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/services/prescription_service.dart';
+
+import '../../models/doctor.dart';
  
 
 class PrescriptionScreen extends StatefulWidget {
-  const PrescriptionScreen({Key? key}) : super(key: key);
+  final Doctor doctor;
+  const PrescriptionScreen({Key? key, required this.doctor}) : super(key: key);
   
   @override
-  State<PrescriptionScreen> createState() => _PrescriptionScreen();
+  State<PrescriptionScreen> createState() => _PrescriptionScreenState();
 }
 
-class _PrescriptionScreen extends State<PrescriptionScreen> {
+class _PrescriptionScreenState extends State<PrescriptionScreen> {
   List<Prescription> prescriptions = List<Prescription>.empty(growable: true);
   bool isLoading = true;
 
