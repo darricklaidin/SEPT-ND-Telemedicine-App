@@ -1,9 +1,11 @@
 package com.sept.authmicroservice.integration_test;
 
 import com.sept.authmicroservice.model.Doctor;
+import com.sept.authmicroservice.model.Specialty;
 import com.sept.authmicroservice.payload.DoctorSignUp;
 import com.sept.authmicroservice.payload.LoginRequest;
 import com.sept.authmicroservice.repository.DoctorRepository;
+import com.sept.authmicroservice.repository.SpecialtyRepository;
 import com.sept.authmicroservice.repository.UserRepository;
 import com.sept.authmicroservice.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,6 +36,8 @@ class DoctorIntegrationTest {
     private DoctorRepository doctorRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SpecialtyRepository specialtyRepository;
 
     @Autowired
     private AuthService authService;
@@ -51,16 +56,18 @@ class DoctorIntegrationTest {
         Doctor doctor3 = new Doctor(0, "Nimesh", "Silva", "nimesh@g.com",
                 "nimesh", LocalDate.of(2001, 5, 16), null, null);
 
+        List<Specialty> specialtyList = specialtyRepository.findAllBy(null).getContent();
+
         // Need to use auth service for password encryption
         authService.registerDoctor(
                 new DoctorSignUp(doctor1.getFirstName(), doctor1.getLastName(), doctor1.getEmail(), doctor1.getPassword(),
-                        doctor1.getDateOfBirth().toString(), 1));
+                        doctor1.getDateOfBirth().toString(), specialtyList.get(0).getSpecialtyID()));
         authService.registerDoctor(
                 new DoctorSignUp(doctor2.getFirstName(), doctor2.getLastName(), doctor2.getEmail(), doctor2.getPassword(),
-                        doctor2.getDateOfBirth().toString(), 2));
+                        doctor2.getDateOfBirth().toString(), specialtyList.get(1).getSpecialtyID()));
         authService.registerDoctor(
                 new DoctorSignUp(doctor3.getFirstName(), doctor3.getLastName(), doctor3.getEmail(), doctor3.getPassword(),
-                        doctor3.getDateOfBirth().toString(), 3));
+                        doctor3.getDateOfBirth().toString(), specialtyList.get(1).getSpecialtyID()));
 
         // Authenticate
         authService.authenticateUser(new LoginRequest("darrick@g.com", "darrick"));
@@ -103,6 +110,8 @@ class DoctorIntegrationTest {
 
         Doctor doctor = doctorRepository.findAllBy(null).getContent().get(0);
 
+        int specialtyID = specialtyRepository.findAllBy(null).getContent().get(1).getSpecialtyID();
+
         mockMvc.perform(put("/api/doctors/" + doctor.getUserID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
@@ -112,7 +121,7 @@ class DoctorIntegrationTest {
                                 "    \"password\": \"" + newDoctor.getPassword() + "\",\n" +
                                 "    \"dateOfBirth\": \"" + newDoctor.getDateOfBirth().toString() + "\",\n" +
                                 "    \"specialty\" : {\n" +
-                                "        \"specialtyID\": \"" + "2" + "\"\n" +
+                                "        \"specialtyID\": \"" + specialtyID + "\"\n" +
                                 "    }\n" +
                                 "}"))
                 .andExpect(status().isOk());
@@ -124,13 +133,13 @@ class DoctorIntegrationTest {
             assertEquals(newDoctor.getLastName(), updatedDoctor.get().getLastName());
             assertEquals(newDoctor.getEmail(), updatedDoctor.get().getEmail());
             assertEquals(newDoctor.getDateOfBirth(), updatedDoctor.get().getDateOfBirth());
-            assertEquals(2, updatedDoctor.get().getSpecialty().getSpecialtyID());
+            assertEquals(specialtyID, updatedDoctor.get().getSpecialty().getSpecialtyID());
 
             assertNotEquals(doctor1.getFirstName(), updatedDoctor.get().getFirstName());
             assertNotEquals(doctor1.getLastName(), updatedDoctor.get().getLastName());
             assertNotEquals(doctor1.getEmail(), updatedDoctor.get().getEmail());
             assertNotEquals(doctor1.getDateOfBirth(), updatedDoctor.get().getDateOfBirth());
-            assertNotEquals(1, updatedDoctor.get().getSpecialty().getSpecialtyID());
+            assertNotEquals(doctor.getSpecialty().getSpecialtyID(), updatedDoctor.get().getSpecialty().getSpecialtyID());
         } else{
             fail("Doctor not found");
         }

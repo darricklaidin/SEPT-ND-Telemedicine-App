@@ -1,9 +1,12 @@
 package com.sept.authmicroservice.integration_test;
 
 import com.sept.authmicroservice.model.Doctor;
+import com.sept.authmicroservice.model.Patient;
+import com.sept.authmicroservice.model.RoleName;
 import com.sept.authmicroservice.model.User;
-import com.sept.authmicroservice.repository.DoctorRepository;
-import com.sept.authmicroservice.repository.UserRepository;
+import com.sept.authmicroservice.payload.LoginRequest;
+import com.sept.authmicroservice.repository.*;
+import com.sept.authmicroservice.service.AuthService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -36,15 +40,27 @@ class AuthIntegrationTest {
     private DoctorRepository doctorRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SpecialtyRepository specialtyRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private AuthService authService;
+    @Autowired
+    private PatientRepository patientRepository;
 
     @BeforeEach
     public void setup() {
         userRepository.deleteAll();  // clear the database
+        userRepository.save(new User(-1,
+                new ArrayList<>(Collections.singletonList(roleRepository.findByName(RoleName.ADMIN)))));
+        authService.authenticateUser(new LoginRequest("a@g.com", "adminpass"));
     }
 
-
     @Test
-    void registerNewPatient() throws Exception {
+    void testRegisterNewPatient() throws Exception {
+        List<Patient> patients = patientRepository.findAll();
+
         mockMvc.perform(post("/api/auth/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
@@ -56,19 +72,21 @@ class AuthIntegrationTest {
                                 "}"))
                 .andExpect(status().isOk());
 
-        // Check that it has been added in user
-        List<User> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
+        // Check that it has been added in database
+        List<Patient> updatedPatients = patientRepository.findAll();
 
-        assertEquals(1, users.size());
-        assertEquals("Darrick", users.get(0).getFirstName());
-        assertEquals("Edbert", users.get(0).getLastName());
-        assertEquals("darrick@g.com", users.get(0).getEmail());
-        assertEquals(LocalDate.of(2004, 6, 7), users.get(0).getDateOfBirth());
+        assertEquals(patients.size() + 1, updatedPatients.size());
+        assertEquals("Darrick", updatedPatients.get(0).getFirstName());
+        assertEquals("Edbert", updatedPatients.get(0).getLastName());
+        assertEquals("darrick@g.com", updatedPatients.get(0).getEmail());
+        assertEquals(LocalDate.of(2004, 6, 7), updatedPatients.get(0).getDateOfBirth());
     }
 
     @Test
-    void registerNewDoctor() throws Exception {
+    void testRegisterNewDoctor() throws Exception {
+        // Get first specialty
+        int specialtyID = specialtyRepository.findAllBy(null).getContent().get(0).getSpecialtyID();
+
         mockMvc.perform(post("/api/auth/signup-doctor")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
@@ -77,7 +95,7 @@ class AuthIntegrationTest {
                                 "    \"email\": \"darrick@g.com\",\n" +
                                 "    \"password\": \"darrickedbert\",\n" +
                                 "    \"dateOfBirth\": \"2004-06-07\",\n" +
-                                "    \"specialtyID\": \"1\"\n" +
+                                "    \"specialtyID\": \"" + specialtyID + "\"\n" +
                                 "}"))
                 .andExpect(status().isOk());
 
@@ -89,7 +107,7 @@ class AuthIntegrationTest {
         assertEquals("Edbert", doctors.get(0).getLastName());
         assertEquals("darrick@g.com", doctors.get(0).getEmail());
         assertEquals(LocalDate.of(2004, 6, 7), doctors.get(0).getDateOfBirth());
-        assertEquals(1, doctors.get(0).getSpecialty().getSpecialtyID());
+        assertEquals(specialtyID, doctors.get(0).getSpecialty().getSpecialtyID());
     }
 
 }
