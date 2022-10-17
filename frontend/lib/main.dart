@@ -6,6 +6,8 @@ import 'modules/admin/admin_main_screen.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
 import 'modules/prescription/prescription_screen.dart';
+import 'modules/profile/profile_screen.dart';
+import 'modules/profile/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,7 +39,7 @@ class _MyAppState extends State<MyApp> {
         ),
         initialRoute: '/',
         routes: {
-          "/": (context) => const PrescriptionScreen(),
+          "/": (context) => const LoginScreen(),
           "/home": (context) => const MainScreen(),
           "/admin": (context) => const AdminMainScreen(),
         });

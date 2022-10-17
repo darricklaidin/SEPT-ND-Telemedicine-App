@@ -123,27 +123,30 @@ class PatientControllerTest {
         assertNull(patient1.getRoles());
     }
 
-//    @Test
-//    void deletePatient() {
-//        when(mockPatientService.deletePatient(patient1.getUserID())).thenReturn(patient1);
-//
-//        doNothing().when(mockPatientService).deletePatient(patient1.getUserID());
-//
-//        Patient deletedPatient = patientController.deletePatient(patient1.getUserID()).getBody();
-//
-//        when(mockPatientService.getAllPatients(null))
-//                .thenReturn(new PageImpl<>(new ArrayList<>(Collections.singletonList(patient2))));
-//
-//        Page<Patient> patientPage = (Page<Patient>) patientController.getAllPatients(null);
-//        List<Patient> retrievedPatients = patientPage.getContent();
-//
-//        // Test patient list length
-//        assertEquals(patients.size() - 1, retrievedPatients.size());
-//
-//        // Test that patient1 has been deleted
-//        assertEquals(patient2, retrievedPatients.get(0));
-//
-//        // Test that deleted patient matches patient1
-//        assertEquals(patient1, deletedPatient);
-//    }
+    @Test
+    void deletePatient() {
+        when(mockPatientService.deletePatient(patient1.getUserID())).thenReturn(patient1); //return patient1
+
+        Patient deletedPatient = patientController.deletePatient(patient1.getUserID()).getBody();
+
+        when(mockPatientService.getAllPatients(null))
+                .thenReturn(new PageImpl<>(new ArrayList<>(Collections.singletonList(patient2))));
+
+        Page<Patient> patientPage = patientController.getAllPatients(null).getBody();
+
+        if (patientPage == null) {
+            fail("Patient page is null");
+        }
+
+        List<Patient> retrievedPatients = patientPage.getContent();
+
+        // Test patient list length
+        assertEquals(patients.size() - 1, retrievedPatients.size());
+
+        // Test that patient1 has been deleted
+        assertEquals(patient2, retrievedPatients.get(0));
+
+        // Test that deleted patient matches patient1
+        assertEquals(patient1, deletedPatient);
+    }
 }
