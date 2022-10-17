@@ -95,6 +95,8 @@ class PatientIntegrationTest {
     void testUpdatePatient() throws Exception {
         Patient newPatient = new Patient(0, "Lucas", "Gray", "lucas@g.com",
                 "lucas", LocalDate.of(1192, 1, 27), null);
+        newPatient.setSymptoms("headache");
+
 
         Patient patient = patientRepository.findAllBy(null).getContent().get(0);
 
@@ -105,7 +107,8 @@ class PatientIntegrationTest {
                                 "    \"lastName\": \"" + newPatient.getLastName() + "\",\n" +
                                 "    \"email\": \"" + newPatient.getEmail() + "\",\n" +
                                 "    \"password\": \"" + newPatient.getPassword() + "\",\n" +
-                                "    \"dateOfBirth\": \"" + newPatient.getDateOfBirth().toString() + "\"\n" +
+                                "    \"dateOfBirth\": \"" + newPatient.getDateOfBirth().toString() + "\",\n" +
+                                "    \"symptoms\": \"" + newPatient.getSymptoms() + "\"\n" +
                                 "}"))
                 .andExpect(status().isOk());
 
@@ -116,6 +119,7 @@ class PatientIntegrationTest {
             assertEquals(newPatient.getLastName(), updatedPatient.get().getLastName());
             assertEquals(newPatient.getEmail(), updatedPatient.get().getEmail());
             assertEquals(newPatient.getDateOfBirth(), updatedPatient.get().getDateOfBirth());
+            assertEquals(newPatient.getSymptoms(), updatedPatient.get().getSymptoms());
         } else{
             fail("Patient not found");
         }
@@ -133,7 +137,8 @@ class PatientIntegrationTest {
                                 "    \"lastName\": \"" + newPatient.getLastName() + "\",\n" +
                                 "    \"email\": \"" + newPatient.getEmail() + "\",\n" +
                                 "    \"password\": \"" + newPatient.getPassword() + "\",\n" +
-                                "    \"dateOfBirth\": \"" + newPatient.getDateOfBirth().toString() + "\"\n" +
+                                "    \"dateOfBirth\": \"" + newPatient.getDateOfBirth().toString() + "\",\n" +
+                                "    \"symptoms\": \"" + newPatient.getSymptoms() + "\"\n" +
                                 "}"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$['message']").value("Resource Not Found"));
