@@ -177,6 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: SizedBox(
                         width: 300,
                         child: TextFormField(
+                          key: const Key('email'),
                           controller: _emailController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
@@ -199,6 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: 300,
                       child: TextFormField(
+                        key: const Key('password'),
                         controller: _passwordController,
                         obscureText: true,
                         decoration: const InputDecoration(
@@ -227,15 +229,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
                     RichText(
-                      text: TextSpan(children: [
-                        const TextSpan(
-                          text: "Don't have an account? ",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: "Raleway",
+                      text: TextSpan(
+                        children: [
+                          const TextSpan(
+                            text: "Don't have an account? ",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Raleway",
+                            ),
                           ),
-                        ),
-                        TextSpan(
+                          TextSpan(
                             text: 'Register now',
                             style: TextStyle(
                               color: Colors.deepPurple[300],
@@ -248,9 +251,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     MaterialPageRoute(
                                         builder: (context) => RegisterScreen(
                                             authService: widget.authService)));
-                              }),
-                      ]),
-                    )
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

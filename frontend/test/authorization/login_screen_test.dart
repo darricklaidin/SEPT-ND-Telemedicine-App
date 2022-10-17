@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/models/api_response.dart';
 import 'package:frontend/modules/authorization/login_screen.dart';
+import 'package:frontend/modules/home/main_screen.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthService extends Mock implements AuthService {}
 
+class MockNavigatorObserver extends Mock implements NavigatorObserver {}
+
 void main() {
-  AuthService mockAuthService = MockAuthService();
+  late AuthService mockAuthService;
+  late NavigatorObserver mockObserver;
+
+  setUp(() {
+    mockAuthService = MockAuthService();
+    mockObserver = MockNavigatorObserver();
+  });
 
   Widget createWidgetUnderTest() {
     return MaterialApp(
       title: 'SEPT-ND-Telemedicine-App',
       home: LoginScreen(authService: mockAuthService),
+      // This mocked observer will now receive all navigation events
+      // that happen in our app.
+      navigatorObservers: [mockObserver],
+      routes: {
+        "/home": (context) => const MainScreen(),
+      },
     );
   }
 
@@ -22,6 +38,22 @@ void main() {
         await Future.delayed(const Duration(seconds: 2));
       }
       return null;
+    });
+  }
+
+  arrangeAuthServiceReturnsLoginSuccess(
+      String email, String password, bool res) {
+    when(() => mockAuthService.loginUser(email, password))
+        .thenAnswer((_) async {
+      ApiResponse apiRespone = ApiResponse();
+      apiRespone.success = res;
+      return apiRespone;
+    });
+  }
+
+  arrangeAuthServiceReturnsRole(String role) {
+    when(() => mockAuthService.getUserRoleFromStorage()).thenAnswer((_) async {
+      return role;
     });
   }
 
@@ -64,10 +96,15 @@ void main() {
   });
 
   testWidgets(
-      'non-empty email and password, valid account, call sign in, succeed',
+      'valid email and password, valid account, call loginUser, succeed',
       (WidgetTester tester) async {
-    // load screen
+    String validEmail = "email@email.com";
+    String validPassword = "123456textemptynot";
+
+    // load screen with required auth returns
     arrangeAuthServiceReturnsNullAuth(false);
+    arrangeAuthServiceReturnsRole('USER');
+    arrangeAuthServiceReturnsLoginSuccess(validEmail, validPassword, true);
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pump();
 
@@ -75,12 +112,22 @@ void main() {
     Finder email = find.byKey(const Key('email'));
     Finder pwd = find.byKey(const Key('password'));
 
-    await tester.enterText(email, "email@email.com");
-    await tester.enterText(pwd, "123456textemptynot");
+    await tester.enterText(email, validEmail);
+    await tester.enterText(pwd, validPassword);
+    await tester.tap(find.byType(ElevatedButton));
     await tester.pump();
 
-    // expect validator error messages
-    expect(find.text('Password cannot be empty'), findsOneWidget);
-    expect(find.text('Email cannot be empty'), findsOneWidget);
+    // expect loginUser being called and success snackbar shown
+    verify(() => mockAuthService.loginUser(validEmail, validPassword))
+        .called(1);
+    expect(find.text('Login Successful'), findsOneWidget);
+
+    /// Verify that a push event happened
+    verify(
+      () => mockObserver.didReplace(
+        oldRoute: any(named: 'oldRoute'),
+        newRoute: any(named: 'newRoute'),
+      ),
+    );
   });
 }
