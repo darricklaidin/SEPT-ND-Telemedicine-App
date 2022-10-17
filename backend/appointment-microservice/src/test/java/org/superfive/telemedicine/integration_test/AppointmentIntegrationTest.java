@@ -61,7 +61,6 @@ class AppointmentIntegrationTest {
         availabilityRepository.save(availability2);
     }
 
-    // Get all appointments
     @Test
     void testGetAllAppointments() throws Exception {
         mockMvc.perform(get("/api/appointments"))
@@ -69,7 +68,6 @@ class AppointmentIntegrationTest {
                 .andExpect(jsonPath("$['content'].length()").value(2));
     }
 
-    // Get an appointment by id
     @Test
     void testGetAppointmentByID() throws Exception {
         Appointment appointment = appointmentRepository.findAllBy(null).getContent().get(0);
@@ -86,7 +84,6 @@ class AppointmentIntegrationTest {
                 .andExpect(jsonPath("$.doctorID").value(appointment.getDoctorID()));
     }
 
-    // Get doctor's appointments
     @Test
     void testGetDoctorAppointments() throws Exception {
         mockMvc.perform(get("/api/appointments/doctor/" + "1"))
@@ -94,15 +91,12 @@ class AppointmentIntegrationTest {
                 .andExpect(jsonPath("$['content'].length()").value(2));
     }
 
-    // Get patient's appointments
     @Test
     void testGetPatientAppointments() throws Exception {
         mockMvc.perform(get("/api/appointments/patient/" + "2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$['content'].length()").value(2));
     }
-
-    // Create a new appointment
 
     @Test
     void testCreateAppointmentNotInDoctorAvailability() throws Exception {
@@ -156,7 +150,7 @@ class AppointmentIntegrationTest {
     }
 
     @Test
-    void testCreateAppointment() throws Exception {
+    void testCreateAppointmentSuccess() throws Exception {
         // Clash with existing appointment
         mockMvc.perform(post("/api/appointments")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -179,7 +173,6 @@ class AppointmentIntegrationTest {
         assertEquals(3, appointmentRepository.findAllBy(null).getContent().size());
     }
 
-    // Delete an appointment
     @Test
     void testDeleteAppointment() throws Exception {
         Appointment appointment = appointmentRepository.findAllBy(null).getContent().get(0);
@@ -189,6 +182,5 @@ class AppointmentIntegrationTest {
 
         assertEquals(1, appointmentRepository.findAllBy(null).getContent().size());
     }
-
 
 }
