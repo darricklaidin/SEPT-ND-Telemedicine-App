@@ -17,7 +17,7 @@ Amir Homayoon Ashrafzadeh
 
 ## Build & Run via Heroku
 
-**TBA**
+Did not have time to deploy
 
 ## Build & Run via GitHub Repository
 
