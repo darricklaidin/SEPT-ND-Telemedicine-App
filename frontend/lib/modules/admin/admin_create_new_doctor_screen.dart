@@ -9,8 +9,10 @@ import '../../services/specialty_service.dart';
 
 class AdminCreateNewDoctorScreen extends StatefulWidget {
   final AuthService authService;
+  final SpecialtyService specialtyService;
 
-  const AdminCreateNewDoctorScreen({Key? key, required this.authService})
+  const AdminCreateNewDoctorScreen(
+      {Key? key, required this.authService, required this.specialtyService})
       : super(key: key);
 
   @override
@@ -65,7 +67,8 @@ class _AdminCreateNewDoctorScreenState
         var password = _passwordController.text;
         var specialty = _specialtyController.text;
 
-        List existingSpecialties = await SpecialtyService.getSpecialties();
+        List existingSpecialties =
+            await widget.specialtyService.getSpecialties();
 
         bool specialtyExists = false;
         int specialtyID = -1;
@@ -83,8 +86,9 @@ class _AdminCreateNewDoctorScreenState
         // If specialty with that name does not exist
         if (!specialtyExists) {
           // Create new specialty
-          Specialty newSpecialty = await SpecialtyService.createSpecialty(
-              Specialty(specialtyID: -1, specialtyName: specialty));
+          Specialty newSpecialty = await widget.specialtyService
+              .createSpecialty(
+                  Specialty(specialtyID: -1, specialtyName: specialty));
           specialtyID = newSpecialty.specialtyID;
         }
 

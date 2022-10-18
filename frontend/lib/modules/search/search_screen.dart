@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/profile/profile_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import '../../services/specialty_service.dart';
 import '../profile/profile_button.dart';
 import 'package:frontend/services/doctor_service.dart';
 import 'package:frontend/services/patient_service.dart';
@@ -13,10 +14,14 @@ import 'package:frontend/services/auth_service.dart';
 class SearchScreen extends StatefulWidget {
   final AuthService authService;
   final DoctorService doctorService;
+  final SpecialtyService specialtyService;
 
-  const SearchScreen(
-      {Key? key, required this.authService, required this.doctorService})
-      : super(key: key);
+  const SearchScreen({
+    Key? key,
+    required this.authService,
+    required this.doctorService,
+    required this.specialtyService,
+  }) : super(key: key);
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -89,7 +94,10 @@ class _SearchScreenState extends State<SearchScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ProfileButton(authService: widget.authService),
+            ProfileButton(
+              authService: widget.authService,
+              specialtyService: widget.specialtyService,
+            ),
             const SizedBox(
               width: 20,
             )
@@ -219,6 +227,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               userRole: userRole,
                               authService: widget.authService,
                               doctorService: widget.doctorService,
+                              specialtyService: widget.specialtyService,
                             ),
                           );
                         }

@@ -7,7 +7,7 @@ import 'package:frontend/config/constants.dart';
 import 'auth_service.dart';
 
 class SpecialtyService {
-  static Future getSpecialties() async {
+  Future getSpecialties() async {
     var response = await http.get(
       Uri.parse('$apiAuthRootUrl/specialties'),
       headers: {
@@ -25,7 +25,7 @@ class SpecialtyService {
     }
   }
 
-  static Future createSpecialty(Specialty specialty) async {
+  Future createSpecialty(Specialty specialty) async {
     var response = await http.post(
       Uri.parse('$apiAuthRootUrl/specialties'),
       headers: {

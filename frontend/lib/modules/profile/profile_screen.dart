@@ -9,22 +9,25 @@ import 'package:frontend/utility.dart';
 
 import '../../services/auth_service.dart';
 import '../../services/patient_service.dart';
+import '../../services/specialty_service.dart';
 import '../appointment/book_appointment_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final AuthService authService;
   final DoctorService doctorService;
+  final SpecialtyService specialtyService;
 
   final user;
   final userRole;
 
-  const ProfileScreen(
-      {Key? key,
-      required this.user,
-      required this.userRole,
-      required this.authService,
-      required this.doctorService})
-      : super(key: key);
+  const ProfileScreen({
+    Key? key,
+    required this.user,
+    required this.userRole,
+    required this.authService,
+    required this.doctorService,
+    required this.specialtyService,
+  }) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -174,7 +177,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        ProfileButton(authService: widget.authService),
+        ProfileButton(
+          authService: widget.authService,
+          specialtyService: widget.specialtyService,
+        ),
         SizedBox(
           width: width * 0.05,
         )

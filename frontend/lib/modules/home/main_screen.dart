@@ -5,6 +5,7 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../services/auth_service.dart';
 import '../../services/doctor_service.dart';
+import '../../services/specialty_service.dart';
 import '../appointment/manage_appointments_screen.dart';
 import '../notifications/notifications.dart';
 import '../search/search_screen.dart';
@@ -74,16 +75,19 @@ class _MainScreenState extends State<MainScreen> {
       EmptyHomeScreen(
         handleTabSelection: _handleTabSelection,
         authService: AuthService(),
+        specialtyService: SpecialtyService(),
       ),
       SearchScreen(
         authService: AuthService(),
         doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
       ),
       ManageAppointmentsScreen(
         handleTabSelection: _handleTabSelection,
         authService: AuthService(),
         patientService: PatientService(),
         doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
       ),
       const NotificationScreen(),
     ];

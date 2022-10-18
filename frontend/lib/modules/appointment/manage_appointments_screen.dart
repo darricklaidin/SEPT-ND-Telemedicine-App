@@ -13,22 +13,25 @@ import 'package:frontend/modules/appointment/appointment_card.dart';
 import 'package:frontend/models/appointment.dart';
 import 'package:frontend/services/auth_service.dart';
 
+import '../../services/specialty_service.dart';
 import '../profile/profile_button.dart';
 
 class ManageAppointmentsScreen extends StatefulWidget {
   final AuthService authService;
   final PatientService patientService;
   final DoctorService doctorService;
+  final SpecialtyService specialtyService;
 
   final Function handleTabSelection;
 
-  const ManageAppointmentsScreen(
-      {Key? key,
-      required this.handleTabSelection,
-      required this.authService,
-      required this.patientService,
-      required this.doctorService})
-      : super(key: key);
+  const ManageAppointmentsScreen({
+    Key? key,
+    required this.handleTabSelection,
+    required this.authService,
+    required this.patientService,
+    required this.doctorService,
+    required this.specialtyService,
+  }) : super(key: key);
 
   @override
   State<ManageAppointmentsScreen> createState() =>
@@ -92,7 +95,9 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ProfileButton(authService: widget.authService),
+            ProfileButton(
+                authService: widget.authService,
+                specialtyService: widget.specialtyService),
             const SizedBox(
               width: 20,
             )

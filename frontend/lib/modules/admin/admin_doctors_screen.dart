@@ -6,15 +6,19 @@ import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'package:frontend/modules/admin/admin_view_user_profile_screen.dart';
 
+import '../../services/specialty_service.dart';
+
 class AdminDoctorsScreen extends StatefulWidget {
-  const AdminDoctorsScreen({Key? key}) : super(key: key);
+  final SpecialtyService specialtyService;
+
+  const AdminDoctorsScreen({Key? key, required this.specialtyService})
+      : super(key: key);
 
   @override
   State<AdminDoctorsScreen> createState() => _AdminDoctorsScreenState();
 }
 
 class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
-
   late List allUsers;
   List suggestions = [];
   String searchText = "";
@@ -31,7 +35,6 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
 
     try {
       users = await DoctorService.fetchAllDoctors();
-
     } on TimeoutException {
       setState(() {
         timeUp = true;
@@ -48,7 +51,6 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
       suggestions = List.from(allUsers);
       isLoading = false;
     });
-
   }
 
   void filter(String value) {
@@ -109,111 +111,108 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
                 ),
               ),
             ),
-            SizedBox(height: height * 0.03,),
+            SizedBox(
+              height: height * 0.03,
+            ),
             // List of results
-            Builder(
-                builder: (context) {
-                  if (isLoading) {
-                    return const Center(
-                        child: CircularProgressIndicator()
-                    );
-                  } else if (timeUp) {
-                    return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          await loadUsers();
-                          filter(searchText);
-                        },
-                        child: ListView(
-                            children: const [
-                              Center(
-                                child: Text("Timeout: Unable to fetch doctors"),
-                              ),
-                            ]
+            Builder(builder: (context) {
+              if (isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (timeUp) {
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await loadUsers();
+                      filter(searchText);
+                    },
+                    child: ListView(children: const [
+                      Center(
+                        child: Text("Timeout: Unable to fetch doctors"),
+                      ),
+                    ]),
+                  ),
+                );
+              } else if (suggestions.isEmpty) {
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await loadUsers();
+                      filter(searchText);
+                    },
+                    child: ListView(children: const [
+                      Center(
+                        child: Text('No results found'),
+                      ),
+                    ]),
+                  ),
+                );
+              }
+              return Expanded(
+                  child: RefreshIndicator(
+                onRefresh: () async {
+                  await loadUsers();
+                  filter(searchText);
+                },
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  itemCount: suggestions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      tileColor: primaryThemeColor,
+                      title: Text(
+                        '${suggestions[index].firstName} ${suggestions[index].lastName}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    );
-                  } else if (suggestions.isEmpty) {
-                    return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
+                      subtitle: Text(
+                        "Account Status: ${suggestions[index].accountStatus ? 'Active' : 'Inactive'}",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      onTap: () async {
+                        // Before navigating to the user profile screen, check
+                        // if the user still exists in the database
+                        if (await DoctorService.fetchDoctor(
+                                suggestions[index].userID) ==
+                            "Resource Not Found") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.only(bottom: 10.0),
+                              duration: const Duration(seconds: 2),
+                              content: const Text('User no longer exists'),
+                              backgroundColor: errorThemeColor,
+                            ),
+                          );
                           await loadUsers();
                           filter(searchText);
-                        },
-                        child: ListView(
-                            children: const [
-                              Center(
-                                child: Text('No results found'),
-                              ),
-                            ]
-                        ),
+                        } else {
+                          pushNewScreen(
+                            context,
+                            screen: AdminViewUserProfileScreen(
+                              user: suggestions[index],
+                              userRole: "DOCTOR",
+                              specialtyService: widget.specialtyService,
+                            ),
+                          );
+                        }
+                      },
+                      focusColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     );
-                  }
-                  return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          await loadUsers();
-                          filter(searchText);
-                        },
-                        child: ListView.separated(
-                          padding: EdgeInsets.zero,
-                          itemCount: suggestions.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              tileColor: primaryThemeColor,
-                              title: Text('${suggestions[index].firstName} ${suggestions[index].lastName}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text("Account Status: ${suggestions[index].accountStatus ? 'Active' : 'Inactive'}",
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              onTap: () async {
-                                // Before navigating to the user profile screen, check
-                                // if the user still exists in the database
-                                if (await DoctorService.fetchDoctor(suggestions[index].userID) == "Resource Not Found") {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      behavior: SnackBarBehavior.floating,
-                                      margin: const EdgeInsets.only(bottom: 10.0),
-                                      duration: const Duration(seconds: 2),
-                                      content: const Text('User no longer exists'),
-                                      backgroundColor: errorThemeColor,
-                                    ),
-                                  );
-                                  await loadUsers();
-                                  filter(searchText);
-                                } else {
-                                  pushNewScreen(
-                                    context,
-                                    screen: AdminViewUserProfileScreen(
-                                      user: suggestions[index],
-                                      userRole: "DOCTOR",
-                                    ),
-                                  );
-                                }
-                              },
-                              focusColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return SizedBox(height: height * 0.02);
-                          },
-                        ),
-                      )
-                  );
-                }
-            )
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: height * 0.02);
+                  },
+                ),
+              ));
+            })
           ],
         ),
       ),
     );
   }
-
 }
