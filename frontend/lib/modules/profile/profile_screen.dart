@@ -13,9 +13,9 @@ import '../appointment/book_appointment_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
 
-  final user;  // user belonging to this profile screen
+  final dynamic user;  // user belonging to this profile screen
 
-  final userRole;  // current user accessing this page's role
+  final dynamic userRole;  // current user accessing this page's role
 
   const ProfileScreen({Key? key, required this.user, required this.userRole}) : super(key: key);
 
@@ -43,8 +43,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
     }
 
     setState(() {

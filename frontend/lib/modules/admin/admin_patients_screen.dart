@@ -38,8 +38,7 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
+    } on Exception {
       return;
     }
 
@@ -71,7 +70,6 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Color primaryThemeColor = Theme.of(context).colorScheme.primary;
-    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
     Color errorThemeColor = Theme.of(context).errorColor;
 
     return Scaffold(

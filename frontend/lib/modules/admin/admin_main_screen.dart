@@ -64,9 +64,9 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
 
   List<Widget> _buildScreens() {
     return [
-      AdminHomeScreen(),
-      AdminPatientsScreen(),
-      AdminDoctorsScreen(),
+      const AdminHomeScreen(),
+      const AdminPatientsScreen(),
+      const AdminDoctorsScreen(),
     ];
   }
 

@@ -5,9 +5,6 @@ import 'config/themes/light_palette.dart';
 import 'modules/admin/admin_main_screen.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
-import 'modules/prescription/prescription_screen.dart';
-import 'modules/profile/profile_screen.dart';
-import 'modules/profile/profile_screen.dart';
 
 void main() {
   runApp(const MyApp());

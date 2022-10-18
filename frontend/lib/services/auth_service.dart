@@ -98,7 +98,6 @@ Future<ApiResponse> registerDoctor(String firstName, String lastName, String ema
 
   final response = await http.post(url,
       headers: {"Content-Type": "application/json"}, body: body);
-  Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
   ApiResponse res = ApiResponse();
   if (response.statusCode == 200) {

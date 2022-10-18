@@ -46,7 +46,6 @@ class AppointmentService {
     var response = await http
         .delete(Uri.parse('$apiBookingRootUrl/appointments/$appointmentID'));
     if (response.statusCode == 200) {
-      print("Deleted appointment $appointmentID");
     } else {
       throw Exception('Failed to delete appointment $appointmentID');
     }

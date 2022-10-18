@@ -185,13 +185,6 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
       int weekDayIndex = i+1;
       if (weekDaysList[i][0] == null || weekDaysList[i][1] == null) {
       } else {
-        Availability newWeekDayAvailability = Availability(
-            availabilityID: -1,
-            dayOfWeek: weekDayIndex,
-            startTime: weekDaysList[i][0],
-            endTime: weekDaysList[i][1],
-            doctor: await getUserFromStorage()
-        );
 
         if (!mounted) return;
 
@@ -251,7 +244,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
           return;
         } else if (weekDayResponse == "Resource Already Exists") {
           // Find availability id with that doctor id and day of week and update that
-          dynamic updateWeekDayResponse = await AvailabilityService
+          await AvailabilityService
               .updateAvailability(doctorAvailabilities
               .firstWhere((availability) => availability.dayOfWeek == weekDayIndex).availabilityID, newWeekDayAvailability);
         }
@@ -284,9 +277,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    Color primaryThemeColor = Theme.of(context).colorScheme.primary;
     Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
-    Color errorThemeColor = Theme.of(context).errorColor;
 
     return Scaffold(
       appBar: AppBar(
@@ -299,7 +290,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            return Container(
+            return SizedBox(
               height: height,
               child: SingleChildScrollView(
                 child: Container(

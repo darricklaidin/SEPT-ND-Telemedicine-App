@@ -42,6 +42,7 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
       Navigator.pop(context);
 
     } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           behavior: SnackBarBehavior.floating,
@@ -91,7 +92,7 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: height * 0.1),
-                Container(
+                SizedBox(
                   height: height * 0.6,
                   width: width * 0.8,
                   child: TextField(

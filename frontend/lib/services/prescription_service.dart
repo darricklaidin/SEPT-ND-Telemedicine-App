@@ -6,7 +6,6 @@ import 'dart:async';
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/services/doctor_service.dart';
 import 'package:frontend/services/patient_service.dart';
-import '../models/appointment.dart';
 import '../models/doctor.dart';
 import '../models/patient.dart';
 import '../models/prescription.dart';
@@ -49,7 +48,6 @@ class PrescriptionService {
     var response = await http
         .delete(Uri.parse('$apiPrescriptionRootUrl/prescriptions/$prescriptionID'));
     if (response.statusCode == 200) {
-      print("Deleted prescription $prescriptionID");
     } else {
       throw Exception('Failed to delete prescription $prescriptionID');
     }

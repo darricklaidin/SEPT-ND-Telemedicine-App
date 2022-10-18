@@ -40,8 +40,6 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
     }
 
     setState(() {
