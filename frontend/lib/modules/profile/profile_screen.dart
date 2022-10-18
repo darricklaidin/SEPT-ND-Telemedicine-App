@@ -162,12 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           primaryThemeColor,
                           secondaryThemeColor,
                           errorThemeColor),
-                      ..._buildPrescriptionBtn(
-                          width,
-                          height,
-                          primaryThemeColor,
-                          secondaryThemeColor,
-                          errorThemeColor),
+                      ..._buildPrescriptionBtn(width, height, primaryThemeColor,
+                          secondaryThemeColor, errorThemeColor),
                     ],
                   ),
                 ),
@@ -310,9 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Color secondaryThemeColor,
       Color errorThemeColor) {
     return widget.userRole == "DOCTOR"
-        ? [
-            SizedBox()
-          ]
+        ? [SizedBox()]
         : [
             Center(
               child: SizedBox(
@@ -361,44 +355,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ];
   }
 
-  List<Widget> _buildPrescriptionBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
-    return widget.userRole == "PATIENT" ? [SizedBox(height: height * 0.05,)] : [
-      Center(
-        child: SizedBox(
-          width: width * 0.45,
-          height: 40,
-          child: TextButton(
-            // Navigate to make appointment page
-            onPressed: () async {
-              if (await checkIfUserExists(errorThemeColor)) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionScreen(patient: widget.user)));
-              }
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+  List<Widget> _buildPrescriptionBtn(
+      double width,
+      double height,
+      Color primaryThemeColor,
+      Color secondaryThemeColor,
+      Color errorThemeColor) {
+    return widget.userRole == "PATIENT"
+        ? [
+            SizedBox(
+              height: height * 0.05,
+            )
+          ]
+        : [
+            Center(
+              child: SizedBox(
+                width: width * 0.45,
+                height: 40,
+                child: TextButton(
+                  // Navigate to make appointment page
+                  onPressed: () async {
+                    if (await checkIfUserExists(errorThemeColor)) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PrescriptionScreen(
+                                    patient: widget.user,
+                                    authService: widget.authService,
+                                  )));
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(secondaryThemeColor),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Prescribe Medicine',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
-            child: const Text(
-              'Prescribe Medicine',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-      SizedBox(
-        height: height * 0.05,
-      )
-    ];
+            SizedBox(
+              height: height * 0.05,
+            )
+          ];
   }
-
-
 }
-
