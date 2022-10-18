@@ -246,6 +246,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
+                  key: const Key('register'), 
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(LightPalette.secondary),

@@ -111,7 +111,7 @@ void main() {
 
         await tester.enterText(email, invalidEmail);
         await tester.enterText(pwd, invalidPassword);
-        await tester.tap(find.byType(ElevatedButton));
+        await tester.tap(find.byKey(const Key('register')));
         await tester.pumpAndSettle();
 
         // expect validator error messages
@@ -148,7 +148,7 @@ void main() {
         await tester.enterText(email, validEmail);
         await tester.enterText(pwd, validPassword);
         await tester.enterText(dob, validdob);
-        await tester.tap(find.byType(ElevatedButton, findsOneWidget));
+        await tester.tap(find.byKey(const Key('register')));
         await tester.pump();
 
         // expect registerUser being called and success snackbar shown
