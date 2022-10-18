@@ -26,6 +26,7 @@ jobs:
         env:
           MYSQL_DATABASE: heroku_fdbbdb52c723fe0
           MYSQL_HOST: us-cdbr-east-06.cleardb.net
+          MYSQL_USER: b055b0ffd5d05e
           MYSQL_ROOT_PASSWORD: bf66f11b
         ports:
           - 3306:3306
