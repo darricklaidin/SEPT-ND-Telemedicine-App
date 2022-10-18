@@ -31,7 +31,9 @@ class _EditPatientHealthStatusScreenState
 
     try {
       await PatientService.updatePatient(
-          await AuthService.getUserIdFromStorage(), updatedPatient, null);
+          await widget.authService.getUserIdFromStorage(),
+          updatedPatient,
+          null);
 
       if (!mounted) return;
 
