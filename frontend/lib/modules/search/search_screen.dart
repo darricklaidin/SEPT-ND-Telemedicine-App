@@ -12,8 +12,11 @@ import 'package:frontend/services/auth_service.dart';
 
 class SearchScreen extends StatefulWidget {
   final AuthService authService;
+  final DoctorService doctorService;
 
-  const SearchScreen({Key? key, required this.authService}) : super(key: key);
+  const SearchScreen(
+      {Key? key, required this.authService, required this.doctorService})
+      : super(key: key);
 
   @override
   State<SearchScreen> createState() => _SearchScreenState();
@@ -215,6 +218,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               user: suggestions[index],
                               userRole: userRole,
                               authService: widget.authService,
+                              doctorService: widget.doctorService,
                             ),
                           );
                         }

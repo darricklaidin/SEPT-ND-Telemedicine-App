@@ -104,6 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: SizedBox(
                     width: 300,
                     child: TextFormField(
+                      key: const Key('first name'),
                       controller: _fnameController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -124,6 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: SizedBox(
                     width: 300,
                     child: TextFormField(
+                      key: const Key('last name'),
                       controller: _lnameController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -184,6 +186,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: SizedBox(
                     width: 300,
                     child: TextFormField(
+                      key: const Key('email'),
                       controller: _emailController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -206,8 +209,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   width: 300,
                   child: TextFormField(
+                    key: const Key('password'),
                     controller: _passwordController,
-                    // key: passKey,
                     obscureText: true,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -227,6 +230,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   width: 300,
                   child: TextFormField(
+                    key: const Key('confirm password'),
                     controller: _cpasswordController,
                     obscureText: true,
                     decoration: const InputDecoration(

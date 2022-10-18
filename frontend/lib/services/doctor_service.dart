@@ -42,7 +42,7 @@ class DoctorService {
     }
   }
 
-  static Future<List<Appointment>> fetchDoctorAppointments(int doctorID) async {
+  Future<List<Appointment>> fetchDoctorAppointments(int doctorID) async {
     var response = await http
         .get(Uri.parse(
             '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'))

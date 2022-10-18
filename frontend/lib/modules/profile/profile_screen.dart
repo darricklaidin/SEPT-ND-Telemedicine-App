@@ -13,6 +13,7 @@ import '../appointment/book_appointment_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final AuthService authService;
+  final DoctorService doctorService;
 
   final user;
   final userRole;
@@ -21,7 +22,8 @@ class ProfileScreen extends StatefulWidget {
       {Key? key,
       required this.user,
       required this.userRole,
-      required this.authService})
+      required this.authService,
+      required this.doctorService})
       : super(key: key);
 
   @override
@@ -310,11 +312,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () async {
                     if (await checkIfUserExists(errorThemeColor)) {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookAppointmentScreen(
-                                  doctor: widget.user,
-                                  authService: widget.authService)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookAppointmentScreen(
+                            doctor: widget.user,
+                            authService: widget.authService,
+                            doctorService: widget.doctorService,
+                          ),
+                        ),
+                      );
                     }
                     await loadAvailabilities();
                   },
