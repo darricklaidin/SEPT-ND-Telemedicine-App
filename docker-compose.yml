@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  mysqldb:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=tele-med
+    ports:
+      - "3307:3306"
+
+  auth-microservice:
+    build: ./backend/auth-microservice
+    ports:
+      - "9090:8080"
+    environment:
+      - MYSQL_HOST=mysqldb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=tele-med
+    depends_on:
+      - mysqldb
+
+  appointment-microservice:
+    build: ./backend/appointment-microservice
+    ports:
+      - "9091:8081"
+    environment:
+      - MYSQL_HOST=mysqldb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=tele-med
+    depends_on:
+      - mysqldb
+
+  prescription-microservice:
+    build: ./backend/prescription-microservice
+    ports:
+      - "9092:8082"
+    environment:
+      - MYSQL_HOST=mysqldb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=tele-med
+    depends_on:
+      - mysqldb

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'config/themes/light_palette.dart';
+import 'modules/admin/admin_main_screen.dart';
 import 'modules/authorization/login_screen.dart';
 import 'modules/home/main_screen.dart';
+import 'services/auth_service.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,8 +37,9 @@ class _MyAppState extends State<MyApp> {
         ),
         initialRoute: '/',
         routes: {
-          "/": (context) => const LoginScreen(),
-          "/home": (context) => const MainScreen()
+          "/": (context) => LoginScreen(authService: AuthService()),
+          "/home": (context) => const MainScreen(),
+          "/admin": (context) => const AdminMainScreen(),
         });
   }
 }

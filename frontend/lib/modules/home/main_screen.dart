@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/services/patient_service.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import '../../models/patient.dart';
+import '../../services/auth_service.dart';
+import '../../services/doctor_service.dart';
+import '../../services/specialty_service.dart';
 import '../appointment/manage_appointments_screen.dart';
-import '../chat/chat_screen.dart';
-import '../doctor/doctor_profile_screen.dart';
-import 'home_screen.dart';
+import '../notifications/notifications.dart';
+import '../search/search_screen.dart';
+import 'empty_home_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -16,21 +21,41 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   PersistentTabController? _controller;
+  AuthService authService = AuthService();
+  String userRole = "";
+  Patient? patient;
+
+  void _handleTabSelection(int controllerIndex) {
+    _controller!.index = controllerIndex;
+  }
+
+  void setUser() async {
+    userRole = await authService.getUserRoleFromStorage();
+    if (userRole == "PATIENT") {
+      patient = await authService.getUserFromStorage();
+    }
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
+    setUser();
     _controller = PersistentTabController(initialIndex: 0);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Builder(builder: (BuildContext context) {
+    return Builder(builder: (context) {
       return PersistentTabView(
         context,
         controller: _controller,
-        screens: _buildScreens(),
-        items: _navBarsItems(),
+        screens: userRole == "PATIENT"
+            ? _buildPatientScreens()
+            : _buildDoctorScreens(),
+        items: userRole == "PATIENT"
+            ? _patientNavBarsItems()
+            : _doctorNavBarsItems(),
         confineInSafeArea: true,
         backgroundColor: Colors.white, // Default is Colors.white.
         handleAndroidBackButtonPress: true, // Default is true.
@@ -62,16 +87,53 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  List<Widget> _buildScreens() {
+  List<Widget> _buildDoctorScreens() {
     return [
-      const HomeScreen(),
-      const DoctorProfileScreen(),
-      ManageAppointmentsScreen(),
-      const ChatScreen(),
+      EmptyHomeScreen(
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        specialtyService: SpecialtyService(),
+      ),
+      SearchScreen(
+        authService: AuthService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
+      ManageAppointmentsScreen(
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        patientService: PatientService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
+      const NotificationScreen(),
     ];
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems() {
+  List<Widget> _buildPatientScreens() {
+    return [
+      EmptyHomeScreen(
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        specialtyService: SpecialtyService(),
+      ),
+      SearchScreen(
+        authService: AuthService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
+      ManageAppointmentsScreen(
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        patientService: PatientService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
+      const NotificationScreen(),
+    ];
+  }
+
+  List<PersistentBottomNavBarItem> _patientNavBarsItems() {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.home),
@@ -92,20 +154,71 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       PersistentBottomNavBarItem(
-          icon: const Icon(CupertinoIcons.calendar),
-          title: ("Appointments"),
-          activeColorPrimary: CupertinoColors.activeBlue,
-          inactiveColorPrimary: CupertinoColors.systemGrey,
-          routeAndNavigatorSettings: const RouteAndNavigatorSettings(
-            initialRoute: '/appointments',
-          )),
-      PersistentBottomNavBarItem(
-        icon: const Icon(CupertinoIcons.chat_bubble),
-        title: ("Chat"),
+        icon: const Icon(CupertinoIcons.calendar),
+        title: ("Appointments"),
         activeColorPrimary: CupertinoColors.activeBlue,
         inactiveColorPrimary: CupertinoColors.systemGrey,
         routeAndNavigatorSettings: const RouteAndNavigatorSettings(
-          initialRoute: '/chat',
+          initialRoute: '/appointments',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.medical_information),
+        title: ("Prescriptions"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/prescriptions',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.bell),
+        title: ("Notifications"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/notifications',
+        ),
+      ),
+    ];
+  }
+
+  List<PersistentBottomNavBarItem> _doctorNavBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.home),
+        title: ("Home"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/home',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.search),
+        title: ("Search"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/search',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.calendar),
+        title: ("Appointments"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/appointments',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.bell),
+        title: ("Notifications"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/notifications',
         ),
       ),
     ];

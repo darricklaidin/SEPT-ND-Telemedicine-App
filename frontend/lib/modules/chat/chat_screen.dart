@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:talkjs_flutter/talkjs_flutter.dart';
 
-import '../home/home_screen.dart';
 import '../../services/doctor_service.dart';
 import '../../services/patient_service.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({Key? key}) : super(key: key);
+  final Function handleTabSelection;
+  final int patientID;
+  final int doctorID;
+  final bool isPatient;
+
+  const ChatScreen({
+    Key? key,
+    required this.patientID,
+    required this.doctorID,
+    required this.isPatient,
+    required this.handleTabSelection,
+  }) : super(key: key);
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -18,14 +27,17 @@ class _ChatScreenState extends State<ChatScreen> {
   late User _me;
   late User _other;
   late Conversation _conversation;
-  bool isPatient = false;
-
+  String patientImgUrl =
+      'https://e7.pngegg.com/pngimages/369/691/png-clipart-avatar-computer-icons-patient-avatar-heroes-logo.png';
+  String doctorImgUrl =
+      'https://toppng.com/uploads/preview/logo-doctors-logo-black-and-white-vector-11563999612kv1q84czrt.png';
   Future? _myFuture;
 
   @override
   void initState() {
     super.initState();
-    _myFuture = _createChatRoom();
+    _myFuture =
+        _createChatRoom(widget.patientID, widget.doctorID, widget.isPatient);
   }
 
   @override
@@ -56,10 +68,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back,
                       size: 20, color: Colors.black),
-                  onPressed: () => pushNewScreen(
-                    context,
-                    screen: const HomeScreen(),
-                  ),
+                  onPressed: () => {Navigator.pop(context)},
                 )),
             body: body,
           );
@@ -73,7 +82,7 @@ class _ChatScreenState extends State<ChatScreen> {
           width: 10,
         ),
         Text(
-          'Appointment',
+          'Appointment Chat',
           style: TextStyle(
             color: Colors.black54,
             fontSize: 18,
@@ -84,19 +93,20 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  Future<void> _createChatRoom() async {
+  Future<void> _createChatRoom(
+      int patientID, int doctorID, bool isPatient) async {
     // create a TalkJS session
     _session = Session(appId: 'taq5zIcQ');
 
     // create a TalkJS user
     final me = isPatient
-        ? await PatientService.fetchPatient(3)
-        : await DoctorService.fetchDoctor(1);
+        ? await PatientService.fetchPatient(patientID)
+        : await DoctorService.fetchDoctor(doctorID);
     _me = _session.getUser(
       id: '${(isPatient ? 'p' : 'd')}${me.userID.toString()}', // create unique depending on user type
       name: '${me.firstName} ${me.lastName}',
       email: [me.email],
-      photoUrl: 'https://talkjs.com/images/avatar-1.jpg',
+      photoUrl: isPatient ? patientImgUrl : doctorImgUrl,
     );
 
     // set the active TalkJS user to the session
@@ -104,14 +114,14 @@ class _ChatScreenState extends State<ChatScreen> {
 
     // create another user to create a conversation with
     final other = isPatient
-        ? await DoctorService.fetchDoctor(1)
-        : await PatientService.fetchPatient(3);
+        ? await DoctorService.fetchDoctor(doctorID)
+        : await PatientService.fetchPatient(patientID);
 
     _other = _session.getUser(
       id: '${(isPatient ? 'p' : 'd')}${other.userID.toString()}',
       name: '${other.firstName} ${other.lastName}',
       email: [other.email],
-      photoUrl: 'https://talkjs.com/images/avatar-1.jpg',
+      photoUrl: isPatient ? doctorImgUrl : patientImgUrl,
     );
 
     // create chat
