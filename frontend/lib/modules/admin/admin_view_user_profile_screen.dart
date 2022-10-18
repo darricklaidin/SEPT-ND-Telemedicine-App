@@ -11,18 +11,25 @@ import '../../models/patient.dart';
 import '../../services/patient_service.dart';
 
 class AdminViewUserProfileScreen extends StatefulWidget {
+  final SpecialtyService specialtyService;
 
   final user;
   final userRole;
 
-  const AdminViewUserProfileScreen({Key? key, required this.user, required this.userRole}) : super(key: key);
+  const AdminViewUserProfileScreen(
+      {Key? key,
+      required this.user,
+      required this.userRole,
+      required this.specialtyService})
+      : super(key: key);
 
   @override
-  State<AdminViewUserProfileScreen> createState() => _AdminViewUserProfileScreenState();
+  State<AdminViewUserProfileScreen> createState() =>
+      _AdminViewUserProfileScreenState();
 }
 
-class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen> {
-
+class _AdminViewUserProfileScreenState
+    extends State<AdminViewUserProfileScreen> {
   List availabilitySchedule = [];
   bool isLoading = true;
   bool timeUp = false;
@@ -32,8 +39,8 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
     timeUp = false;
 
     try {
-      availabilitySchedule = await DoctorService
-          .fetchDoctorAvailabilities(widget.user.userID);
+      availabilitySchedule =
+          await DoctorService.fetchDoctorAvailabilities(widget.user.userID);
     } on TimeoutException {
       setState(() {
         timeUp = true;
@@ -48,10 +55,11 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
   }
 
   Future checkIfUserExists(Color errorThemeColor) async {
-    if (widget.userRole == "DOCTOR" ?
-    await DoctorService.fetchDoctor(widget.user.userID) == "Resource Not Found"
-        : await PatientService.fetchPatient(widget.user.userID) == "Resource Not Found") {
-
+    if (widget.userRole == "DOCTOR"
+        ? await DoctorService.fetchDoctor(widget.user.userID) ==
+            "Resource Not Found"
+        : await PatientService.fetchPatient(widget.user.userID) ==
+            "Resource Not Found") {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
@@ -67,7 +75,6 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
     }
 
     return true;
-
   }
 
   Future activateAccount() async {
@@ -79,7 +86,8 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
       });
 
       // set this user's account status to true by using updatePatient()
-      await PatientService.updatePatient(widget.user.userID, updatedPatient, null);
+      await PatientService.updatePatient(
+          widget.user.userID, updatedPatient, null);
 
       if (!mounted) return;
 
@@ -99,7 +107,7 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
         updatedDoctor.accountStatus = true;
       });
 
-      List specialties = await SpecialtyService.getSpecialties();
+      List specialties = await widget.specialtyService.getSpecialties();
 
       int specialtyID = -1;
       for (var specialty in specialties) {
@@ -109,7 +117,8 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
       }
 
       // set this user's account status to false by using updateDoctor()
-      await DoctorService.updateDoctor(widget.user.userID, updatedDoctor, null, specialtyID);
+      await DoctorService.updateDoctor(
+          widget.user.userID, updatedDoctor, null, specialtyID);
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -133,7 +142,8 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
       });
 
       // set this user's account status to false by using updatePatient()
-      await PatientService.updatePatient(widget.user.userID, updatedPatient, null);
+      await PatientService.updatePatient(
+          widget.user.userID, updatedPatient, null);
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -152,7 +162,7 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
         updatedDoctor.accountStatus = false;
       });
 
-      List specialties = await SpecialtyService.getSpecialties();
+      List specialties = await widget.specialtyService.getSpecialties();
 
       int specialtyID = -1;
       for (var specialty in specialties) {
@@ -162,7 +172,8 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
       }
 
       // set this user's account status to false by using updateDoctor()
-      await DoctorService.updateDoctor(widget.user.userID, updatedDoctor, null, specialtyID);
+      await DoctorService.updateDoctor(
+          widget.user.userID, updatedDoctor, null, specialtyID);
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -229,13 +240,29 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ..._buildProfileHeader(width, height, primaryThemeColor, secondaryThemeColor),
+                      ..._buildProfileHeader(width, height, primaryThemeColor,
+                          secondaryThemeColor),
                       SizedBox(height: height * 0.01),
-                      ..._buildAvailabilitySchedule(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      ..._buildAvailabilitySchedule(
+                          width,
+                          height,
+                          primaryThemeColor,
+                          secondaryThemeColor,
+                          errorThemeColor),
                       SizedBox(height: height * 0.01),
-                      ..._buildActivateAccountButton(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      ..._buildActivateAccountButton(
+                          width,
+                          height,
+                          primaryThemeColor,
+                          secondaryThemeColor,
+                          errorThemeColor),
                       SizedBox(height: height * 0.01),
-                      ..._buildDeactivateAccountButton(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      ..._buildDeactivateAccountButton(
+                          width,
+                          height,
+                          primaryThemeColor,
+                          secondaryThemeColor,
+                          errorThemeColor),
                       SizedBox(height: height * 0.1),
                     ],
                   ),
@@ -248,7 +275,8 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
     );
   }
 
-  List<Widget> _buildProfileHeader(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+  List<Widget> _buildProfileHeader(double width, double height,
+      Color primaryThemeColor, Color secondaryThemeColor) {
     return [
       const Center(
         child: Icon(CupertinoIcons.profile_circled, size: 100),
@@ -269,19 +297,24 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
     ];
   }
 
-  List<Widget> _buildAvailabilitySchedule(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
+  List<Widget> _buildAvailabilitySchedule(
+      double width,
+      double height,
+      Color primaryThemeColor,
+      Color secondaryThemeColor,
+      Color errorThemeColor) {
     if (widget.userRole == "DOCTOR") {
       if (timeUp) {
         return [
           SizedBox(
             child: Container(
               padding: EdgeInsets.fromLTRB(0, height * 0.05, 0, 0),
-              child: const Text("Timeout: Unable to fetch the doctor's availabilities"),
+              child: const Text(
+                  "Timeout: Unable to fetch the doctor's availabilities"),
             ),
           ),
         ];
-      }
-      else if (availabilitySchedule.isEmpty) {
+      } else if (availabilitySchedule.isEmpty) {
         return [
           SizedBox(
             child: Container(
@@ -300,10 +333,17 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               height: height * 0.1,
               child: ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: width * 0.1, vertical: 0),
-                title: Text(Utility.convertIntToDayOfWeek(availabilitySchedule[index].dayOfWeek), style: const TextStyle(fontSize: 14),),
-                subtitle: Text("${Utility.timeToString(availabilitySchedule[index].startTime)} "
-                    "- ${Utility.timeToString(availabilitySchedule[index].endTime)}", style: const TextStyle(fontSize: 12)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: width * 0.1, vertical: 0),
+                title: Text(
+                  Utility.convertIntToDayOfWeek(
+                      availabilitySchedule[index].dayOfWeek),
+                  style: const TextStyle(fontSize: 14),
+                ),
+                subtitle: Text(
+                    "${Utility.timeToString(availabilitySchedule[index].startTime)} "
+                    "- ${Utility.timeToString(availabilitySchedule[index].endTime)}",
+                    style: const TextStyle(fontSize: 12)),
               ),
             );
           },
@@ -318,22 +358,35 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
     return [SizedBox(height: height * 0.05)];
   }
 
-  List<Widget> _buildActivateAccountButton(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
+  List<Widget> _buildActivateAccountButton(
+      double width,
+      double height,
+      Color primaryThemeColor,
+      Color secondaryThemeColor,
+      Color errorThemeColor) {
     return [
       ElevatedButton(
         onPressed: () {
           activateAccount();
         },
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(secondaryThemeColor),
+          backgroundColor:
+              MaterialStateProperty.all<Color>(secondaryThemeColor),
         ),
-        child: const Text("Activate Account",
-          style: TextStyle(fontWeight: FontWeight.bold),),
+        child: const Text(
+          "Activate Account",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     ];
   }
 
-  List<Widget> _buildDeactivateAccountButton(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
+  List<Widget> _buildDeactivateAccountButton(
+      double width,
+      double height,
+      Color primaryThemeColor,
+      Color secondaryThemeColor,
+      Color errorThemeColor) {
     return [
       ElevatedButton(
         onPressed: () {
@@ -342,10 +395,11 @@ class _AdminViewUserProfileScreenState extends State<AdminViewUserProfileScreen>
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all<Color>(errorThemeColor),
         ),
-        child: const Text("Deactivate Account",
-          style: TextStyle(fontWeight: FontWeight.bold),),
+        child: const Text(
+          "Deactivate Account",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
       ),
     ];
   }
-
 }

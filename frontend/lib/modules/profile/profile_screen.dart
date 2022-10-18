@@ -9,21 +9,26 @@ import 'package:frontend/utility.dart';
 
 import '../../services/auth_service.dart';
 import '../../services/patient_service.dart';
+import '../../services/specialty_service.dart';
 import '../appointment/book_appointment_screen.dart';
 import '../prescription/create_prescription_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final AuthService authService;
+  final DoctorService doctorService;
+  final SpecialtyService specialtyService;
 
   final user;
   final userRole;
 
-  const ProfileScreen(
-      {Key? key,
-      required this.user,
-      required this.userRole,
-      required this.authService})
-      : super(key: key);
+  const ProfileScreen({
+    Key? key,
+    required this.user,
+    required this.userRole,
+    required this.authService,
+    required this.doctorService,
+    required this.specialtyService,
+  }) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -157,12 +162,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           primaryThemeColor,
                           secondaryThemeColor,
                           errorThemeColor),
-                      ..._buildPrescriptionBtn(
-                          width,
-                          height,
-                          primaryThemeColor,
-                          secondaryThemeColor,
-                          errorThemeColor),
+                      ..._buildPrescriptionBtn(width, height, primaryThemeColor,
+                          secondaryThemeColor, errorThemeColor),
                     ],
                   ),
                 ),
@@ -179,7 +180,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        ProfileButton(authService: widget.authService),
+        ProfileButton(
+          authService: widget.authService,
+          specialtyService: widget.specialtyService,
+        ),
         SizedBox(
           width: width * 0.05,
         )
@@ -302,9 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Color secondaryThemeColor,
       Color errorThemeColor) {
     return widget.userRole == "DOCTOR"
-        ? [
-            SizedBox()
-          ]
+        ? [SizedBox()]
         : [
             Center(
               child: SizedBox(
@@ -315,11 +317,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () async {
                     if (await checkIfUserExists(errorThemeColor)) {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookAppointmentScreen(
-                                  doctor: widget.user,
-                                  authService: widget.authService)));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookAppointmentScreen(
+                            doctor: widget.user,
+                            authService: widget.authService,
+                            doctorService: widget.doctorService,
+                          ),
+                        ),
+                      );
                     }
                     await loadAvailabilities();
                   },
@@ -349,44 +355,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ];
   }
 
-  List<Widget> _buildPrescriptionBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
-    return widget.userRole == "PATIENT" ? [SizedBox(height: height * 0.05,)] : [
-      Center(
-        child: SizedBox(
-          width: width * 0.45,
-          height: 40,
-          child: TextButton(
-            // Navigate to make appointment page
-            onPressed: () async {
-              if (await checkIfUserExists(errorThemeColor)) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionScreen(patient: widget.user)));
-              }
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+  List<Widget> _buildPrescriptionBtn(
+      double width,
+      double height,
+      Color primaryThemeColor,
+      Color secondaryThemeColor,
+      Color errorThemeColor) {
+    return widget.userRole == "PATIENT"
+        ? [
+            SizedBox(
+              height: height * 0.05,
+            )
+          ]
+        : [
+            Center(
+              child: SizedBox(
+                width: width * 0.45,
+                height: 40,
+                child: TextButton(
+                  // Navigate to make appointment page
+                  onPressed: () async {
+                    if (await checkIfUserExists(errorThemeColor)) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PrescriptionScreen(
+                                    patient: widget.user,
+                                    authService: widget.authService,
+                                  )));
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(secondaryThemeColor),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Prescribe Medicine',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
-            child: const Text(
-              'Prescribe Medicine',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-      SizedBox(
-        height: height * 0.05,
-      )
-    ];
+            SizedBox(
+              height: height * 0.05,
+            )
+          ];
   }
-
-
 }
-

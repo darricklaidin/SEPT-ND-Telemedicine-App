@@ -130,7 +130,7 @@ class AuthService {
     await storage.deleteAll();
   }
 
-  static Future<int> getUserIdFromStorage() async {
+  Future<int> getUserIdFromStorage() async {
     return int.parse(await storage.read(key: "userId") ?? "-1");
   }
 

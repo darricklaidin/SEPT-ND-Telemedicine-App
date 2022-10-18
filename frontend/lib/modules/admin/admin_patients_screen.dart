@@ -1,13 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/services/specialty_service.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import 'package:frontend/services/patient_service.dart';
 import 'package:frontend/modules/admin/admin_view_user_profile_screen.dart';
 
 class AdminPatientsScreen extends StatefulWidget {
-  const AdminPatientsScreen({Key? key}) : super(key: key);
+  final SpecialtyService specialtyService;
+
+  const AdminPatientsScreen({Key? key, required this.specialtyService})
+      : super(key: key);
 
   @override
   State<AdminPatientsScreen> createState() => _AdminPatientsScreenState();
@@ -186,6 +190,7 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
                             screen: AdminViewUserProfileScreen(
                               user: suggestions[index],
                               userRole: "PATIENT",
+                              specialtyService: widget.specialtyService,
                             ),
                           );
                         }

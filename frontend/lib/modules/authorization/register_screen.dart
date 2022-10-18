@@ -104,6 +104,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: SizedBox(
                     width: 300,
                     child: TextFormField(
+                      key: const Key('first name'),
                       controller: _fnameController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -124,6 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: SizedBox(
                     width: 300,
                     child: TextFormField(
+                      key: const Key('last name'),
                       controller: _lnameController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -141,42 +143,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 20),
                 Align(
                   alignment: Alignment.center,
-                  child: Container(
-                      width: 300,
-                      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                      child: Row(
-                        children: [
-                          const Text("Date of Birth:"),
-                          SizedBox(
-                            width: width * 0.15,
-                          ),
-                          ElevatedButton(
-                            onPressed: () async {
-                              DateTime? pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                //DateTime.now() - not to allow to choose before today.
-                                lastDate: DateTime.now(),
-                              );
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Date of Birth:"),
+                      SizedBox(
+                        width: width * 0.15,
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          DateTime? pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(1900),
+                            //DateTime.now() - not to allow to choose before today.
+                            lastDate: DateTime.now(),
+                          );
 
-                              if (pickedDate != null) {
-                                String formattedDate =
-                                    DateFormat('yyyy-MM-dd').format(pickedDate);
-                                setState(() {
-                                  dateInput =
-                                      formattedDate; //set output date to TextField value.
-                                });
-                              }
-                            },
-                            child: Text(
-                              dateInput ?? "Select Date",
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ],
-                      )),
+                          if (pickedDate != null) {
+                            String formattedDate =
+                                DateFormat('yyyy-MM-dd').format(pickedDate);
+                            setState(() {
+                              dateInput =
+                                  formattedDate; //set output date to TextField value.
+                            });
+                          }
+                        },
+                        child: Text(
+                          dateInput ?? "Select Date",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Align(
@@ -184,6 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: SizedBox(
                     width: 300,
                     child: TextFormField(
+                      key: const Key('email'),
                       controller: _emailController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
@@ -206,8 +206,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   width: 300,
                   child: TextFormField(
+                    key: const Key('password'),
                     controller: _passwordController,
-                    // key: passKey,
                     obscureText: true,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -227,6 +227,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 SizedBox(
                   width: 300,
                   child: TextFormField(
+                    key: const Key('confirm password'),
                     controller: _cpasswordController,
                     obscureText: true,
                     decoration: const InputDecoration(
@@ -244,6 +245,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
+                  key: const Key('register'),
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all(LightPalette.secondary),

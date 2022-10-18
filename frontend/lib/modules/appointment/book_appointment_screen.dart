@@ -14,10 +14,14 @@ import 'package:frontend/models/availability.dart';
 
 class BookAppointmentScreen extends StatefulWidget {
   final AuthService authService;
+  final DoctorService doctorService;
 
   final Doctor doctor;
   const BookAppointmentScreen(
-      {Key? key, required this.doctor, required this.authService})
+      {Key? key,
+      required this.doctor,
+      required this.authService,
+      required this.doctorService})
       : super(key: key);
 
   @override
@@ -254,8 +258,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   }
 
   Future loadDoctorAppointments() async {
-    doctorAppointments =
-        await DoctorService.fetchDoctorAppointments(widget.doctor.userID);
+    doctorAppointments = await widget.doctorService
+        .fetchDoctorAppointments(widget.doctor.userID);
   }
 
   Future loadDoctorAvailabilities() async {

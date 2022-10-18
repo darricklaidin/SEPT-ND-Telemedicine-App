@@ -10,9 +10,12 @@ import 'package:frontend/models/prescription.dart';
 import 'package:frontend/services/prescription_service.dart';
 
 class PrescriptionScreen extends StatefulWidget {
+  final AuthService authService;
   final Patient patient;
-  const PrescriptionScreen({Key? key, required this.patient}) : super(key: key);
-  
+  const PrescriptionScreen(
+      {Key? key, required this.patient, required this.authService})
+      : super(key: key);
+
   @override
   State<PrescriptionScreen> createState() => _PrescriptionScreenState();
 }
@@ -28,9 +31,14 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
     // Create prescription
     // prescriptionText would have the text value in the text box
 
-    int doctorID = await AuthService.getUserIdFromStorage();  // access from getuserIDfromstorage
-    int patientID = widget.patient.userID;  // access from patient object
-    Prescription newPrescription = Prescription(prescriptionID: -1, doctorID: doctorID, patientID: patientID, prescription: prescriptionText);
+    int doctorID = await widget.authService
+        .getUserIdFromStorage(); // access from getuserIDfromstorage
+    int patientID = widget.patient.userID; // access from patient object
+    Prescription newPrescription = Prescription(
+        prescriptionID: -1,
+        doctorID: doctorID,
+        patientID: patientID,
+        prescription: prescriptionText);
 
     await PrescriptionService.createPrescription(newPrescription);
   }
@@ -52,23 +60,19 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
           child: Column(
             children: [
               TextField(
-                controller: textarea,
-                keyboardType: TextInputType.multiline,
-                minLines: 1,
-                maxLines: null,
-                decoration: const InputDecoration(
-                    hintText: "Enter Prescription",
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1)
-                    )
-                ),
-                onChanged: (text) {
-                  setState(() {
-                    prescriptionText = text;
-                  });
-                }
-              ),
-
+                  controller: textarea,
+                  keyboardType: TextInputType.multiline,
+                  minLines: 1,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                      hintText: "Enter Prescription",
+                      focusedBorder:
+                          OutlineInputBorder(borderSide: BorderSide(width: 1))),
+                  onChanged: (text) {
+                    setState(() {
+                      prescriptionText = text;
+                    });
+                  }),
               ElevatedButton(
                   onPressed: () async {
                     await createPrescription();
@@ -76,24 +80,23 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                     if (!mounted) return;
 
                     ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          margin: EdgeInsets.only(bottom: 10.0),
-                          content: Text("Prescription saved!"),
-                          duration: Duration(seconds: 2),
-                          backgroundColor: LightPalette.success,
-                        ),
+                      const SnackBar(
+                        behavior: SnackBarBehavior.floating,
+                        margin: EdgeInsets.only(bottom: 10.0),
+                        content: Text("Prescription saved!"),
+                        duration: Duration(seconds: 2),
+                        backgroundColor: LightPalette.success,
+                      ),
                     );
 
                     Navigator.pop(context);
                   },
-                  child: const Text("Save Prescription",
-                    style: TextStyle(fontWeight: FontWeight.bold),)
-              )
+                  child: const Text(
+                    "Save Prescription",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ))
             ],
           ),
-        )
-    );
+        ));
   }
-
 }

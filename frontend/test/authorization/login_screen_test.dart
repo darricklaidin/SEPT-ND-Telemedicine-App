@@ -52,9 +52,8 @@ void main() {
   }
 
   arrangeAuthServiceReturnsRole(String role) {
-    when(() => mockAuthService.getUserRoleFromStorage()).thenAnswer((_) async {
-      return role;
-    });
+    when(() => mockAuthService.getUserRoleFromStorage())
+        .thenAnswer((_) async => role);
   }
 
   testWidgets('title is displayed', (WidgetTester tester) async {

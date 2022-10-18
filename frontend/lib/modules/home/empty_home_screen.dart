@@ -3,17 +3,22 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:frontend/main.dart';
 import 'package:frontend/models/user.dart';
 import '../../services/auth_service.dart';
+import '../../services/specialty_service.dart';
 import '../profile/profile_button.dart';
 import 'package:frontend/config/constants.dart';
 
 class EmptyHomeScreen extends StatefulWidget {
   final AuthService authService;
+  final SpecialtyService specialtyService;
 
   final Function handleTabSelection;
 
-  const EmptyHomeScreen(
-      {Key? key, required this.handleTabSelection, required this.authService})
-      : super(key: key);
+  const EmptyHomeScreen({
+    Key? key,
+    required this.handleTabSelection,
+    required this.authService,
+    required this.specialtyService,
+  }) : super(key: key);
 
   @override
   State<EmptyHomeScreen> createState() => _EmptyHomeScreenState();
@@ -78,7 +83,10 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
                   fontSize: 30,
                   fontWeight: FontWeight.bold),
             ),
-            ProfileButton(authService: widget.authService),
+            ProfileButton(
+              authService: widget.authService,
+              specialtyService: widget.specialtyService,
+            ),
             // SizedBox(
             //   width: 20,
             // )

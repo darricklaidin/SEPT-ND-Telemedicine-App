@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/services/auth_service.dart';
 
 import '../../main.dart';
+import '../../services/specialty_service.dart';
 import '../doctor/edit_availabilities_screen.dart';
 import 'edit_doctor_personal_details_screen.dart';
 import 'edit_patient_health_status.dart';
@@ -10,8 +11,11 @@ import 'edit_patient_personal_details_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   final AuthService authService;
+  final SpecialtyService specialtyService;
 
-  const SettingsScreen({Key? key, required this.authService}) : super(key: key);
+  const SettingsScreen(
+      {Key? key, required this.authService, required this.specialtyService})
+      : super(key: key);
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
@@ -172,11 +176,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           )));
             } else if (userRole == "DOCTOR") {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => EditDoctorPersonalDetailsScreen(
-                            doctorID: userID,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditDoctorPersonalDetailsScreen(
+                    doctorID: userID,
+                    specialtyService: widget.specialtyService,
+                  ),
+                ),
+              );
             }
           },
           style: ButtonStyle(

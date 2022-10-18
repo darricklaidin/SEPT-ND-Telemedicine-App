@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/prescription/patient_view_prescription_screen.dart';
+import 'package:frontend/services/patient_service.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../models/patient.dart';
 import '../../services/auth_service.dart';
+import '../../services/doctor_service.dart';
+import '../../services/specialty_service.dart';
 import '../appointment/manage_appointments_screen.dart';
 import '../notifications/notifications.dart';
 import '../search/search_screen.dart';
@@ -48,8 +50,12 @@ class _MainScreenState extends State<MainScreen> {
       return PersistentTabView(
         context,
         controller: _controller,
-        screens: userRole == "PATIENT" ? _buildPatientScreens() : _buildDoctorScreens(),
-        items: userRole == "PATIENT" ? _patientNavBarsItems() : _doctorNavBarsItems(),
+        screens: userRole == "PATIENT"
+            ? _buildPatientScreens()
+            : _buildDoctorScreens(),
+        items: userRole == "PATIENT"
+            ? _patientNavBarsItems()
+            : _doctorNavBarsItems(),
         confineInSafeArea: true,
         backgroundColor: Colors.white, // Default is Colors.white.
         handleAndroidBackButtonPress: true, // Default is true.
@@ -84,10 +90,22 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> _buildDoctorScreens() {
     return [
       EmptyHomeScreen(
-          handleTabSelection: _handleTabSelection, authService: AuthService()),
-      SearchScreen(authService: AuthService()),
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        specialtyService: SpecialtyService(),
+      ),
+      SearchScreen(
+        authService: AuthService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
       ManageAppointmentsScreen(
-          handleTabSelection: _handleTabSelection, authService: AuthService()),
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        patientService: PatientService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
       const NotificationScreen(),
     ];
   }
@@ -95,11 +113,22 @@ class _MainScreenState extends State<MainScreen> {
   List<Widget> _buildPatientScreens() {
     return [
       EmptyHomeScreen(
-          handleTabSelection: _handleTabSelection, authService: AuthService()),
-      SearchScreen(authService: AuthService()),
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        specialtyService: SpecialtyService(),
+      ),
+      SearchScreen(
+        authService: AuthService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
       ManageAppointmentsScreen(
-          handleTabSelection: _handleTabSelection, authService: AuthService()),
-      PatientViewPrescriptionScreen(patient: patient!, authService: authService),
+        handleTabSelection: _handleTabSelection,
+        authService: AuthService(),
+        patientService: PatientService(),
+        doctorService: DoctorService(),
+        specialtyService: SpecialtyService(),
+      ),
       const NotificationScreen(),
     ];
   }
@@ -194,5 +223,4 @@ class _MainScreenState extends State<MainScreen> {
       ),
     ];
   }
-
 }

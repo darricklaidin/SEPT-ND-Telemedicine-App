@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/modules/admin/admin_doctors_screen.dart';
 import 'package:frontend/modules/admin/admin_home_screen.dart';
 import 'package:frontend/modules/admin/admin_patients_screen.dart';
+import 'package:frontend/services/specialty_service.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
 import '../../services/auth_service.dart';
@@ -64,9 +65,12 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
 
   List<Widget> _buildScreens() {
     return [
-      AdminHomeScreen(authService: AuthService()),
-      const AdminPatientsScreen(),
-      const AdminDoctorsScreen(),
+      AdminHomeScreen(
+        authService: AuthService(),
+        specialtyService: SpecialtyService(),
+      ),
+      AdminPatientsScreen(specialtyService: SpecialtyService()),
+      AdminDoctorsScreen(specialtyService: SpecialtyService()),
     ];
   }
 

@@ -138,7 +138,7 @@ class _EditAvailabilityScreenState extends State<EditAvailabilityScreen> {
     });
 
     doctorAvailabilities = await DoctorService.fetchDoctorAvailabilities(
-        await AuthService.getUserIdFromStorage());
+        await widget.authService.getUserIdFromStorage());
 
     setState(() {
       for (Availability availability in doctorAvailabilities) {

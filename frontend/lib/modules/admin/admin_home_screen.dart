@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import '../../config/themes/light_palette.dart';
 import '../../main.dart';
 import '../../services/auth_service.dart';
+import '../../services/specialty_service.dart';
 import 'admin_create_new_doctor_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   final AuthService authService;
+  final SpecialtyService specialtyService;
 
-  const AdminHomeScreen({Key? key, required this.authService})
+  const AdminHomeScreen(
+      {Key? key, required this.authService, required this.specialtyService})
       : super(key: key);
 
   @override
@@ -49,10 +52,14 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AdminCreateNewDoctorScreen(
-                            authService: widget.authService)));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AdminCreateNewDoctorScreen(
+                      authService: widget.authService,
+                      specialtyService: widget.specialtyService,
+                    ),
+                  ),
+                );
               },
               style: ButtonStyle(
                 backgroundColor:

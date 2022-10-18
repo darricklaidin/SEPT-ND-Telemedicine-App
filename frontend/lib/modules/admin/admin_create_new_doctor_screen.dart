@@ -9,8 +9,10 @@ import '../../services/specialty_service.dart';
 
 class AdminCreateNewDoctorScreen extends StatefulWidget {
   final AuthService authService;
+  final SpecialtyService specialtyService;
 
-  const AdminCreateNewDoctorScreen({Key? key, required this.authService})
+  const AdminCreateNewDoctorScreen(
+      {Key? key, required this.authService, required this.specialtyService})
       : super(key: key);
 
   @override
@@ -65,7 +67,8 @@ class _AdminCreateNewDoctorScreenState
         var password = _passwordController.text;
         var specialty = _specialtyController.text;
 
-        List existingSpecialties = await SpecialtyService.getSpecialties();
+        List existingSpecialties =
+            await widget.specialtyService.getSpecialties();
 
         bool specialtyExists = false;
         int specialtyID = -1;
@@ -83,8 +86,9 @@ class _AdminCreateNewDoctorScreenState
         // If specialty with that name does not exist
         if (!specialtyExists) {
           // Create new specialty
-          Specialty newSpecialty = await SpecialtyService.createSpecialty(
-              Specialty(specialtyID: -1, specialtyName: specialty));
+          Specialty newSpecialty = await widget.specialtyService
+              .createSpecialty(
+                  Specialty(specialtyID: -1, specialtyName: specialty));
           specialtyID = newSpecialty.specialtyID;
         }
 
@@ -182,43 +186,39 @@ class _AdminCreateNewDoctorScreenState
                   const SizedBox(height: 20),
                   Align(
                     alignment: Alignment.center,
-                    child: Container(
-                        width: 300,
-                        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                        child: Row(
-                          children: [
-                            const Text("Date of Birth:"),
-                            SizedBox(
-                              width: width * 0.15,
-                            ),
-                            ElevatedButton(
-                              onPressed: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  //DateTime.now() - not to allow to choose before today.
-                                  lastDate: DateTime.now(),
-                                );
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Date of Birth:"),
+                        SizedBox(
+                          width: width * 0.15,
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1900),
+                              //DateTime.now() - not to allow to choose before today.
+                              lastDate: DateTime.now(),
+                            );
 
-                                if (pickedDate != null) {
-                                  String formattedDate =
-                                      DateFormat('yyyy-MM-dd')
-                                          .format(pickedDate);
-                                  setState(() {
-                                    dateInput =
-                                        formattedDate; //set output date to TextField value.
-                                  });
-                                }
-                              },
-                              child: Text(
-                                dateInput ?? "Select Date",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        )),
+                            if (pickedDate != null) {
+                              String formattedDate =
+                                  DateFormat('yyyy-MM-dd').format(pickedDate);
+                              setState(() {
+                                dateInput =
+                                    formattedDate; //set output date to TextField value.
+                              });
+                            }
+                          },
+                          child: Text(
+                            dateInput ?? "Select Date",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Align(
@@ -306,6 +306,7 @@ class _AdminCreateNewDoctorScreenState
                   ),
                   const SizedBox(height: 20),
                   ElevatedButton(
+                    key: const Key('register'),
                     style: ButtonStyle(
                       backgroundColor:
                           MaterialStateProperty.all(LightPalette.secondary),
