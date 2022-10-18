@@ -146,6 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      key: const Key('dob'),
                       const Text("Date of Birth:"),
                       SizedBox(
                         width: width * 0.15,

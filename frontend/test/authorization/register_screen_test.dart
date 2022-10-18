@@ -141,12 +141,14 @@ void main() {
         Finder lname = find.byKey(const Key('last name'));
         Finder email = find.byKey(const Key('email'));
         Finder pwd = find.byKey(const Key('password'));
+        Finder dob = find.byKey(const Key('dob'));
 
         await tester.enterText(fname, validFname);
         await tester.enterText(lname, validLname);
         await tester.enterText(email, validEmail);
         await tester.enterText(pwd, validPassword);
-        await tester.tap(find.byType(ElevatedButton));
+        await tester.enterText(dob, validdob);
+        await tester.tap(find.byType(ElevatedButton, findsOneWidget));
         await tester.pump();
 
         // expect registerUser being called and success snackbar shown
