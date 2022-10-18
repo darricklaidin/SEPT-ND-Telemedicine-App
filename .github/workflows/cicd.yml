@@ -56,3 +56,12 @@ jobs:
       - run: flutter test
         working-directory: ./frontend
 
+      - name: Build and Push Images to Docker
+        run: |
+          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/auth-microservice:latest ./backend/auth-microservice
+          docker push ${{ secrets.DOCKER_USERNAME }}/auth-microservice:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/appointment-microservice:latest ./backend/appointment-microservice
+          docker push ${{ secrets.DOCKER_USERNAME }}/appointment-microservice:latest
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/prescription-microservice:latest ./backend/prescription-microservice
+          docker push ${{ secrets.DOCKER_USERNAME }}/prescription-microservice:latest
