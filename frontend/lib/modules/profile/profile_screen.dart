@@ -327,6 +327,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       SizedBox(
         height: height * 0.05,
+        //TO DELETE
       )
     ];
   }
