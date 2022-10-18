@@ -1,10 +1,14 @@
+import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/data/appointments.dart';
 import 'package:frontend/models/appointment.dart';
 import 'package:frontend/modules/appointment/manage_appointments_screen.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/services/doctor_service.dart';
 import 'package:frontend/services/patient_service.dart';
+import 'package:frontend/utility.dart';
+import 'package:intl/intl.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAuthService extends Mock implements AuthService {}
@@ -75,4 +79,72 @@ void main() {
     await tester.pumpWidget(createWidgetUnderTest());
     expect(find.text('Appointments'), findsOneWidget);
   });
+
+  testWidgets(
+    "appointments are displayed for patient",
+    (WidgetTester tester) async {
+      arrangeAuthServiceReturnsUserId(2);
+      arrangeAuthServiceReturnsRole("PATIENT");
+      arrangePatientServiceReturnsAppointments(mockAppointments, 2);
+
+      await tester.pumpWidget(createWidgetUnderTest());
+
+      await tester.pump();
+
+      for (final appointment in mockAppointments) {
+        expect(
+            find.text(
+                "${appointment.doctor.firstName} ${appointment.doctor.lastName}"),
+            findsOneWidget);
+        expect(
+            find.text(
+                "Age: ${AgeCalculator.age(appointment.doctor.dateOfBirth).years}"),
+            findsOneWidget);
+        expect(
+            find.text(
+              DateFormat('dd MMM yyyy').format(appointment.date),
+            ),
+            findsOneWidget);
+        expect(
+            find.text(
+              '${Utility.timeToString(appointment.startTime)} - ${Utility.timeToString(appointment.endTime)}',
+            ),
+            findsOneWidget);
+      }
+    },
+  );
+
+  testWidgets(
+    "appointments are displayed for doctor",
+    (WidgetTester tester) async {
+      arrangeAuthServiceReturnsUserId(1);
+      arrangeAuthServiceReturnsRole("DOCTOR");
+      arrangeDoctorServiceReturnsAppointments(mockAppointments, 1);
+
+      await tester.pumpWidget(createWidgetUnderTest());
+
+      await tester.pump();
+
+      for (final appointment in mockAppointments) {
+        expect(
+            find.text(
+                "${appointment.patient.firstName} ${appointment.patient.lastName}"),
+            findsOneWidget);
+        expect(
+            find.text(
+                "Age: ${AgeCalculator.age(appointment.patient.dateOfBirth).years}"),
+            findsOneWidget);
+        expect(
+            find.text(
+              DateFormat('dd MMM yyyy').format(appointment.date),
+            ),
+            findsOneWidget);
+        expect(
+            find.text(
+              '${Utility.timeToString(appointment.startTime)} - ${Utility.timeToString(appointment.endTime)}',
+            ),
+            findsOneWidget);
+      }
+    },
+  );
 }
