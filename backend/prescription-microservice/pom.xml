@@ -8,7 +8,7 @@
         <version>2.7.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.sept</groupId>
+    <groupId>sept.superfive</groupId>
     <artifactId>prescription-microservice</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>prescription-microservice</name>
