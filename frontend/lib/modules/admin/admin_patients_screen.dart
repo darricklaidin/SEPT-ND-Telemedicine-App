@@ -14,7 +14,6 @@ class AdminPatientsScreen extends StatefulWidget {
 }
 
 class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
-
   late List allUsers;
   List suggestions = [];
   String searchText = "";
@@ -31,7 +30,6 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
 
     try {
       users = await PatientService.fetchAllPatients();
-
     } on TimeoutException {
       setState(() {
         timeUp = true;
@@ -48,7 +46,6 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
       suggestions = List.from(allUsers);
       isLoading = false;
     });
-
   }
 
   void filter(String value) {
@@ -71,7 +68,6 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Color primaryThemeColor = Theme.of(context).colorScheme.primary;
-    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
     Color errorThemeColor = Theme.of(context).errorColor;
 
     return Scaffold(
@@ -109,111 +105,107 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
                 ),
               ),
             ),
-            SizedBox(height: height * 0.03,),
+            SizedBox(
+              height: height * 0.03,
+            ),
             // List of results
-            Builder(
-                builder: (context) {
-                  if (isLoading) {
-                    return const Center(
-                        child: CircularProgressIndicator()
-                    );
-                  } else if (timeUp) {
-                    return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          await loadUsers();
-                          filter(searchText);
-                        },
-                        child: ListView(
-                            children: const [
-                              Center(
-                                child: Text("Timeout: Unable to fetch patients"),
-                              ),
-                            ]
+            Builder(builder: (context) {
+              if (isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (timeUp) {
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await loadUsers();
+                      filter(searchText);
+                    },
+                    child: ListView(children: const [
+                      Center(
+                        child: Text("Timeout: Unable to fetch patients"),
+                      ),
+                    ]),
+                  ),
+                );
+              } else if (suggestions.isEmpty) {
+                return Expanded(
+                  child: RefreshIndicator(
+                    onRefresh: () async {
+                      await loadUsers();
+                      filter(searchText);
+                    },
+                    child: ListView(children: const [
+                      Center(
+                        child: Text('No results found'),
+                      ),
+                    ]),
+                  ),
+                );
+              }
+              return Expanded(
+                  child: RefreshIndicator(
+                onRefresh: () async {
+                  await loadUsers();
+                  filter(searchText);
+                },
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  itemCount: suggestions.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      tileColor: primaryThemeColor,
+                      title: Text(
+                        '${suggestions[index].firstName} ${suggestions[index].lastName}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    );
-                  } else if (suggestions.isEmpty) {
-                    return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
+                      subtitle: Text(
+                        "Account Status: ${suggestions[index].accountStatus ? 'Active' : 'Inactive'}",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      onTap: () async {
+                        // Before navigating to the user profile screen, check
+                        // if the user still exists in the database
+                        if (await PatientService.fetchPatient(
+                                suggestions[index].userID) ==
+                            "Resource Not Found") {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.only(bottom: 10.0),
+                              duration: const Duration(seconds: 2),
+                              content: const Text('User no longer exists'),
+                              backgroundColor: errorThemeColor,
+                            ),
+                          );
                           await loadUsers();
                           filter(searchText);
-                        },
-                        child: ListView(
-                            children: const [
-                              Center(
-                                child: Text('No results found'),
-                              ),
-                            ]
-                        ),
+                        } else {
+                          pushNewScreen(
+                            context,
+                            screen: AdminViewUserProfileScreen(
+                              user: suggestions[index],
+                              userRole: "PATIENT",
+                            ),
+                          );
+                        }
+                      },
+                      focusColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     );
-                  }
-                  return Expanded(
-                      child: RefreshIndicator(
-                        onRefresh: () async {
-                          await loadUsers();
-                          filter(searchText);
-                        },
-                        child: ListView.separated(
-                          padding: EdgeInsets.zero,
-                          itemCount: suggestions.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              tileColor: primaryThemeColor,
-                              title: Text('${suggestions[index].firstName} ${suggestions[index].lastName}',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text("Account Status: ${suggestions[index].accountStatus ? 'Active' : 'Inactive'}",
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                              onTap: () async {
-                                // Before navigating to the user profile screen, check
-                                // if the user still exists in the database
-                                if (await PatientService.fetchPatient(suggestions[index].userID) == "Resource Not Found") {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      behavior: SnackBarBehavior.floating,
-                                      margin: const EdgeInsets.only(bottom: 10.0),
-                                      duration: const Duration(seconds: 2),
-                                      content: const Text('User no longer exists'),
-                                      backgroundColor: errorThemeColor,
-                                    ),
-                                  );
-                                  await loadUsers();
-                                  filter(searchText);
-                                } else {
-                                  pushNewScreen(
-                                    context,
-                                    screen: AdminViewUserProfileScreen(
-                                      user: suggestions[index],
-                                      userRole: "PATIENT",
-                                    ),
-                                  );
-                                }
-                              },
-                              focusColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return SizedBox(height: height * 0.02);
-                          },
-                        ),
-                      )
-                  );
-                }
-            )
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: height * 0.02);
+                  },
+                ),
+              ));
+            })
           ],
         ),
       ),
     );
   }
-
 }

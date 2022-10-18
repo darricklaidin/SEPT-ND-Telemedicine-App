@@ -6,26 +6,32 @@ import '../../config/themes/light_palette.dart';
 import '../../models/patient.dart';
 
 class EditPatientHealthStatusScreen extends StatefulWidget {
-  const EditPatientHealthStatusScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const EditPatientHealthStatusScreen({Key? key, required this.authService})
+      : super(key: key);
 
   @override
-  State<EditPatientHealthStatusScreen> createState() => _EditPatientHealthStatusScreenState();
+  State<EditPatientHealthStatusScreen> createState() =>
+      _EditPatientHealthStatusScreenState();
 }
 
-class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusScreen> {
-
+class _EditPatientHealthStatusScreenState
+    extends State<EditPatientHealthStatusScreen> {
   String healthStatus = "";
 
-  TextEditingController healthStatusController = TextEditingController(text: "");
+  TextEditingController healthStatusController =
+      TextEditingController(text: "");
 
   Future updateHealthStatus() async {
-    Patient oldPatient = await getUserFromStorage();
+    Patient oldPatient = await widget.authService.getUserFromStorage();
 
     Patient updatedPatient = oldPatient;
     updatedPatient.symptoms = healthStatus;
 
     try {
-      await PatientService.updatePatient(await getUserIdFromStorage(), updatedPatient, null);
+      await PatientService.updatePatient(
+          await AuthService.getUserIdFromStorage(), updatedPatient, null);
 
       if (!mounted) return;
 
@@ -40,7 +46,6 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
       );
 
       Navigator.pop(context);
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -52,11 +57,10 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
         ),
       );
     }
-
   }
 
   Future loadHealthStatus() async {
-    Patient currentPatient = await getUserFromStorage();
+    Patient currentPatient = await widget.authService.getUserFromStorage();
     setState(() {
       if (currentPatient.symptoms != null) {
         healthStatus = currentPatient.symptoms!;
@@ -91,7 +95,7 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: height * 0.1),
-                Container(
+                SizedBox(
                   height: height * 0.6,
                   width: width * 0.8,
                   child: TextField(
@@ -113,17 +117,19 @@ class _EditPatientHealthStatusScreenState extends State<EditPatientHealthStatusS
                     },
                   ),
                 ),
-              ElevatedButton(
+                ElevatedButton(
                   onPressed: () async {
                     await updateHealthStatus();
                   },
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
+                    backgroundColor:
+                        MaterialStateProperty.all(LightPalette.secondary),
                   ),
-                  child: const Text('Save',
-                    style: TextStyle(fontWeight: FontWeight.bold),),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-
               ],
             ),
           ),

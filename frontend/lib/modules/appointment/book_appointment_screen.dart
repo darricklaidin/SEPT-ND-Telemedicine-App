@@ -13,8 +13,11 @@ import '../../services/doctor_service.dart';
 import 'package:frontend/models/availability.dart';
 
 class BookAppointmentScreen extends StatefulWidget {
+  final AuthService authService;
+
   final Doctor doctor;
-  const BookAppointmentScreen({Key? key, required this.doctor})
+  const BookAppointmentScreen(
+      {Key? key, required this.doctor, required this.authService})
       : super(key: key);
 
   @override
@@ -63,14 +66,14 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   Future<dynamic> uploadBookingMock(
       {required BookingService newBooking}) async {
     // current patient user
-    Patient? patient = await getUserFromStorage();
+    Patient? patient = await widget.authService.getUserFromStorage();
 
     // doctor who the appointment is made for
     Doctor doctor = widget.doctor;
 
     // Check that users exist
     if (patient == null) {
-      await logoutUser();
+      await widget.authService.logoutUser();
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const MyApp()),

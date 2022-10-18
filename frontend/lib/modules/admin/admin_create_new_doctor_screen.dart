@@ -8,26 +8,31 @@ import '../../models/specialty.dart';
 import '../../services/specialty_service.dart';
 
 class AdminCreateNewDoctorScreen extends StatefulWidget {
-  const AdminCreateNewDoctorScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const AdminCreateNewDoctorScreen({Key? key, required this.authService})
+      : super(key: key);
 
   @override
-  State<AdminCreateNewDoctorScreen> createState() => _AdminCreateNewDoctorScreenState();
+  State<AdminCreateNewDoctorScreen> createState() =>
+      _AdminCreateNewDoctorScreenState();
 }
 
-class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen> {
+class _AdminCreateNewDoctorScreenState
+    extends State<AdminCreateNewDoctorScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fnameController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _lnameController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _emailController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _passwordController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _cpasswordController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _specialtyController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
 
   String? dateInput;
 
@@ -66,7 +71,8 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
         int specialtyID = -1;
 
         for (var existingSpecialty in existingSpecialties) {
-          if (specialty.toLowerCase() == existingSpecialty.specialtyName.toLowerCase()) {
+          if (specialty.toLowerCase() ==
+              existingSpecialty.specialtyName.toLowerCase()) {
             specialtyExists = true;
             // Get the id of the existing specialty
             // Update the doctor's specialty with this id
@@ -77,12 +83,13 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
         // If specialty with that name does not exist
         if (!specialtyExists) {
           // Create new specialty
-          Specialty newSpecialty = await SpecialtyService.createSpecialty(Specialty(specialtyID: -1, specialtyName: specialty));
+          Specialty newSpecialty = await SpecialtyService.createSpecialty(
+              Specialty(specialtyID: -1, specialtyName: specialty));
           specialtyID = newSpecialty.specialtyID;
         }
 
-        res = await registerDoctor(firstName, lastName, email, password, dateInput!, specialtyID);
-
+        res = await widget.authService.registerDoctor(
+            firstName, lastName, email, password, dateInput!, specialtyID);
       }
     } catch (e) {
       res.msg = e.toString();
@@ -127,7 +134,8 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
           key: _formKey,
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: height * 0.05),
+              padding:
+                  EdgeInsets.symmetric(horizontal: 0, vertical: height * 0.05),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -180,7 +188,9 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
                         child: Row(
                           children: [
                             const Text("Date of Birth:"),
-                            SizedBox(width: width * 0.15,),
+                            SizedBox(
+                              width: width * 0.15,
+                            ),
                             ElevatedButton(
                               onPressed: () async {
                                 DateTime? pickedDate = await showDatePicker(
@@ -192,19 +202,23 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
                                 );
 
                                 if (pickedDate != null) {
-                                  String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                  String formattedDate =
+                                      DateFormat('yyyy-MM-dd')
+                                          .format(pickedDate);
                                   setState(() {
-                                    dateInput = formattedDate; //set output date to TextField value.
+                                    dateInput =
+                                        formattedDate; //set output date to TextField value.
                                   });
                                 }
                               },
-                              child: Text(dateInput ?? "Select Date",
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              child: Text(
+                                dateInput ?? "Select Date",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ],
-                        )
-                    ),
+                        )),
                   ),
                   const SizedBox(height: 20),
                   Align(
@@ -221,7 +235,7 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
                           if (value == null || value.isEmpty) {
                             return 'Email cannot be empty';
                           } else if (!RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                               .hasMatch(value)) {
                             return 'Invalid email';
                           }
@@ -244,8 +258,7 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Password cannot be empty';
-                        }
-                        else if (value.length < 8) {
+                        } else if (value.length < 8) {
                           return 'Password should be at least 8 characters';
                         }
                         return null;
@@ -294,17 +307,16 @@ class _AdminCreateNewDoctorScreenState extends State<AdminCreateNewDoctorScreen>
                   const SizedBox(height: 20),
                   ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
+                      backgroundColor:
+                          MaterialStateProperty.all(LightPalette.secondary),
                     ),
                     onPressed: () => registration(context),
                     child: const Text("Register",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                        )
-                    ),
+                        )),
                   ),
-
                 ],
               ),
             ),
