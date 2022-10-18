@@ -1,9 +1,8 @@
-package com.sept.authmicroservice.unit_test.services;
+package com.sept.authmicroservice.unit_test.controllers;
 
+import com.sept.authmicroservice.controller.DoctorController;
 import com.sept.authmicroservice.model.Doctor;
 import com.sept.authmicroservice.model.Specialty;
-import com.sept.authmicroservice.repository.DoctorRepository;
-import com.sept.authmicroservice.repository.UserRepository;
 import com.sept.authmicroservice.service.DoctorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,13 +15,12 @@ import java.time.Month;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
-class DoctorServiceUnitTest {
+class DoctorControllerUnitTest {
 
-    private DoctorRepository mockDoctorRepository;
-    private DoctorService doctorService;
+    private DoctorService mockDoctorService;
+    private DoctorController doctorController;
 
     private Doctor doctor1;
     private Doctor doctor2;
@@ -35,9 +33,8 @@ class DoctorServiceUnitTest {
 
     @BeforeEach
     void setUp() {
-        mockDoctorRepository = Mockito.mock(DoctorRepository.class);
-        UserRepository mockUserRepository = Mockito.mock(UserRepository.class);
-        doctorService = new DoctorService(mockDoctorRepository, mockUserRepository);
+        mockDoctorService = Mockito.mock(DoctorService.class);
+        doctorController = new DoctorController(mockDoctorService);
 
         dob1 = LocalDate.of(2000, Month.JANUARY, 1);
         dob2 = LocalDate.of(2001, Month.FEBRUARY, 2);
@@ -54,10 +51,14 @@ class DoctorServiceUnitTest {
 
     @Test
     void getAllDoctors() {
-        when(mockDoctorRepository.findAllBy(null))
+        when(mockDoctorService.getAllDoctors(null))
                 .thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(doctor1, doctor2))));
 
-        Page<Doctor> doctorPage = doctorService.getAllDoctors(null);
+        Page<Doctor> doctorPage = doctorController.getAllDoctors(null).getBody();
+
+        if (doctorPage == null) {
+            fail("Doctor page is null");
+        }
 
         List<Doctor> retrievedDoctors = doctorPage.getContent();
 
@@ -72,8 +73,8 @@ class DoctorServiceUnitTest {
 
     @Test
     void getDoctorByID() {
-        when(mockDoctorRepository.findByUserID(doctor1.getUserID())).thenReturn(Optional.of(doctor1));
-        assertEquals(doctor1, doctorService.getDoctorByID(doctor1.getUserID()));
+        when(mockDoctorService.getDoctorByID(doctor1.getUserID())).thenReturn(doctor1);
+        assertEquals(doctor1, doctorController.getDoctorByID(doctor1.getUserID()).getBody());
     }
 
     @Test
@@ -85,8 +86,8 @@ class DoctorServiceUnitTest {
         Doctor oldDoctor1 = new Doctor(doctor1.getUserID(), doctor1.getFirstName(), doctor1.getLastName(),
                 doctor1.getEmail(), doctor1.getPassword(), doctor1.getDateOfBirth(), null, doctor1.getSpecialty());
 
-        when(mockDoctorRepository.findByUserID(doctor1.getUserID())).thenReturn(Optional.of(doctor1));
-        when(mockDoctorRepository.save(doctor1)).thenAnswer(i -> {
+        when(mockDoctorService.getDoctorByID(doctor1.getUserID())).thenReturn(doctor1);
+        when(mockDoctorService.updateDoctor(doctor1.getUserID(), updatedDoctor)).thenAnswer(i -> {
             doctor1.setAccountStatus(updatedDoctor.isEnabled());
             doctor1.setFirstName(updatedDoctor.getFirstName());
             doctor1.setLastName(updatedDoctor.getLastName());
@@ -97,7 +98,7 @@ class DoctorServiceUnitTest {
             return doctor1;
         });
 
-        doctorService.updateDoctor(doctor1.getUserID(), updatedDoctor);
+        doctorController.updateDoctor(updatedDoctor, doctor1.getUserID());
 
         assertEquals(updatedDoctor.getFirstName(), doctor1.getFirstName());
         assertEquals(updatedDoctor.getLastName(), doctor1.getLastName());
@@ -120,16 +121,21 @@ class DoctorServiceUnitTest {
 
     @Test
     void deleteDoctor() {
-        when(mockDoctorRepository.findByUserID(doctor1.getUserID())).thenReturn(Optional.of(doctor1));
+        when(mockDoctorService.getDoctorByID(doctor1.getUserID())).thenReturn(doctor1);
 
-        doNothing().when(mockDoctorRepository).deleteById(doctor1.getUserID());
+        when(mockDoctorService.deleteDoctor(doctor1.getUserID())).thenReturn(doctor1);
 
-        Doctor deletedDoctor = doctorService.deleteDoctor(doctor1.getUserID());
+        Doctor deletedDoctor = doctorController.deleteDoctor(doctor1.getUserID()).getBody();
 
-        when(mockDoctorRepository.findAllBy(null))
+        when(mockDoctorService.getAllDoctors(null))
                 .thenReturn(new PageImpl<>(new ArrayList<>(Collections.singletonList(doctor2))));
 
-        Page<Doctor> doctorPage = doctorService.getAllDoctors(null);
+        Page<Doctor> doctorPage = doctorController.getAllDoctors(null).getBody();
+
+        if (doctorPage == null) {
+            fail("Doctor page is null");
+        }
+
         List<Doctor> retrievedDoctors = doctorPage.getContent();
 
         // Test doctor list length

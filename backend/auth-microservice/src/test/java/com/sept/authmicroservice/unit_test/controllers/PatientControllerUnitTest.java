@@ -16,7 +16,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-class PatientControllerTest {
+class PatientControllerUnitTest {
 
     private PatientService mockPatientService;
     private PatientController patientController;
@@ -27,6 +27,7 @@ class PatientControllerTest {
 
     LocalDate dob1;
     LocalDate dob2;
+
 
     @BeforeEach
     void setUp() {
@@ -50,31 +51,27 @@ class PatientControllerTest {
         when(mockPatientService.getAllPatients(null))
                 .thenReturn(new PageImpl<>(new ArrayList<>(Arrays.asList(patient1, patient2))));
 
-        Page<Patient> patientPage = mockPatientService.getAllPatients(null);
+        Page<Patient> patientPage = patientController.getAllPatients(null).getBody();
+
+        if (patientPage == null) {
+            fail("Patient page is null");
+        }
 
         List<Patient> retrievedPatients = patientPage.getContent();
 
-        // Test doctor list length
+        // Test patient list length
         assertEquals(2, patients.size());
 
-        // Test doctor 1 match
-        assertEquals(patient1, patients.get(0));
-
-        // Test doctor 2 match
-        assertEquals(patient2, patients.get(1));
-
-        // Test each doctor matches
+        // Test each patient matches
         for (int i = 0; i < patients.size(); i++) {
             assertEquals(patients.get(i), retrievedPatients.get(i));
         }
     }
+
     @Test
     void getPatientByID() {
         when(mockPatientService.getPatientByID(patient1.getUserID())).thenReturn(patient1);
-
-        Patient test_patient = patientController.getPatientByID(patient1.getUserID()).getBody();
-
-        assertEquals(patient1, test_patient);
+        assertEquals(patient1, patientController.getPatientByID(patient1.getUserID()).getBody());
     }
 
     @Test
@@ -89,7 +86,7 @@ class PatientControllerTest {
         oldPatient1.setSymptoms(patient1.getSymptoms());
 
         when(mockPatientService.getPatientByID(patient1.getUserID())).thenReturn(patient1);
-        when(mockPatientService.updatePatient(patient1.getUserID(),updatedPatient)).thenAnswer(i -> {
+        when(mockPatientService.updatePatient(patient1.getUserID(), updatedPatient)).thenAnswer(i -> {
             patient1.setAccountStatus(updatedPatient.isEnabled());
             patient1.setFirstName(updatedPatient.getFirstName());
             patient1.setLastName(updatedPatient.getLastName());
@@ -119,11 +116,14 @@ class PatientControllerTest {
         assertNotEquals(oldPatient1.getSymptoms(), patient1.getSymptoms());
 
         assertNull(patient1.getRoles());
+
     }
 
     @Test
     void deletePatient() {
-        when(mockPatientService.deletePatient(patient1.getUserID())).thenReturn(patient1); //return patient1
+        when(mockPatientService.getPatientByID(patient1.getUserID())).thenReturn(patient1);
+
+        when(mockPatientService.deletePatient(patient1.getUserID())).thenReturn(patient1);
 
         Patient deletedPatient = patientController.deletePatient(patient1.getUserID()).getBody();
 
