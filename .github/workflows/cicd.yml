@@ -24,9 +24,9 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: tele-med
-          MYSQL_HOST: localhost
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: heroku_fdbbdb52c723fe0
+          MYSQL_HOST: us-cdbr-east-06.cleardb.net
+          MYSQL_ROOT_PASSWORD: bf66f11b
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
