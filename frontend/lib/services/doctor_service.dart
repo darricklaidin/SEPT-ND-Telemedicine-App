@@ -12,12 +12,11 @@ import '../models/doctor.dart';
 import 'auth_service.dart';
 
 class DoctorService {
-
   static Future<List<Doctor>> fetchAllDoctors() async {
-    final response = await http.get(Uri.parse('$apiAuthRootUrl/doctors?sort=firstName'),
-        headers: {
-          'Authorization': 'Bearer ${await getJWT()}',
-        }).timeout(const Duration(seconds: 5));
+    final response = await http
+        .get(Uri.parse('$apiAuthRootUrl/doctors?sort=firstName'), headers: {
+      'Authorization': 'Bearer ${await AuthService.getJWT()}',
+    }).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['content']
@@ -54,7 +53,7 @@ class DoctorService {
   static Future fetchDoctor(int doctorID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/doctors/$doctorID'), headers: {
-      'Authorization': 'Bearer ${await getJWT()}',
+      'Authorization': 'Bearer ${await AuthService.getJWT()}',
     });
 
     if (response.statusCode == 200) {
@@ -67,16 +66,17 @@ class DoctorService {
   }
 
   static Future<List<Appointment>> fetchDoctorAppointments(int doctorID) async {
-
-    var response = await http.get(Uri.parse(
-        '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'))
+    var response = await http
+        .get(Uri.parse(
+            '$apiBookingRootUrl/appointments/doctor/$doctorID?sort=date&sort=startTime'))
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body)['content'];
       List<Appointment> appointments = [];
       for (dynamic appointment in jsonData) {
-        Appointment? tempAppointment = await AppointmentService.getAppointmentFromJSON(appointment);
+        Appointment? tempAppointment =
+            await AppointmentService.getAppointmentFromJSON(appointment);
         if (tempAppointment != null) {
           appointments.add(tempAppointment);
         } else {
@@ -89,9 +89,11 @@ class DoctorService {
     }
   }
 
-  static Future<List<Availability>> fetchDoctorAvailabilities(int doctorID) async {
-
-    final response = await http.get(Uri.parse('$apiBookingRootUrl/availabilities/doctor/$doctorID?sort=dayOfWeek'))
+  static Future<List<Availability>> fetchDoctorAvailabilities(
+      int doctorID) async {
+    final response = await http
+        .get(Uri.parse(
+            '$apiBookingRootUrl/availabilities/doctor/$doctorID?sort=dayOfWeek'))
         .timeout(const Duration(seconds: 3));
 
     if (response.statusCode == 200) {
@@ -99,7 +101,8 @@ class DoctorService {
 
       List<Availability> availabilities = [];
       for (dynamic availability in jsonData) {
-        availabilities.add(await AvailabilityService.getAvailabilityFromJSON(availability));
+        availabilities.add(
+            await AvailabilityService.getAvailabilityFromJSON(availability));
       }
 
       return availabilities;
@@ -111,15 +114,16 @@ class DoctorService {
   /// Update the doctor with the specified [doctorID].
   /// Returns the updated [doctor] if successful, otherwise returns the error message.
   /// Leave [newPassword] as [null] if you don't want to change the password.
-  static Future updateDoctor(int doctorID, Doctor doctor, String? newPassword, int specialtyID) async {
-
+  static Future updateDoctor(
+      int doctorID, Doctor doctor, String? newPassword, int specialtyID) async {
     // if new password is null, use old password
-    var response = await http.put(Uri.parse('$apiAuthRootUrl/doctors/$doctorID'),
-        headers: {
-          'Authorization': 'Bearer ${await getJWT()}',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(doctor.toJson(newPassword, specialtyID)));
+    var response =
+        await http.put(Uri.parse('$apiAuthRootUrl/doctors/$doctorID'),
+            headers: {
+              'Authorization': 'Bearer ${await AuthService.getJWT()}',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode(doctor.toJson(newPassword, specialtyID)));
 
     Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
@@ -130,7 +134,5 @@ class DoctorService {
     } else {
       throw Exception('Failed to update doctor profile');
     }
-
   }
-
 }

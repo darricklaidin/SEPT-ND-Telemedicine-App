@@ -7,9 +7,12 @@ import '../profile/profile_button.dart';
 import 'package:frontend/config/constants.dart';
 
 class EmptyHomeScreen extends StatefulWidget {
+  final AuthService authService;
+
   final Function handleTabSelection;
 
-  const EmptyHomeScreen({Key? key, required this.handleTabSelection})
+  const EmptyHomeScreen(
+      {Key? key, required this.handleTabSelection, required this.authService})
       : super(key: key);
 
   @override
@@ -21,7 +24,7 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
   bool isLoading = true;
 
   Future<void> logout(context) async {
-    await logoutUser();
+    await widget.authService.logoutUser();
     // Pop screen and push login screen
     Navigator.of(context, rootNavigator: true).pushReplacement(
         MaterialPageRoute(builder: (context) => const MyApp()));
@@ -32,10 +35,10 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
       isLoading = true;
     });
 
-    user = await getUserFromStorage();
+    user = await widget.authService.getUserFromStorage();
 
     if (user == null) {
-      await logoutUser();
+      await widget.authService.logoutUser();
 
       if (!mounted) return;
 
@@ -67,15 +70,15 @@ class _EmptyHomeScreenState extends State<EmptyHomeScreen> {
         elevation: 0,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            AutoSizeText(
+          children: [
+            const AutoSizeText(
               "Telemed+",
               style: TextStyle(
                   color: Colors.black,
                   fontSize: 30,
                   fontWeight: FontWeight.bold),
             ),
-            ProfileButton(),
+            ProfileButton(authService: widget.authService),
             // SizedBox(
             //   width: 20,
             // )

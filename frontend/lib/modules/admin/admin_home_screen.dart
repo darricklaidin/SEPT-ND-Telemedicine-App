@@ -6,17 +6,21 @@ import '../../services/auth_service.dart';
 import 'admin_create_new_doctor_screen.dart';
 
 class AdminHomeScreen extends StatefulWidget {
-  const AdminHomeScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const AdminHomeScreen({Key? key, required this.authService})
+      : super(key: key);
 
   @override
   State<AdminHomeScreen> createState() => _AdminHomeScreenState();
 }
 
 class _AdminHomeScreenState extends State<AdminHomeScreen> {
-
   logout(context) async {
-    await logoutUser();
-    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MyApp()), (route) => route.isFirst);
+    await widget.authService.logoutUser();
+    Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const MyApp()),
+        (route) => route.isFirst);
   }
 
   @override
@@ -35,26 +39,45 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('Welcome Admin', style: TextStyle(fontWeight: FontWeight.bold),),
-            SizedBox(height: height * 0.05,),
+            const Text(
+              'Welcome Admin',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: height * 0.05,
+            ),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminCreateNewDoctorScreen()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AdminCreateNewDoctorScreen(
+                            authService: widget.authService)));
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(LightPalette.primary),
+                backgroundColor:
+                    MaterialStateProperty.all(LightPalette.primary),
               ),
-              child: const Text('Add New Doctor', style: TextStyle(fontWeight: FontWeight.bold),),
+              child: const Text(
+                'Add New Doctor',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
-            SizedBox(height: height * 0.01,),
+            SizedBox(
+              height: height * 0.01,
+            ),
             ElevatedButton(
               onPressed: () async {
                 await logout(context);
               },
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
+                backgroundColor:
+                    MaterialStateProperty.all(LightPalette.secondary),
               ),
-              child: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold),),
+              child: const Text(
+                'Logout',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             )
           ],
         ),

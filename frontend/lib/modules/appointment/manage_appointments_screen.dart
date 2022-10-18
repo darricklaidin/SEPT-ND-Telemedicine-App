@@ -16,12 +16,13 @@ import 'package:frontend/services/auth_service.dart';
 import '../profile/profile_button.dart';
 
 class ManageAppointmentsScreen extends StatefulWidget {
+  final AuthService authService;
+
   final Function handleTabSelection;
 
-  const ManageAppointmentsScreen({
-    Key? key,
-    required this.handleTabSelection,
-  }) : super(key: key);
+  const ManageAppointmentsScreen(
+      {Key? key, required this.handleTabSelection, required this.authService})
+      : super(key: key);
 
   @override
   State<ManageAppointmentsScreen> createState() =>
@@ -38,19 +39,19 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
   Future loadAppointments() async {
     isLoading = true;
     timeUp = false;
-    userID = await getUserIdFromStorage();
-    userRole = await getUserRoleFromStorage();
+    userID = await AuthService.getUserIdFromStorage();
+    userRole = await widget.authService.getUserRoleFromStorage();
 
     try {
       // If role is patient, then fetch patient appointments
       if (userRole == "PATIENT") {
         appointments = await PatientService.fetchPatientAppointments(
-            await getUserIdFromStorage());
+            await AuthService.getUserIdFromStorage());
       }
       // If role is doctor, then fetch doctor appointments
       else if (userRole == "DOCTOR") {
         appointments = await DoctorService.fetchDoctorAppointments(
-            await getUserIdFromStorage());
+            await AuthService.getUserIdFromStorage());
       }
     } on TimeoutException {
       if (!mounted) return;
@@ -83,9 +84,9 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
           elevation: 0,
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: const [
-              ProfileButton(),
-              SizedBox(
+            children: [
+              ProfileButton(authService: widget.authService),
+              const SizedBox(
                 width: 20,
               )
             ],

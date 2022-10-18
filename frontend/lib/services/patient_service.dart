@@ -11,12 +11,11 @@ import 'appointment_service.dart';
 import 'auth_service.dart';
 
 class PatientService {
-
   static Future<List<Patient>> fetchAllPatients() async {
-    final response = await http.get(Uri.parse('$apiAuthRootUrl/patients?sort=firstName'),
-        headers: {
-          'Authorization': 'Bearer ${await getJWT()}',
-        }).timeout(const Duration(seconds: 5));
+    final response = await http
+        .get(Uri.parse('$apiAuthRootUrl/patients?sort=firstName'), headers: {
+      'Authorization': 'Bearer ${await AuthService.getJWT()}',
+    }).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['content']
@@ -30,7 +29,7 @@ class PatientService {
   static Future fetchPatient(int patientID) async {
     final response = await http
         .get(Uri.parse('$apiAuthRootUrl/patients/$patientID'), headers: {
-      'Authorization': 'Bearer ${await getJWT()}',
+      'Authorization': 'Bearer ${await AuthService.getJWT()}',
     });
 
     if (response.statusCode == 200) {
@@ -42,16 +41,20 @@ class PatientService {
     }
   }
 
-  static Future<List<Appointment>> fetchPatientAppointments(int patientID) async {
-    var response = await http.get(Uri.parse(
-        '$apiBookingRootUrl/appointments/patient/$patientID?sort=date&sort=startTime'))
+  static Future<List<Appointment>> fetchPatientAppointments(
+      int patientID) async {
+    var response = await http
+        .get(Uri.parse(
+            '$apiBookingRootUrl/appointments/patient/$patientID?sort=date&sort=startTime'))
         .timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
-      List<dynamic> jsonData = jsonDecode(response.body)['content'];  // list of appointments
+      List<dynamic> jsonData =
+          jsonDecode(response.body)['content']; // list of appointments
       List<Appointment> appointments = [];
       for (dynamic appointment in jsonData) {
-        Appointment? tempAppointment = await AppointmentService.getAppointmentFromJSON(appointment);
+        Appointment? tempAppointment =
+            await AppointmentService.getAppointmentFromJSON(appointment);
         if (tempAppointment != null) {
           appointments.add(tempAppointment);
         } else {
@@ -67,15 +70,16 @@ class PatientService {
   /// Update the patient with the specified [patientID].
   /// Returns the updated [patient] if successful, otherwise returns the error message.
   /// Leave [newPassword] as [null] if you don't want to change the password.
-  static Future updatePatient(int patientID, Patient patient, String? newPassword) async {
-
+  static Future updatePatient(
+      int patientID, Patient patient, String? newPassword) async {
     // if new password is null, use old password
-    var response = await http.put(Uri.parse('$apiAuthRootUrl/patients/$patientID'),
-        headers: {
-          'Authorization': 'Bearer ${await getJWT()}',
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(patient.toJson(newPassword)));
+    var response =
+        await http.put(Uri.parse('$apiAuthRootUrl/patients/$patientID'),
+            headers: {
+              'Authorization': 'Bearer ${await AuthService.getJWT()}',
+              'Content-Type': 'application/json',
+            },
+            body: jsonEncode(patient.toJson(newPassword)));
 
     Map<String, dynamic> decodedResponse = jsonDecode(response.body);
 
@@ -86,7 +90,5 @@ class PatientService {
     } else {
       throw Exception('Failed to update patient profile');
     }
-
   }
-
 }

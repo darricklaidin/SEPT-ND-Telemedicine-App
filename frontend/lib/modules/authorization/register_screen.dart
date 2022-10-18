@@ -8,7 +8,9 @@ import '../../models/api_response.dart';
 import '../../modules/authorization/login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  final AuthService authService;
+
+  const RegisterScreen({Key? key, required this.authService}) : super(key: key);
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -17,15 +19,15 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _fnameController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _lnameController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _emailController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _passwordController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
   final TextEditingController _cpasswordController =
-  TextEditingController(text: '');
+      TextEditingController(text: '');
 
   String? dateInput;
 
@@ -38,10 +40,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ApiResponse res = ApiResponse();
 
     if (dateInput == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(res.msg ?? 'Invalid Date of Birth'),
-              backgroundColor: LightPalette.error));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(res.msg ?? 'Invalid Date of Birth'),
+          backgroundColor: LightPalette.error));
       return;
     }
 
@@ -52,7 +53,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         var email = _emailController.text;
         var password = _passwordController.text;
 
-        res = await registerUser(firstName, lastName, email, password, dateInput!);
+        res = await widget.authService
+            .registerUser(firstName, lastName, email, password, dateInput!);
       }
     } catch (e) {
       res.msg = e.toString();
@@ -70,10 +72,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       Navigator.pushNamed(context, '/home');
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Text(res.msg ?? 'Invalid Fields'),
-              backgroundColor: LightPalette.error));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(res.msg ?? 'Invalid Fields'),
+          backgroundColor: LightPalette.error));
     }
   }
 
@@ -85,173 +86,179 @@ class _RegisterScreenState extends State<RegisterScreen> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Center(child: Text("Registration")),
-        ),
-        body: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 0, vertical: height * 0.05),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 300,
-                      child: TextFormField(
-                        controller: _fnameController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'First Name',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'First name cannot be empty';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 300,
-                      child: TextFormField(
-                        controller: _lnameController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Last Name',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Last name cannot be empty';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                        width: 300,
-                        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                        child: Row(
-                          children: [
-                            const Text("Date of Birth:"),
-                            SizedBox(width: width * 0.15,),
-                            ElevatedButton(
-                              onPressed: () async {
-                                DateTime? pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  //DateTime.now() - not to allow to choose before today.
-                                  lastDate: DateTime.now(),
-                                );
-
-                                if (pickedDate != null) {
-                                  String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                  setState(() {
-                                    dateInput = formattedDate; //set output date to TextField value.
-                                  });
-                                }
-                              },
-                              child: Text(dateInput ?? "Select Date",
-                                style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
-                        )
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 300,
-                      child: TextFormField(
-                        controller: _emailController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'E-mail',
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Email cannot be empty';
-                          } else if (!RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                              .hasMatch(value)) {
-                            return 'Invalid email';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
+      appBar: AppBar(
+        title: const Center(child: Text("Registration")),
+      ),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding:
+                EdgeInsets.symmetric(horizontal: 0, vertical: height * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
                     width: 300,
                     child: TextFormField(
-                      controller: _passwordController,
-                      // key: passKey,
-                      obscureText: true,
+                      controller: _fnameController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Password',
+                        labelText: 'First Name',
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Password cannot be empty';
-                        }
-                        else if (value.length < 8) {
-                          return 'Password should be at least 8 characters';
+                          return 'First name cannot be empty';
                         }
                         return null;
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  SizedBox(
+                ),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
                     width: 300,
                     child: TextFormField(
-                      controller: _cpasswordController,
-                      obscureText: true,
+                      controller: _lnameController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'Confirm Password',
+                        labelText: 'Last Name',
                       ),
                       validator: (value) {
-                        // var password = passKey.currentState.value;
-                        if (value != _passwordController.text) {
-                          return 'Passwords must match';
+                        if (value == null || value.isEmpty) {
+                          return 'Last name cannot be empty';
                         }
                         return null;
                       },
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(LightPalette.secondary),
+                ),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.center,
+                  child: Container(
+                      width: 300,
+                      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                      child: Row(
+                        children: [
+                          const Text("Date of Birth:"),
+                          SizedBox(
+                            width: width * 0.15,
+                          ),
+                          ElevatedButton(
+                            onPressed: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                //DateTime.now() - not to allow to choose before today.
+                                lastDate: DateTime.now(),
+                              );
+
+                              if (pickedDate != null) {
+                                String formattedDate =
+                                    DateFormat('yyyy-MM-dd').format(pickedDate);
+                                setState(() {
+                                  dateInput =
+                                      formattedDate; //set output date to TextField value.
+                                });
+                              }
+                            },
+                            child: Text(
+                              dateInput ?? "Select Date",
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      )),
+                ),
+                const SizedBox(height: 20),
+                Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 300,
+                    child: TextFormField(
+                      controller: _emailController,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'E-mail',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Email cannot be empty';
+                        } else if (!RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                          return 'Invalid email';
+                        }
+                        return null;
+                      },
                     ),
-                    onPressed: () => registration(context),
-                    child: const Text("Register",
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    controller: _passwordController,
+                    // key: passKey,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Password',
+                    ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Password cannot be empty';
+                      } else if (value.length < 8) {
+                        return 'Password should be at least 8 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    controller: _cpasswordController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: 'Confirm Password',
+                    ),
+                    validator: (value) {
+                      // var password = passKey.currentState.value;
+                      if (value != _passwordController.text) {
+                        return 'Passwords must match';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(LightPalette.secondary),
+                  ),
+                  onPressed: () => registration(context),
+                  child: const Text("Register",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                      )
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  RichText(
-                    text: TextSpan(children: [
+                      )),
+                ),
+                const SizedBox(height: 20),
+                RichText(
+                  text: TextSpan(
+                    children: [
                       const TextSpan(
                         text: "Already have an account? ",
                         style: TextStyle(
@@ -260,24 +267,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       TextSpan(
-                          text: 'Login now',
-                          style: TextStyle(
-                            color: Colors.deepPurple[300],
-                            fontFamily: "Raleway",
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                              );
-                            }),
-                    ]),
+                        text: 'Login now',
+                        style: TextStyle(
+                          color: Colors.deepPurple[300],
+                          fontFamily: "Raleway",
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen(
+                                      authService: widget.authService)),
+                            );
+                          },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

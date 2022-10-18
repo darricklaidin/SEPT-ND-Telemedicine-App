@@ -3,28 +3,32 @@ import 'dart:async';
 import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/modules/prescription/prescription_screen.dart';
 import 'package:frontend/modules/profile/profile_button.dart';
 import 'package:frontend/services/doctor_service.dart';
 import 'package:frontend/utility.dart';
 
+import '../../services/auth_service.dart';
 import '../../services/patient_service.dart';
 import '../appointment/book_appointment_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final AuthService authService;
 
-  final dynamic user;  // user belonging to this profile screen
+  final user;
+  final userRole;
 
-  final dynamic userRole;  // current user accessing this page's role
-
-  const ProfileScreen({Key? key, required this.user, required this.userRole}) : super(key: key);
+  const ProfileScreen(
+      {Key? key,
+      required this.user,
+      required this.userRole,
+      required this.authService})
+      : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-
   List availabilitySchedule = [];
   String healthStatus = "No health status to display.";
   bool isLoading = true;
@@ -35,14 +39,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     timeUp = false;
 
     try {
-      availabilitySchedule = await DoctorService
-          .fetchDoctorAvailabilities(widget.user.userID);
+      availabilitySchedule =
+          await DoctorService.fetchDoctorAvailabilities(widget.user.userID);
     } on TimeoutException {
       setState(() {
         timeUp = true;
         isLoading = false;
       });
       return;
+    } on Exception catch (exception) {
+      print(exception);
     }
 
     setState(() {
@@ -51,10 +57,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future checkIfUserExists(Color errorThemeColor) async {
-    if (widget.userRole == "PATIENT" ?
-    await DoctorService.fetchDoctor(widget.user.userID) == "Resource Not Found"
-        : await PatientService.fetchPatient(widget.user.userID) == "Resource Not Found") {
-
+    if (widget.userRole == "PATIENT"
+        ? await DoctorService.fetchDoctor(widget.user.userID) ==
+            "Resource Not Found"
+        : await PatientService.fetchPatient(widget.user.userID) ==
+            "Resource Not Found") {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
@@ -70,7 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return true;
-
   }
 
   @override
@@ -102,7 +108,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: _buildTitleRow(width, height, primaryThemeColor, secondaryThemeColor),
+        title: _buildTitleRow(
+            width, height, primaryThemeColor, secondaryThemeColor),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.black,
@@ -131,13 +138,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ..._buildProfileHeader(width, height, primaryThemeColor, secondaryThemeColor),
+                      ..._buildProfileHeader(width, height, primaryThemeColor,
+                          secondaryThemeColor),
                       SizedBox(height: height * 0.01),
-                      ..._buildHealthStatus(width, height, primaryThemeColor, secondaryThemeColor),
-                      ..._buildAvailabilitySchedule(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      ..._buildHealthStatus(width, height, primaryThemeColor,
+                          secondaryThemeColor),
+                      ..._buildAvailabilitySchedule(
+                          width,
+                          height,
+                          primaryThemeColor,
+                          secondaryThemeColor,
+                          errorThemeColor),
                       SizedBox(height: height * 0.05),
-                      ..._buildBookAppointmentBtn(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
-                      ..._buildPrescriptionBtn(width, height, primaryThemeColor, secondaryThemeColor, errorThemeColor),
+                      ..._buildBookAppointmentBtn(
+                          width,
+                          height,
+                          primaryThemeColor,
+                          secondaryThemeColor,
+                          errorThemeColor),
                     ],
                   ),
                 ),
@@ -149,11 +167,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Row _buildTitleRow(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+  Row _buildTitleRow(double width, double height, Color primaryThemeColor,
+      Color secondaryThemeColor) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        const ProfileButton(),
+        ProfileButton(authService: widget.authService),
         SizedBox(
           width: width * 0.05,
         )
@@ -161,7 +180,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  List<Widget> _buildProfileHeader(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+  List<Widget> _buildProfileHeader(double width, double height,
+      Color primaryThemeColor, Color secondaryThemeColor) {
     return [
       const Center(
         child: Icon(CupertinoIcons.profile_circled, size: 100),
@@ -175,14 +195,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         textAlign: TextAlign.center,
       ),
       Text(
-        widget.userRole == "PATIENT" ? '${widget.user.specialty}' : 'Age: ${AgeCalculator.age(widget.user.dateOfBirth).years}',
+        widget.userRole == "PATIENT"
+            ? '${widget.user.specialty}'
+            : 'Age: ${AgeCalculator.age(widget.user.dateOfBirth).years}',
         style: const TextStyle(fontSize: 14, color: Colors.grey),
         textAlign: TextAlign.center,
       ),
     ];
   }
 
-  List<Widget> _buildHealthStatus(double width, double height, Color primaryThemeColor, Color secondaryThemeColor) {
+  List<Widget> _buildHealthStatus(double width, double height,
+      Color primaryThemeColor, Color secondaryThemeColor) {
     if (widget.userRole == "PATIENT") return [SizedBox(height: height * 0.05)];
     return [
       SizedBox(
@@ -204,19 +227,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ];
   }
 
-  List<Widget> _buildAvailabilitySchedule(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
+  List<Widget> _buildAvailabilitySchedule(
+      double width,
+      double height,
+      Color primaryThemeColor,
+      Color secondaryThemeColor,
+      Color errorThemeColor) {
     if (widget.userRole == "PATIENT") {
       if (timeUp) {
         return [
           SizedBox(
             child: Container(
               padding: EdgeInsets.fromLTRB(0, height * 0.05, 0, 0),
-              child: const Text("Timeout: Unable to fetch the doctor's availabilities"),
+              child: const Text(
+                  "Timeout: Unable to fetch the doctor's availabilities"),
             ),
-        ),
+          ),
         ];
-      }
-      else if (availabilitySchedule.isEmpty) {
+      } else if (availabilitySchedule.isEmpty) {
         return [
           SizedBox(
             child: Container(
@@ -235,10 +263,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
               height: height * 0.1,
               child: ListTile(
-                contentPadding: EdgeInsets.symmetric(horizontal: width * 0.1, vertical: 0),
-                title: Text(Utility.convertIntToDayOfWeek(availabilitySchedule[index].dayOfWeek), style: const TextStyle(fontSize: 14),),
-                subtitle: Text("${Utility.timeToString(availabilitySchedule[index].startTime)} "
-                    "- ${Utility.timeToString(availabilitySchedule[index].endTime)}", style: const TextStyle(fontSize: 12)),
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: width * 0.1, vertical: 0),
+                title: Text(
+                  Utility.convertIntToDayOfWeek(
+                      availabilitySchedule[index].dayOfWeek),
+                  style: const TextStyle(fontSize: 14),
+                ),
+                subtitle: Text(
+                    "${Utility.timeToString(availabilitySchedule[index].startTime)} "
+                    "- ${Utility.timeToString(availabilitySchedule[index].endTime)}",
+                    style: const TextStyle(fontSize: 12)),
               ),
             );
           },
@@ -253,80 +288,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return [SizedBox(height: height * 0.05)];
   }
 
-  List<Widget> _buildBookAppointmentBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
-    return widget.userRole == "DOCTOR" ? [SizedBox(height: height * 0.05,)] : [
-      Center(
-        child: SizedBox(
-          width: width * 0.45,
-          height: 40,
-          child: TextButton(
-            // Navigate to make appointment page
-            onPressed: () async {
-              if (await checkIfUserExists(errorThemeColor)) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => BookAppointmentScreen(doctor: widget.user)));
-              }
-              await loadAvailabilities();
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+  List<Widget> _buildBookAppointmentBtn(
+      double width,
+      double height,
+      Color primaryThemeColor,
+      Color secondaryThemeColor,
+      Color errorThemeColor) {
+    return widget.userRole == "DOCTOR"
+        ? [
+            SizedBox(
+              height: height * 0.05,
+            )
+          ]
+        : [
+            Center(
+              child: SizedBox(
+                width: width * 0.45,
+                height: 40,
+                child: TextButton(
+                  // Navigate to make appointment page
+                  onPressed: () async {
+                    if (await checkIfUserExists(errorThemeColor)) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BookAppointmentScreen(
+                                  doctor: widget.user,
+                                  authService: widget.authService)));
+                    }
+                    await loadAvailabilities();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(secondaryThemeColor),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Book Appointment',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
-            child: const Text(
-              'Book Appointment',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-      SizedBox(
-        height: height * 0.05,
-      )
-    ];
-  }
-
-  List<Widget> _buildPrescriptionBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
-    return widget.userRole == "PATIENT" ? [SizedBox(height: height * 0.05,)] : [
-      Center(
-        child: SizedBox(
-          width: width * 0.45,
-          height: 40,
-          child: TextButton(
-            // Navigate to make appointment page
-            onPressed: () async {
-              if (await checkIfUserExists(errorThemeColor)) {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionScreen(patient: widget.user)));
-              }
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-            ),
-            child: const Text(
-              'Prescribe Medicine',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
-      SizedBox(
-        height: height * 0.05,
-      )
-    ];
+            SizedBox(
+              height: height * 0.05,
+            )
+          ];
   }
 }
