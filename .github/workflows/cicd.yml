@@ -28,6 +28,7 @@ jobs:
           MYSQL_HOST: us-cdbr-east-06.cleardb.net
           MYSQL_USER: b055b0ffd5d05e
           MYSQL_ROOT_PASSWORD: bf66f11b
+          MYSQL_PASSWORD: bf66f11b
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
