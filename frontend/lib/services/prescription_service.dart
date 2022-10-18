@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:frontend/models/api_response.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
@@ -17,7 +16,8 @@ class PrescriptionService {
         .get(Uri.parse('$apiPrescriptionRootUrl/prescriptions/$prescriptionID'));
     if (response.statusCode == 200) {
       if (await getPrescriptionFromJSON(jsonDecode(response.body)) == null) {
-        // TODO: When one of the users gets deleted, Delete prescription with this appointment id from database
+        // When one of the users gets deleted, Delete prescription with
+        // this prescription id from database
       }
     } else if (response.statusCode == 404) {
       return jsonDecode(response.body)['message'];
@@ -25,6 +25,30 @@ class PrescriptionService {
       throw Exception('Failed to find prescription $prescriptionID');
     }
   }
+
+  static Future fetchPatientPrescriptions(int patientID) async {
+    var response = await http
+        .get(Uri.parse('$apiPrescriptionRootUrl/prescriptions/patient/$patientID'))
+        .timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body)['content'];
+      List<Prescription> prescriptions = [];
+      for (dynamic prescription in jsonData) {
+        Prescription? tempPrescription =
+        await getPrescriptionFromJSON(prescription);
+        if (tempPrescription != null) {
+          prescriptions.add(tempPrescription);
+        } else {
+          // Prescription should be deleted from database
+        }
+      }
+      return prescriptions;
+    } else {
+      throw Exception('Failed to load prescriptions');
+    }
+  }
+
 
   static Future createPrescription(Prescription prescription) async {
     var response = await http.post(
@@ -68,5 +92,6 @@ class PrescriptionService {
 
     return Prescription.fromJson(prescription, doctor, patient);
   }
+
 
 }

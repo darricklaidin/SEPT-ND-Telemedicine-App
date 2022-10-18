@@ -58,7 +58,7 @@ class PatientService {
         if (tempAppointment != null) {
           appointments.add(tempAppointment);
         } else {
-          // TODO: Appointment should be deleted from database
+          // Appointment should be deleted from database
         }
       }
       return appointments;
