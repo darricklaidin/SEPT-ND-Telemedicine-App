@@ -34,7 +34,7 @@ class DoctorService {
 
     //fetching the data
     var response = await http.get(Uri.parse('$apiAuthRootUrl/doctors'), headers: {
-      'Authorization': 'Bearer ${await getJWT()}'});
+      'Authorization': 'Bearer ${await AuthService.getJWT()}'});
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body)["content"];  // list of patients //response.body
