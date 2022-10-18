@@ -1,7 +1,7 @@
 # This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
 
-name: Java CI with Maven, Flutter CI, and Docker Build & Push
+name: Java CI with Maven and Flutter CI and Docker CI
 
 on:
   push:
@@ -24,11 +24,9 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: heroku_fdbbdb52c723fe0
-          MYSQL_HOST: us-cdbr-east-06.cleardb.net
-          MYSQL_USER: b055b0ffd5d05e
-          MYSQL_ROOT_PASSWORD: bf66f11b
-          MYSQL_PASSWORD: bf66f11b
+          MYSQL_DATABASE: tele-med
+          MYSQL_HOST: localhost
+          MYSQL_ROOT_PASSWORD: password
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
