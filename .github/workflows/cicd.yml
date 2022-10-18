@@ -65,8 +65,8 @@ jobs:
       - name: Build and Push Images to Docker
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/auth-microservice:latest ./backend/auth-microservice
-          docker push ${{ secrets.DOCKER_USERNAME }}/auth-microservice:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/auth-microservice:latest
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/appointment-microservice:latest ./backend/appointment-microservice
-          docker push ${{ secrets.DOCKER_USERNAME }}/appointment-microservice:latest
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/appointment-microservice:latest
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/prescription-microservice:latest ./backend/prescription-microservice
           docker push ${{ secrets.DOCKER_HUB_USERNAME }}/prescription-microservice:latest
