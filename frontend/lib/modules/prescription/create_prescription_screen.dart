@@ -2,20 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
+import 'package:frontend/config/themes/light_palette.dart';
 
 import '../../models/patient.dart';
-import '../../services/doctor_service.dart';
 import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/models/prescription.dart';
-import '../../models/api_response.dart';
-import '../../config/themes/light_palette.dart';
-import 'package:frontend/services/auth_service.dart';
 import 'package:frontend/services/prescription_service.dart';
-
-import '../../models/doctor.dart';
-
- 
 
 class PrescriptionScreen extends StatefulWidget {
   final Patient patient;
@@ -36,15 +28,11 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
     // Create prescription
     // prescriptionText would have the text value in the text box
 
-    // FIXME: Replace hard coded user IDs with actual IDs
-    int doctorID = await getUserIdFromStorage();  // access from getuserIDfromstorage
+    int doctorID = await AuthService.getUserIdFromStorage();  // access from getuserIDfromstorage
     int patientID = widget.patient.userID;  // access from patient object
     Prescription newPrescription = Prescription(prescriptionID: -1, doctorID: doctorID, patientID: patientID, prescription: prescriptionText);
 
-    var testPrescription = await PrescriptionService.createPrescription(newPrescription);
-
-    // if testprescription == message:
-    //     show snackbar "faield to prescirbe medcine"
+    await PrescriptionService.createPrescription(newPrescription);
   }
 
   @override
@@ -56,8 +44,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Center(child: Text("Prescription")),
-          backgroundColor: Colors.redAccent,
+          title: const Text("Prescription"),
         ),
         body: Container(
           alignment: Alignment.center,
@@ -72,7 +59,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
                 decoration: const InputDecoration(
                     hintText: "Enter Prescription",
                     focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(width: 1, color: Colors.redAccent)
+                        borderSide: BorderSide(width: 1)
                     )
                 ),
                 onChanged: (text) {
@@ -88,14 +75,25 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
 
                     if (!mounted) return;
 
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Prescription Saved!'),));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          behavior: SnackBarBehavior.floating,
+                          margin: EdgeInsets.only(bottom: 10.0),
+                          content: Text("Prescription saved!"),
+                          duration: Duration(seconds: 2),
+                          backgroundColor: LightPalette.success,
+                        ),
+                    );
 
+                    Navigator.pop(context);
                   },
-                  child: const Text("Save Prescription")
+                  child: const Text("Save Prescription",
+                    style: TextStyle(fontWeight: FontWeight.bold),)
               )
             ],
           ),
         )
     );
   }
+
 }
