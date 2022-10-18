@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/services/patient_service.dart';
+import 'package:frontend/modules/prescription/patient_view_prescription_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 
+import '../../models/patient.dart';
 import '../../services/auth_service.dart';
 import '../../services/doctor_service.dart';
 import '../../services/specialty_service.dart';
@@ -20,14 +22,26 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   PersistentTabController? _controller;
+  AuthService authService = AuthService();
+  String userRole = "";
+  Patient? patient;
 
   void _handleTabSelection(int controllerIndex) {
     _controller!.index = controllerIndex;
   }
 
+  void setUser() async {
+    userRole = await authService.getUserRoleFromStorage();
+    if (userRole == "PATIENT") {
+      patient = await authService.getUserFromStorage();
+    }
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
+    setUser();
     _controller = PersistentTabController(initialIndex: 0);
   }
 
@@ -37,8 +51,8 @@ class _MainScreenState extends State<MainScreen> {
       return PersistentTabView(
         context,
         controller: _controller,
-        screens: _buildScreens(),
-        items: _navBarsItems(),
+        screens: userRole == "PATIENT" ? _buildPatientScreens() : _buildDoctorScreens(),
+        items: userRole == "PATIENT" ? _patientNavBarsItems() : _doctorNavBarsItems(),
         confineInSafeArea: true,
         backgroundColor: Colors.white, // Default is Colors.white.
         handleAndroidBackButtonPress: true, // Default is true.
@@ -70,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  List<Widget> _buildScreens() {
+  List<Widget> _buildDoctorScreens() {
     return [
       EmptyHomeScreen(
         handleTabSelection: _handleTabSelection,
@@ -93,7 +107,69 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems() {
+  List<Widget> _buildPatientScreens() {
+    return [
+      EmptyHomeScreen(
+          handleTabSelection: _handleTabSelection, authService: AuthService()),
+      SearchScreen(authService: AuthService()),
+      ManageAppointmentsScreen(
+          handleTabSelection: _handleTabSelection, authService: AuthService()),
+      PatientViewPrescriptionScreen(patient: patient!, authService: authService),
+      const NotificationScreen(),
+    ];
+  }
+
+  List<PersistentBottomNavBarItem> _patientNavBarsItems() {
+    return [
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.home),
+        title: ("Home"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/home',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.search),
+        title: ("Search"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/search',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.calendar),
+        title: ("Appointments"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/appointments',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(Icons.medical_information),
+        title: ("Prescriptions"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/prescriptions',
+        ),
+      ),
+      PersistentBottomNavBarItem(
+        icon: const Icon(CupertinoIcons.bell),
+        title: ("Notifications"),
+        activeColorPrimary: CupertinoColors.activeBlue,
+        inactiveColorPrimary: CupertinoColors.systemGrey,
+        routeAndNavigatorSettings: const RouteAndNavigatorSettings(
+          initialRoute: '/notifications',
+        ),
+      ),
+    ];
+  }
+
+  List<PersistentBottomNavBarItem> _doctorNavBarsItems() {
     return [
       PersistentBottomNavBarItem(
         icon: const Icon(CupertinoIcons.home),
@@ -133,4 +209,5 @@ class _MainScreenState extends State<MainScreen> {
       ),
     ];
   }
+
 }

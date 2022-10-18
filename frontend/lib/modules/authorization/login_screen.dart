@@ -69,6 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         }
 
+        if (!mounted) return;
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             behavior: SnackBarBehavior.floating,

@@ -34,3 +34,16 @@ services:
       - MYSQL_DATABASE=tele-med
     depends_on:
       - mysqldb
+
+  prescription-microservice:
+    build: ./backend/prescription-microservice
+    ports:
+      - "9092:8082"
+    environment:
+      - MYSQL_HOST=mysqldb
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=password
+      - MYSQL_PORT=3306
+      - MYSQL_DATABASE=tele-med
+    depends_on:
+      - mysqldb

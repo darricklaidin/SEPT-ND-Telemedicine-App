@@ -47,8 +47,6 @@ class _AdminViewUserProfileScreenState
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
     }
 
     setState(() {

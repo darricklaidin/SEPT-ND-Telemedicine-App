@@ -41,8 +41,7 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
+    } on Exception {
       return;
     }
 
@@ -73,7 +72,6 @@ class _AdminDoctorsScreenState extends State<AdminDoctorsScreen> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Color primaryThemeColor = Theme.of(context).colorScheme.primary;
-    Color secondaryThemeColor = Theme.of(context).colorScheme.secondary;
     Color errorThemeColor = Theme.of(context).errorColor;
 
     return Scaffold(
