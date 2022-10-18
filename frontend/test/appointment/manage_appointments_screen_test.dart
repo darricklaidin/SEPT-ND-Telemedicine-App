@@ -33,20 +33,22 @@ void main() {
   });
 
   arrangeAuthServiceReturnsUserId(int id) {
-    when(() => mockAuthService.getUserIdFromStorage()).thenAnswer((_) async {
-      return id;
-    });
+    when(() => mockAuthService.getUserIdFromStorage())
+        .thenAnswer((_) async => id);
   }
 
   arrangeAuthServiceReturnsRole(String role) {
-    when(() => mockAuthService.getUserRoleFromStorage()).thenAnswer((_) async {
-      return role;
-    });
+    when(() => mockAuthService.getUserRoleFromStorage())
+        .thenAnswer((_) async => role);
   }
 
-  arrangePatientServiceReturnsAppointments(List<Appointment> res, int id) {
+  arrangePatientServiceReturnsAppointments(List<Appointment> res, int id,
+      {bool wait = false}) {
     when(() => mockPatientService.fetchPatientAppointments(id))
         .thenAnswer((_) async {
+      if (wait) {
+        await Future.delayed(const Duration(seconds: 2));
+      }
       return res;
     });
   }
@@ -78,6 +80,23 @@ void main() {
     arrangePatientServiceReturnsAppointments([], 1);
     await tester.pumpWidget(createWidgetUnderTest());
     expect(find.text('Appointments'), findsOneWidget);
+  });
+
+  testWidgets('loading indicator is displayed while fetching appointments',
+      (WidgetTester tester) async {
+    // fetch should wait 2 seconds and return null
+    arrangeAuthServiceReturnsUserId(1);
+    arrangeAuthServiceReturnsRole("PATIENT");
+    arrangePatientServiceReturnsAppointments([], 1, wait: true);
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    // forces a widget rebuild after 500 milliseconds
+    await tester.pump(const Duration(milliseconds: 500));
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    // waits for no more rebuilds happening (the 2s future)
+    await tester.pumpAndSettle();
   });
 
   testWidgets(
