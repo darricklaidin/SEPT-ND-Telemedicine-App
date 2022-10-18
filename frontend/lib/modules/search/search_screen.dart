@@ -45,8 +45,7 @@ class _SearchScreenState extends State<SearchScreen> {
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
+    } on Exception {
       return;
     }
 

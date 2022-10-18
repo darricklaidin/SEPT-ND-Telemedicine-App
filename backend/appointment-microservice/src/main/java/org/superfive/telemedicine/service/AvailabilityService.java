@@ -65,8 +65,6 @@ public class AvailabilityService {
                     availability.getDoctorID() + " and " + availability.getDayOfWeek());
         }
 
-
-
         Availability temp = new Availability(
                 availability.getAvailabilityID(),
                 DayOfWeek.of(availability.getDayOfWeek()),

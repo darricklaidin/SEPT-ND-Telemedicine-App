@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+
 import 'package:frontend/config/constants.dart';
 import 'package:frontend/services/doctor_service.dart';
 import 'package:frontend/services/patient_service.dart';
@@ -45,7 +46,6 @@ class AppointmentService {
     var response = await http
         .delete(Uri.parse('$apiBookingRootUrl/appointments/$appointmentID'));
     if (response.statusCode == 200) {
-      print("Deleted appointment $appointmentID");
     } else {
       throw Exception('Failed to delete appointment $appointmentID');
     }
@@ -68,4 +68,5 @@ class AppointmentService {
 
     return Appointment.fromJson(appointment, doctor, patient);
   }
+
 }

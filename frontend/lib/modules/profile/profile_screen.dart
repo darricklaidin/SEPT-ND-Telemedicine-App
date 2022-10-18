@@ -10,6 +10,7 @@ import 'package:frontend/utility.dart';
 import '../../services/auth_service.dart';
 import '../../services/patient_service.dart';
 import '../appointment/book_appointment_screen.dart';
+import '../prescription/create_prescription_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final AuthService authService;
@@ -156,6 +157,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           primaryThemeColor,
                           secondaryThemeColor,
                           errorThemeColor),
+                      ..._buildPrescriptionBtn(
+                          width,
+                          height,
+                          primaryThemeColor,
+                          secondaryThemeColor,
+                          errorThemeColor),
                     ],
                   ),
                 ),
@@ -296,9 +303,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       Color errorThemeColor) {
     return widget.userRole == "DOCTOR"
         ? [
-            SizedBox(
-              height: height * 0.05,
-            )
+            SizedBox()
           ]
         : [
             Center(
@@ -343,4 +348,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )
           ];
   }
+
+  List<Widget> _buildPrescriptionBtn(double width, double height, Color primaryThemeColor, Color secondaryThemeColor, Color errorThemeColor) {
+    return widget.userRole == "PATIENT" ? [SizedBox(height: height * 0.05,)] : [
+      Center(
+        child: SizedBox(
+          width: width * 0.45,
+          height: 40,
+          child: TextButton(
+            // Navigate to make appointment page
+            onPressed: () async {
+              if (await checkIfUserExists(errorThemeColor)) {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PrescriptionScreen(patient: widget.user)));
+              }
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(secondaryThemeColor),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+            child: const Text(
+              'Prescribe Medicine',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      ),
+      SizedBox(
+        height: height * 0.05,
+      )
+    ];
+  }
+
+
 }
+

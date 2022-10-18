@@ -70,7 +70,7 @@ public class JwtTokenProvider {
         Claims claims = Jwts.parser().setSigningKey(SecurityConstant.SECRET).parseClaimsJws(token).getBody();
         String id = (String) claims.get("id");
 
-        List<Role> authorities = Arrays.asList(claims.get(AUTHORITIES_KEY).toString().split(",")).stream()
+        List<Role> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(authority -> new Role(RoleName.valueOf(authority))).collect(Collectors.toList());
 
         return new UserDTO(Integer.parseInt(id), authorities);

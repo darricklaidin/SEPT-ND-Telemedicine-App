@@ -32,6 +32,7 @@ public class AppointmentService {
     @Transactional
     // Get all appointments
     public Page<Appointment> getAllAppointments(Pageable pageable) {
+
         return appointmentRepository.findAllBy(pageable);
     }
 
@@ -113,13 +114,13 @@ public class AppointmentService {
                             // end time must be before or equal to appointment start time
                             if (appointmentStartTime.isBefore(doctorAppointment.getStartTime()) &&
                                     !appointmentEndTime.isAfter(doctorAppointment.getStartTime())) {
-                                continue;
+                                continue;  // Leaving these unnecessary continues for readability
                             }
                             // Else If newAppointment start time is after or equal to appointment end time, then newAppointment
                             // end time must be after appointment end time
                             else if (!appointmentStartTime.isBefore(doctorAppointment.getEndTime()) &&
                                     appointmentEndTime.isAfter(doctorAppointment.getEndTime())) {
-                                continue;
+                                continue;  // Leaving these unnecessary continues for readability
                             } else {
                                 // Throw exception here for doctor time clash
                                 throw new EntityTimeClashException("Doctor", appointment.getDoctorID(),
@@ -139,13 +140,13 @@ public class AppointmentService {
                             // end time must be before or equal to appointment start time
                             if (appointmentStartTime.isBefore(patientAppointment.getStartTime()) &&
                                     !appointmentEndTime.isAfter(patientAppointment.getStartTime())) {
-                                continue;
+                                continue;  // Leaving these unnecessary continues for readability
                             }
                             // Else If newAppointment start time is after or equal to appointment end time, then newAppointment
                             // end time must be after appointment end time
                             else if (!appointmentStartTime.isBefore(patientAppointment.getEndTime()) &&
                                     appointmentEndTime.isAfter(patientAppointment.getEndTime())) {
-                                continue;
+                                continue;  // Leaving these unnecessary continues for readability
                             } else {
                                 // Throw exception here for patient time clash
                                 throw new EntityTimeClashException("Patient", appointment.getPatientID(),
@@ -157,12 +158,12 @@ public class AppointmentService {
                 } else {
                     // Doctor is not available within those times
                     // Check next availability
-                    continue;
+                    continue;  // Leaving these unnecessary continues for readability
                 }
             } else {
                 // Availability dayOfWeek is not equal to newAppointment dayofweek
                 // Check next availability
-                continue;
+                continue;  // Leaving these unnecessary continues for readability
             }
         }
 

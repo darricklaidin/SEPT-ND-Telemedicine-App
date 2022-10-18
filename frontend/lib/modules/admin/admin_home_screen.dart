@@ -32,7 +32,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: Container(
+      body: SizedBox(
         width: width,
         height: height,
         child: Column(

@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,5 +24,6 @@ public class Doctor extends User {
                   LocalDate dateOfBirth, List<Role> roles, Specialty specialty) {
         super(userID, firstName, lastName, email, password, dateOfBirth, roles);
         this.specialty = specialty;
+
     }
 }

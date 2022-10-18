@@ -36,8 +36,7 @@ class _AdminPatientsScreenState extends State<AdminPatientsScreen> {
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
+    } on Exception {
       return;
     }
 

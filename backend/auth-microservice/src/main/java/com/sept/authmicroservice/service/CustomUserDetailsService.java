@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username);
-        if (user == null) new UsernameNotFoundException("User not found");
+        if (user == null) throw new UsernameNotFoundException("User not found");
         return user;
     }
 
@@ -30,8 +30,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
     public User loadUserById(int id) {
         User user = userRepository.getByUserID(id);
-        if (user == null) new UsernameNotFoundException("User not found");
+        if (user == null) throw new UsernameNotFoundException("User not found");
         return user;
-
     }
 }

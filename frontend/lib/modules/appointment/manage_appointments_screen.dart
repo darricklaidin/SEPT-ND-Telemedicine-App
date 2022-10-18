@@ -61,8 +61,7 @@ class _ManageAppointmentsScreenState extends State<ManageAppointmentsScreen> {
         isLoading = false;
       });
       return;
-    } on Exception catch (exception) {
-      print(exception);
+    } on Exception {
       return;
     }
 

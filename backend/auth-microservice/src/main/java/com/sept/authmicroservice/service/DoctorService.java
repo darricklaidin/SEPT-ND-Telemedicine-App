@@ -74,4 +74,5 @@ public class DoctorService {
         doctorRepository.deleteById(doctorID);
         return deletedDoctor;
     }
+
 }

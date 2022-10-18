@@ -5,7 +5,6 @@ import com.sept.authmicroservice.model.RoleName;
 import com.sept.authmicroservice.model.Specialty;
 import com.sept.authmicroservice.model.User;
 import com.sept.authmicroservice.payload.DoctorSignUp;
-import com.sept.authmicroservice.payload.SignUpRequest;
 import com.sept.authmicroservice.repository.RoleRepository;
 import com.sept.authmicroservice.repository.SpecialtyRepository;
 import com.sept.authmicroservice.repository.UserRepository;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
@@ -25,8 +24,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private final SpecialtyRepository specialtyRepository;
     private final UserRepository userRepository;
     private final AuthService authService;
-
-    private boolean alreadySetup = false;
 
     protected static final String[] INITIAL_SPECIALTIES = {"General Physician", "Dermatology", "Pediatric"};
 
@@ -42,9 +39,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(final ContextRefreshedEvent event) {
-        if (alreadySetup) {
-            return;
-        }
 
         // == create initial roles
         createRolesIfNotFound();
@@ -62,8 +56,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     void createAdminIfNotFound() {
         if (Boolean.FALSE.equals(
-                userRepository.existsByRolesIn(new ArrayList<>(Arrays.asList((roleRepository.findByName(RoleName.ADMIN))))))) {
-            userRepository.save(new User(-1, new ArrayList<>(Arrays.asList(roleRepository.findByName(RoleName.ADMIN)))));
+                userRepository.existsByRolesIn(new ArrayList<>(Collections.singletonList((roleRepository.findByName(RoleName.ADMIN))))))) {
+            userRepository.save(new User(-1, new ArrayList<>(Collections.singletonList(roleRepository.findByName(RoleName.ADMIN)))));
         }
     }
 
@@ -80,8 +74,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Transactional
     void createSpecialtiesIfNotFound() {
         String specialtyName;
-        for (int i = 0; i < INITIAL_SPECIALTIES.length; ++i) {
-            specialtyName = INITIAL_SPECIALTIES[i];
+        for (String initialSpecialty : INITIAL_SPECIALTIES) {
+            specialtyName = initialSpecialty;
             if (Boolean.FALSE.equals(specialtyRepository.existsBySpecialtyName(specialtyName))) {
                 specialtyRepository.save(new Specialty(specialtyName));
             }
@@ -90,11 +84,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
     @Transactional
     void createDoctorsIfNotFound() {
+        // Gets the first specialty ID (may not be '1')
+        int specialtyID = specialtyRepository.findAllBy(null).getContent().get(0).getSpecialtyID();
+
         for (int i = 1; i < 4; ++i) {
             String email = "doc" + i + "@doc.com";
             if (Boolean.FALSE.equals(userRepository.existsByEmail(email))) {
                 authService.registerDoctor(new DoctorSignUp("Doc", String.valueOf(i), email, "password",
-                        "1999-08-25", 1));
+                        "1999-08-25", specialtyID));
             }
         }
     }
