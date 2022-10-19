@@ -13,12 +13,6 @@ This is a web/mobile application that can be used by anyone, allowing patients t
 ### Product Owner:
 Amir Homayoon Ashrafzadeh
 
-# Build & Run
-
-## Build & Run via Heroku
-
-Did not have time to deploy
-
 ## Build & Run via GitHub Repository
 
 ### Configuration
